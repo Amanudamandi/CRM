@@ -76,7 +76,6 @@ const Update = ({ data2, setdata }) => {
     } else {
       setStateNames([]); // Reset if no leader is found
     }
-
     // Update the form data
     setformdata((prev) => ({
       ...prev,
@@ -90,19 +89,20 @@ const Update = ({ data2, setdata }) => {
 
   // fetching district ===========
 
-  const [district, setDistrict] = useState(new Array( stateNames.length).fill().map(() => new Array()));
+  const [district, setDistrict] = useState([]);
+  const [defaultDistrict, setDefaultDistrict] = useState(data2[0]?.district || []);
   const [currDistrictStatus, setCurrentDistrictStatus] = useState(new Array(stateNames.length).fill().map(() => new Array()));
 
   useEffect(() => {
-    setDistrict(new Array( stateNames.length).fill().map(() => new Array()));
-    setCurrentDistrictStatus(new Array( stateNames.length).fill().map(() => new Array()));
+    setDistrict(new Array(stateNames.length).fill().map(() => new Array()));
+    setCurrentDistrictStatus(new Array(stateNames.length).fill().map(() => new Array()));
   }, [teamLeaderId])
 
 
   const showDistrict = async (stateId, row) => {
-
+    if (!stateId) return;
     const districtData = await axios.get(`${process.env.REACT_APP_URL}/field/showDistrict/?stateID=${stateId}`);
-    // const districtData = await axios.get(`${process.env.REACT_APP_URL}/field/showDistrict/?stateID=66decf91b797b776b3366e68`);
+
     console.log("District : ", districtData.data.Districts.district);
     const response = await districtData.data.Districts.district;
 
@@ -111,15 +111,11 @@ const Update = ({ data2, setdata }) => {
       updateDistrictData[row] = response;
       return updateDistrictData;
     });
-
-
-
   }
 
 
   const handleStateChangeCheckBoxes = (e, pos) => {
     const stateStatusList = [...currentStateStatus];
-
     if (e.target.checked) {
       stateStatusList[pos] = e.target.value;
       console.log("my check state is ", stateStatusList);
@@ -142,15 +138,6 @@ const Update = ({ data2, setdata }) => {
     }
     setCurrentStateStatus(stateStatusList);
   }
-
-
-
-
-
-
-
-
-
 
   function changehandler(e) {
     e.preventDefault();
@@ -211,8 +198,8 @@ const Update = ({ data2, setdata }) => {
                   {
                     stateNames?.map(({ _id, state }, index) => (
                       <div key={_id} style={{ display: 'flex', width: 'min-content', gap: '4.5px' }}>
-                        <input type="checkbox" name="state" value={_id} style={{ width: 'min-content', fontSize: '15px', }} onChange={(event) => { handleStateChangeCheckBoxes(event, index) }} />
-                        <label style={{ padding: '5px', fontSize: '15px', width: 'max-content', color: 'black' }}>{state}</label>
+                        <input type="checkbox" name="state" id={state} value={_id} style={{ width: 'min-content', fontSize: '15px', }} onChange={(event) => { handleStateChangeCheckBoxes(event, index) }} />
+                        <label style={{ padding: '5px',  fontSize: '15px', width: 'max-content', color: 'black' }} htmlFor={state}>{state}</label>
                       </div>
                     ))
                   }
@@ -221,33 +208,47 @@ const Update = ({ data2, setdata }) => {
             </div>
 
 
-           <div>
-            <fieldset style={{ marginTop: '0.5rem' }}>
-              <legend style={{ fontWeight: '700', margin: '1rem', padding: '0px 5px', color: '#880104' }}>District</legend>
-              <section style={{ overflowY: 'auto', height: '180px', width: '95%', margin: 'auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start', alignItems: 'flex-start', gap: '10px' }}>
 
-                {
-                 (isChecked)? 
-                  (
-                    district.map((eachDistrict, row) => {
-                      return eachDistrict.map(({ _id, name, status }, col) => (
+
+
+            <div>
+              <fieldset style={{ marginTop: '0.5rem' }}>
+                <legend style={{ fontWeight: '700', margin: '1rem', padding: '0px 5px', color: '#880104' }}>
+                  District
+                </legend>
+                <section style={{ overflowY: 'auto', height: '180px', width: '95%', margin: 'auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start', alignItems: 'flex-start', gap: '10px' }}>
+
+                  {/* Show default district when no state is selected */}
+                  {currentStateStatus.every(status => status === 0) ? (
+                    <div style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word', MaxWidth: '100%' }}>
+                      <label htmlFor={form.distict} style={{
+                        color: "black",
+                        padding: '0px',
+                        fontSize: '15px',
+                        width: '95%',
+                         gap: '10px',
+                      }}>
+                        {Array.isArray(form.distict) ? form.distict.join(', ') : form.distict}
+                      </label>
+                    </div>
+
+                  ) : (
+                    /* Show assigned districts when a state is selected */
+                    district.map((eachDistrict, row) =>
+                      eachDistrict.map(({ _id, name, status }) => (
                         <div key={_id} style={{ display: 'flex', width: 'min-content', gap: '4.5px', textDecoration: status ? 'line-through' : 'none' }}>
-                          <input type="checkbox" name="district" id={name} value={name} style={{ width: 'min-content' }} disabled={status ? true : false} />
-                          <label htmlFor={name} style={{ padding: '0px', color: status ? 'rgb(120, 120, 120)' : '#000', fontSize: '12px', width: 'max-content' }}>{name}</label>
+                          <input type="checkbox" name="district" id={name} value={name} style={{ width: 'min-content' }} disabled={status} />
+                          <label htmlFor={name} style={{ padding: '0px', color: status ? 'rgb(120, 120, 120)' : '#000', fontSize: '12px', width: 'max-content' }}>
+                            {name}
+                          </label>
                         </div>
                       ))
-                    }
                     )
-                ):
-                (
-                  <>
-                     <label htmlFor={district} style={{ padding: '0px', fontSize: '12px', width: 'max-content' }} >{form?.distict}</label>
-                  </>
-                )
-                }
-              </section>
-            </fieldset>
+                  )}
+                </section>
+              </fieldset>
             </div>
+
             <button type="submit" className='submitBtn' style={Styles.submitBtnForTL}>Update</button>
           </div>
 
