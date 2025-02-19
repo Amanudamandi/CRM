@@ -1,0 +1,59 @@
+.sideNav-container{
+    height: 100%;
+    overflow-y: 'auto';
+    background-color: #AA0B2B;
+}
+
+.menu-container > div{
+    padding: 1rem 1rem;
+    border-bottom: 1px solid #fff;
+}
+
+.menu-container .description{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 1rem;
+}
+
+.menu-container .description .name-logo-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    background-color: #fff;
+    border-radius: 50%;
+}
+
+.name-logo-container .name-logo{
+    font-size: 1.5rem;
+}
+
+.menu-container .description .department-name{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-right: 1rem;
+}
+
+.menu-container .description .department-name span{
+    color: #fff
+}
+
+.menu-container .menu-option{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    padding: 1rem 1rem;
+    border-bottom: 1px solid #fff;
+    text-decoration: none;
+}
+
+.menu-container .menu-option > .option{
+    font-size: 0.9rem;
+    color: #fff;
+    font-size: 1.1rem;
+}

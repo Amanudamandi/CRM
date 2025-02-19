@@ -1,0 +1,77 @@
+
+.outer{
+    display: flex;
+    flex:1;
+    flex-direction: column;
+}
+.top{
+    padding: 1rem 2rem;
+    flex: 1;
+    padding-bottom: 0rem;
+}
+.top label, .bottom .bottomLeft label, .bottom .bottomRight label{
+    display: inline-block;
+    padding-bottom: 0.5rem;
+    color:#880104;
+    font-weight: 700;
+    letter-spacing: 0.1rem;
+}
+.top h1{
+    text-align: center;
+    word-spacing: 0.2rem;
+}
+
+.bottom .bottomLeft input[type='email'],
+.bottom .bottomLeft input[type='text'],
+.bottom .bottomLeft input[type='date'],
+.bottom .bottomLeft input[type='number']
+{
+    border-radius: 0%;
+    width: 100%;
+    height: 1.6rem;
+    display: block;
+    margin-bottom: 1.5rem;
+    border: 2px solid #bbb8b8fa;
+    border-radius: 4px;
+    padding: 0.9rem;
+}
+.bottom{
+    display: flex;
+    padding: 0rem 1rem;
+    gap: 5rem;
+    flex-direction: row;
+}
+.gender{
+    margin-bottom:1.5rem;
+}
+input[type='radio']{
+    width: min-content;
+}
+.bottom .bottomLeft, .bottom .bottomRight{
+    width: 50%;
+    padding: 1rem;
+}
+.bottomRight div > select{
+    width: 101%;
+    height: 2rem;
+    margin-bottom: 1.5rem;
+    border-radius: 4px;
+    border: 2px solid #bbb8b8fa;
+
+}
+.submitBtn{
+    margin-top: 1rem;
+    all: unset;
+    height: 2rem;
+    width: 5rem;
+    text-align: center;
+    background-color: #880104;
+    color:white;
+    border-radius: 5px;
+    letter-spacing: 0.1rem;
+}
+.submitBtn:hover{
+    border: 2px solid #880104;
+    background-color: white;
+    color:#880104;
+}

@@ -1,0 +1,123 @@
+.login-container{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.left{
+    position: relative;
+    width: 50%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffd525;
+}
+
+.left .solar_panel_image{
+    width: 23.5vw;
+    height: 90vh;
+}
+
+.left .white_logo_container .white_logo_image{
+    position: absolute;
+    width: 25vw;
+    height: 60vh;
+    left: -5rem;
+    top: 0;
+    transform: translateY(30%);
+}
+
+.login-container .right{
+    width: 50%;
+    display: flex;
+    justify-content: center;
+}
+
+.login-container .form-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 25rem;
+    height: 35rem;
+    border: 1px solid rgba(0, 0, 0, 26%);
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgb(180, 180, 180);
+}
+
+.form-container .crm-info .logo-container{
+    width: 100%;
+    text-align: center;
+    /* margin-bottom: -1.2rem; */
+}
+
+.form-container .crm-info .crm{
+    text-align: center;
+}
+
+.form-container .crm-info .one-liner{
+    margin-top: -8px;
+    text-align: center;
+}
+
+form{
+    padding: 0rem 2.4rem;
+}
+
+form div{
+    margin-top: 0.4rem;
+}
+
+form input{
+    width: 100%;
+    border: 1px solid rgb(180, 180, 180);
+    border-radius: 5px;
+    padding: 0.45rem 0.75rem;
+}
+
+form .login-btn{
+    width: 100%;
+    margin: auto;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    margin-top: 0.8rem;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 2px solid #000;
+    font-weight: 600;
+}
+
+form .login-btn:hover{
+    color: #000;
+    background-color: #fff;
+}
+
+.forget-container .forget-pass{
+    color: #000;
+    text-decoration: none;
+}
+
+.forget-container .forget-pass:hover{
+    text-decoration: underline;
+}
+
+.form-container .others-container{
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.form-container .others-container a{
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.75rem;
+    border: 1px solid rgb(180, 180, 180);
+    border-radius: 5px;
+    /* background-color: #ddd; */
+}
