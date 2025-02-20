@@ -24,7 +24,15 @@ const Update = ({ data2, setdata }) => {
   const [stateNames, setStateNames] = useState([]);
 
   const [currentStateStatus, setCurrentStateStatus] = useState(new Array(stateNames.length).fill(0));
+  // const [currentStateStatus, setCurrentStateStatus] = useState(
+  //   data2[0]?.stateID?.map(({ _id }) => _id) || []
+  // );
 
+  // useEffect(() => {
+  //   // Ensure selected states are set when loading the component
+  //   setCurrentStateStatus(data2[0]?.stateID?.map(({ _id }) => _id) || []);
+  // }, [data2]);
+  
 
   const setDefaultTeamLeader = (value, id) => {
     setTeamLeaderId(id);
@@ -141,12 +149,23 @@ const Update = ({ data2, setdata }) => {
   }
 
   const handleStateChangeCheckBoxes = (e, pos) => {
+    const stateId = e.target.value; //chnage here
+
     const stateStatusList = [...currentStateStatus];
     if (e.target.checked) {
-      stateStatusList[pos] = e.target.value;
+
+      // if (!stateStatusList.includes(stateId)) { //change here
+      //   stateStatusList.push(stateId); // Assign new state
+      // }
+
+
+      stateStatusList[pos] = stateId;
       console.log("my check state is ", stateStatusList);
-      showDistrict(e.target.value, pos);
+      showDistrict(stateId, pos);
     } else {
+
+      // stateStatusList = stateStatusList.filter((id) => id !== stateId); //change here
+
       // it work when we unchecked input
       stateStatusList[pos] = 0;
       setDistrict((previousData) => {
