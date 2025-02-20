@@ -262,13 +262,14 @@ const Update = ({ data2, setdata }) => {
         return;
       }
 
-      let updateData = await axios.put(`${process.env.REACT_APP_URL}/auth/update`, {
+      let updateData = await axios.put(`${process.env.REACT_APP_URL}/emp/update`, {
         empId: data2._id,
         name: form.emp,
         mobile: form.phone,
         teamleader: teamLeaderId,
         stateId: selectedState,
-        district: selectedDistricts,   // Sending district names instead of indices
+        district: selectedDistricts,
+        status:districtSts   // Sending district names instead of indices
       });
       alert("Employee added Successfully");
       if (updateData.data.success) {
