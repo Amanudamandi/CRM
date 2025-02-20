@@ -3,8 +3,10 @@ import { set } from 'date-fns';
 import React, { useEffect, useState } from 'react'
 import DynamicDropDown from '../../DropDown2/index';
 import './../../../Pages/employeeRegister/index.css'
+import { useNavigate } from 'react-router-dom';
 const Update = ({ data2, setdata }) => {
   console.log("DATA2", data2);
+  const navigate = useNavigate();
 
   const [form, setformdata] = useState({
     emp: data2[0]?.name || '',
@@ -263,15 +265,16 @@ const Update = ({ data2, setdata }) => {
       }
 
       let updateData = await axios.put(`${process.env.REACT_APP_URL}/emp/update`, {
-        empId: data2[0].empID,
-        name: form.emp,
-        mobile: form.phone,
+        empId: data2[0]?.empID,
+        name: form?.emp,
+        mobile: form?.phone,
         teamleader: teamLeaderId,
         stateId: selectedState,
         district: selectedDistricts,
         status:districtSts   // Sending district names instead of indices
       });
       alert("Employee added Successfully");
+
       if (updateData.data.success) {
         setformdata({});
         setDefaultTeamLeader("Assign a TL", null);
@@ -279,6 +282,8 @@ const Update = ({ data2, setdata }) => {
         setDistrict(new Array(stateNames.length).fill().map(() => new Array()));
         setCurrentDistrictStatus(new Array(stateNames.length).fill().map(() => new Array()));
         setAssignedDistricts([]); // Reset assigned districts
+
+        navigate("/admin/employee-dashboard");  
       }
 
       console.log("updated data: ", updateData);
