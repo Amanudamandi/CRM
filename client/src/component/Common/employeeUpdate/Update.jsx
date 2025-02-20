@@ -2,10 +2,10 @@ import axios from 'axios';
 import { set } from 'date-fns';
 import React, { useEffect, useState } from 'react'
 import DynamicDropDown from '../../DropDown2/index';
-import { use } from 'react';
-
+import './../../../Pages/employeeRegister/index.css'
 const Update = ({ data2, setdata }) => {
-  console.log("DATA2", data2)
+  console.log("DATA2", data2);
+
   const [form, setformdata] = useState({
     emp: data2[0]?.name || '',
     phone: data2[0]?.mobile || '',
@@ -13,7 +13,7 @@ const Update = ({ data2, setdata }) => {
     state: data2[0]?.stateID[0]?.state || '',
     distict: data2[0]?.district
   })
-
+  console.log("district : ", form.distict);
 
   const [teamLeaderList, setTeamLeaderList] = useState(null);
   const [teamLeaderId, setTeamLeaderId] = useState(null);
@@ -22,7 +22,7 @@ const Update = ({ data2, setdata }) => {
   const [stateNames, setStateNames] = useState([]);
 
   const [currentStateStatus, setCurrentStateStatus] = useState(new Array(stateNames.length).fill(0));
-  const [isChecked, setIsChecked] = useState(true);
+
 
   const setDefaultTeamLeader = (value, id) => {
     setTeamLeaderId(id);
@@ -90,29 +90,53 @@ const Update = ({ data2, setdata }) => {
   // fetching district ===========
 
   const [district, setDistrict] = useState([]);
-  const [defaultDistrict, setDefaultDistrict] = useState(data2[0]?.district || []);
+  const [assignedDistricts, setAssignedDistricts] = useState(form.distict || []);
   const [currDistrictStatus, setCurrentDistrictStatus] = useState(new Array(stateNames.length).fill().map(() => new Array()));
+
+  // console.log('Check defaultDistrict', defaultDistrict);
 
   useEffect(() => {
     setDistrict(new Array(stateNames.length).fill().map(() => new Array()));
     setCurrentDistrictStatus(new Array(stateNames.length).fill().map(() => new Array()));
   }, [teamLeaderId])
 
-
   const showDistrict = async (stateId, row) => {
-    if (!stateId) return;
-    const districtData = await axios.get(`${process.env.REACT_APP_URL}/field/showDistrict/?stateID=${stateId}`);
+    try {
+      if (!stateId) return;
+      const districtData = await axios.get(`${process.env.REACT_APP_URL}/field/showDistrict/?stateID=${stateId}`);
 
-    console.log("District : ", districtData.data.Districts.district);
-    const response = await districtData.data.Districts.district;
+      console.log("District : ", districtData.data.Districts.district);
+      const response = await districtData.data.Districts.district;
 
-    setDistrict((previousData) => {
-      const updateDistrictData = previousData.map((data) => [...data]);
-      updateDistrictData[row] = response;
-      return updateDistrictData;
-    });
+      setDistrict((previousData) => {
+        const updateDistrictData = previousData.map((data) => [...data]);
+        updateDistrictData[row] = response;
+        return updateDistrictData;
+      });
+
+      let updatedCurrentDistrictStatus = [];
+      for (let index = 0; index < response.length; index++) {
+        if (!response[index].status) {
+          updatedCurrentDistrictStatus = [...updatedCurrentDistrictStatus, false];
+          // setCurrentDistrictStatus((previousList) => [...previousList, false]);
+        } else {
+          // setCurrentDistrictStatus((previousList) => [...previousList, -1]); 
+          updatedCurrentDistrictStatus = [...updatedCurrentDistrictStatus, -1];
+        }
+      }
+
+      setCurrentDistrictStatus((previous) => {
+        console.log(previous, row);
+        const copyCurrentDistrictStatus = previous.map((data) => [...data]);
+        copyCurrentDistrictStatus[row] = updatedCurrentDistrictStatus;
+        return copyCurrentDistrictStatus;
+      });
+
+    } catch (error) {
+      console.error(error);
+    }
+
   }
-
 
   const handleStateChangeCheckBoxes = (e, pos) => {
     const stateStatusList = [...currentStateStatus];
@@ -139,6 +163,31 @@ const Update = ({ data2, setdata }) => {
     setCurrentStateStatus(stateStatusList);
   }
 
+  const handleChangesCheckBox = (e, row, col) => {
+    console.log("row and col are : ", row, col);
+    const checkBoxedUpdated = currDistrictStatus.map((data) => [...data]);
+    console.log("checkboxStatus: ", checkBoxedUpdated);
+
+
+    if (currDistrictStatus !== -1) {
+      if (e.target.checked) {
+        checkBoxedUpdated[row][col] = true;
+      } else {
+        checkBoxedUpdated[row][col] = false;
+      }
+    }
+    console.log("current disrtrict Status", currDistrictStatus[row][col]);
+    console.log("updated list of checked boxed", checkBoxedUpdated);
+    setCurrentDistrictStatus(checkBoxedUpdated);
+
+    // Remove unselected districts from assignedDistricts list
+    const selectedDistrictName = district[row][col].name;
+    if (!e.target.checked) {
+      setAssignedDistricts((prev) => prev.filter((dist) => dist !== selectedDistrictName));
+    }
+
+  }
+
   function changehandler(e) {
     e.preventDefault();
     setformdata((prev) => {
@@ -154,11 +203,95 @@ const Update = ({ data2, setdata }) => {
     submitBtnForTL: {},
     inputBottomMargin: { marginBottom: '1rem' }
   }
-  // const Styles = {
-  //   topText: { borderRadius: '5px', height: '2rem', border: '2px solid #BBB8B8' }
-  // }
+
+
+  const handleEmployeeUpdateSubmit = async (e) => {
+    e.preventDefault();
+
+    if (form.emp === " ") {
+      alert('Enter the name');
+      return;
+    }
+
+
+    try {
+      const states = currentStateStatus.filter(state => state !== 0 && state !== undefined);
+      const selectedState = [];
+
+      // console.log("state : ", states);
+
+      for (let index = 0; index < currentStateStatus.length; index++) {
+        if (currentStateStatus[index] !== 0 && currentStateStatus[index] !== undefined) {
+          selectedState.push(currentStateStatus[index]);
+        }
+      }
+      console.log("state selected: ", selectedState)
+
+       // Extracting district names where status is true
+       const selectedDistricts = [];
+       currDistrictStatus.forEach((districtRow, rowIndex) => {
+         districtRow.forEach((status, colIndex) => {
+           if (status === true) {
+             selectedDistricts.push(district[rowIndex][colIndex].name); // Extracting name
+           }
+         });
+       });
+ 
+       
+       console.log(" New Selected Districts: ", selectedDistricts);
+
+      const districtSts = [];
+      for (let index = 0; index < currDistrictStatus.length; index++) {
+       
+        if (currDistrictStatus[index] !== 0 && currDistrictStatus[index] !== undefined) {
+          districtSts.push(currDistrictStatus[index]);
+        }
+      }
+      console.log("district selected status : ", districtSts);
+
+
+
+     
+
+      if (selectedState.length === 0) {
+        alert('Select the states');
+        return;
+      }
+      if (district.length === 0) {
+        alert('Select the districts to be assigned');
+        return;
+      }
+
+      let updateData = await axios.put(`${process.env.REACT_APP_URL}/auth/update`, {
+        empId: data2._id,
+        name: form.emp,
+        mobile: form.phone,
+        teamleader: teamLeaderId,
+        stateId: selectedState,
+        district: selectedDistricts,   // Sending district names instead of indices
+      });
+      alert("Employee added Successfully");
+      if (updateData.data.success) {
+        setformdata({});
+        setDefaultTeamLeader("Assign a TL", null);
+        setStateNames([]);
+        setDistrict(new Array(stateNames.length).fill().map(() => new Array()));
+        setCurrentDistrictStatus(new Array(stateNames.length).fill().map(() => new Array()));
+        setAssignedDistricts([]); // Reset assigned districts
+      }
+
+      console.log("updated data: ", updateData);
+
+    } catch (error) {
+      console.error("Error updating employee:", error);
+      alert(error.response?.data?.msg || "Failed to update employee.");
+    }
+
+
+  }
+
   return (
-    <form>
+    <form method="POST" onSubmit={handleEmployeeUpdateSubmit} style={{ overflow: 'auto', height: '100vh' }}>
       <div className='outer'>
         <div className="top">
           <h1 align="center">Update Employee</h1>
@@ -199,7 +332,7 @@ const Update = ({ data2, setdata }) => {
                     stateNames?.map(({ _id, state }, index) => (
                       <div key={_id} style={{ display: 'flex', width: 'min-content', gap: '4.5px' }}>
                         <input type="checkbox" name="state" id={state} value={_id} style={{ width: 'min-content', fontSize: '15px', }} onChange={(event) => { handleStateChangeCheckBoxes(event, index) }} />
-                        <label style={{ padding: '5px',  fontSize: '15px', width: 'max-content', color: 'black' }} htmlFor={state}>{state}</label>
+                        <label style={{ padding: '5px', fontSize: '15px', width: 'max-content', color: 'black' }} htmlFor={state}>{state}</label>
                       </div>
                     ))
                   }
@@ -207,37 +340,29 @@ const Update = ({ data2, setdata }) => {
               </fieldset>
             </div>
 
-
-
-
-
             <div>
-              <fieldset style={{ marginTop: '0.5rem' }}>
+              <fieldset style={{ marginTop: '1rem', marginBottom: "1rem" }}>
                 <legend style={{ fontWeight: '700', margin: '1rem', padding: '0px 5px', color: '#880104' }}>
                   District
                 </legend>
                 <section style={{ overflowY: 'auto', height: '180px', width: '95%', margin: 'auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start', alignItems: 'flex-start', gap: '10px' }}>
 
                   {/* Show default district when no state is selected */}
-                  {currentStateStatus.every(status => status === 0) ? (
-                    <div style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word', MaxWidth: '100%' }}>
-                      <label htmlFor={form.distict} style={{
-                        color: "black",
-                        padding: '0px',
-                        fontSize: '15px',
-                        width: '95%',
-                         gap: '10px',
-                      }}>
-                        {Array.isArray(form.distict) ? form.distict.join(', ') : form.distict}
-                      </label>
-                    </div>
+                  {currentStateStatus?.every(status => status === 0) ? (
+                    form?.distict?.map((item) => (
+                      // console.log("items ",item);
+                      <div>
+                        <input type="checkbox" checked name={item} id={item} />
+                        <label htmlFor={item}>{item}</label>
+                      </div>
+                    ))
 
                   ) : (
                     /* Show assigned districts when a state is selected */
                     district.map((eachDistrict, row) =>
-                      eachDistrict.map(({ _id, name, status }) => (
+                      eachDistrict.map(({ _id, name, status }, col) => (
                         <div key={_id} style={{ display: 'flex', width: 'min-content', gap: '4.5px', textDecoration: status ? 'line-through' : 'none' }}>
-                          <input type="checkbox" name="district" id={name} value={name} style={{ width: 'min-content' }} disabled={status} />
+                          <input type="checkbox" name="district" id={name} value={name} style={{ width: 'min-content' }} checked={assignedDistricts.includes(name) || currDistrictStatus[row][col] === true} onChange={(e) => { handleChangesCheckBox(e, row, col) }} />
                           <label htmlFor={name} style={{ padding: '0px', color: status ? 'rgb(120, 120, 120)' : '#000', fontSize: '12px', width: 'max-content' }}>
                             {name}
                           </label>

@@ -184,16 +184,17 @@ const Index = ({ CoordinatorStartIndexDropDown }) => {
   // }, [currentStateStatus]);
 
   const handleChangeCheckBoxes = (e, row, col) => {
-    console.log(currentDistrictStatus);
+    console.log("xyz",currentDistrictStatus);
     console.log(row, col);
     const updatedListOfCheckBoxed = currentDistrictStatus.map((data) => [...data ]);
+    console.log("updated Checked box ",updatedListOfCheckBoxed);
     if (currentDistrictStatus[row][col] !== -1){
       if(e.target.checked)
         updatedListOfCheckBoxed[row][col] = true;
       else 
         updatedListOfCheckBoxed[row][col] = false;
     }
-    console.log(currentDistrictStatus[row][col]);
+    console.log("current disrtrict Status",currentDistrictStatus[row][col]);
     console.log(updatedListOfCheckBoxed);
     setCurrentDistrictStatus(updatedListOfCheckBoxed);
   }
@@ -237,7 +238,7 @@ const Index = ({ CoordinatorStartIndexDropDown }) => {
     if (!teamLeaderId) {
       alert('Select the Team Leader');
       return;
-    }
+    } 
     try {
       const states = [];
       for (let index = 0; index < currentStateStatus.length; index++) {
