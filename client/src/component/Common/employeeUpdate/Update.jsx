@@ -263,7 +263,7 @@ const Update = ({ data2, setdata }) => {
       }
 
       let updateData = await axios.put(`${process.env.REACT_APP_URL}/emp/update`, {
-        empId: data2._id,
+        empId: data2[0].empID,
         name: form.emp,
         mobile: form.phone,
         teamleader: teamLeaderId,
