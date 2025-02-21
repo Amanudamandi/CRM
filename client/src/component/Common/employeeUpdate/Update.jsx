@@ -12,10 +12,12 @@ const Update = ({ data2, setdata }) => {
     emp: data2[0]?.name || '',
     phone: data2[0]?.mobile || '',
     leader: data2[0]?.teamLeader?.name || '',
-    state: data2[0]?.stateID[0]?.state || '',
+    state: data2[0]?.stateID || '',
     distict: data2[0]?.district
   })
   console.log("district : ", form.distict);
+
+  console.log("form  state: ",form.state)
 
   const [teamLeaderList, setTeamLeaderList] = useState(null);
   const [teamLeaderId, setTeamLeaderId] = useState(null);
@@ -115,7 +117,7 @@ const Update = ({ data2, setdata }) => {
       if (!stateId) return;
       const districtData = await axios.get(`${process.env.REACT_APP_URL}/field/showDistrict/?stateID=${stateId}`);
 
-      console.log("District : ", districtData.data.Districts.district);
+      console.log("District Data : ", districtData.data.Districts.district);
       const response = await districtData.data.Districts.district;
 
       setDistrict((previousData) => {
@@ -149,7 +151,7 @@ const Update = ({ data2, setdata }) => {
   }
 
   const handleStateChangeCheckBoxes = (e, pos) => {
-    const stateId = e.target.value; //chnage here
+    const stateId = e.target.value;
 
     const stateStatusList = [...currentStateStatus];
     if (e.target.checked) {
@@ -160,7 +162,7 @@ const Update = ({ data2, setdata }) => {
 
 
       stateStatusList[pos] = stateId;
-      console.log("my check state is ", stateStatusList);
+      console.log("my check state is ", stateStatusList); 
       showDistrict(stateId, pos);
     } else {
 
@@ -247,6 +249,9 @@ const Update = ({ data2, setdata }) => {
         }
       }
       console.log("state selected: ", selectedState)
+      const oldSelectedDistrict=[form.distict];
+      console.log("old selected district",oldSelectedDistrict);
+     
 
        // Extracting district names where status is true
        const selectedDistricts = [];
@@ -261,12 +266,16 @@ const Update = ({ data2, setdata }) => {
        
        console.log(" New Selected Districts: ", selectedDistricts);
 
+     
+     
+       // finding the status of newSeleted district
       const districtSts = [];
       for (let index = 0; index < currDistrictStatus.length; index++) {
        
         if (currDistrictStatus[index] !== 0 && currDistrictStatus[index] !== undefined) {
           districtSts.push(currDistrictStatus[index]);
         }
+        
       }
       console.log("district selected status : ", districtSts);
 
@@ -352,15 +361,15 @@ const Update = ({ data2, setdata }) => {
               <fieldset style={{ border: "1px solid black", fontSize: "15px", padding: "10px", borderRadius: "5px", marginTop: "15px", marginBottom: "15px" }}>
                 <legend style={{ fontWeight: '700', margin: '1rem', padding: '0px 5px', fontSize: "15px", color: '#880104' }}>State</legend>
                 <section style={{ overflowY: 'auto', height: '5rem', width: '95%', margin: 'auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start', alignItems: 'flex-start', gap: '10px' }}>
-
+                
                   {
-                    stateNames?.map(({ _id, state }, index) => (
-                      <div key={_id} style={{ display: 'flex', width: 'min-content', gap: '4.5px' }}>
-                        <input type="checkbox" name="state" id={state} value={_id} style={{ width: 'min-content', fontSize: '15px', }} onChange={(event) => { handleStateChangeCheckBoxes(event, index) }} />
-                        <label style={{ padding: '5px', fontSize: '15px', width: 'max-content', color: 'black' }} htmlFor={state}>{state}</label>
-                      </div>
-                    ))
-                  }
+                      stateNames?.map(({ _id, state }, index) => (
+                          <div key={_id} style={{ display: 'flex', width: 'min-content', gap: '4.5px' }}>
+                            <input type="checkbox" name="state" id={state} value={_id} style={{ width: 'min-content', fontSize: '15px', }} onChange={(event) => { handleStateChangeCheckBoxes(event, index) }} />
+                            <label style={{ padding: '5px', fontSize: '15px', width: 'max-content', color: 'black' }} htmlFor={state}>{state}</label>
+                          </div>
+                        ))                      
+                      }
                 </section>
               </fieldset>
             </div>
@@ -378,7 +387,7 @@ const Update = ({ data2, setdata }) => {
                       // console.log("items ",item);
                       <div>
                         <input type="checkbox" checked name={item} id={item} />
-                        <label htmlFor={item}>{item}</label>
+                        <label style={{color:"black"}} htmlFor={item}>{item}</label>
                       </div>
                     ))
 
@@ -386,9 +395,9 @@ const Update = ({ data2, setdata }) => {
                     /* Show assigned districts when a state is selected */
                     district.map((eachDistrict, row) =>
                       eachDistrict.map(({ _id, name, status }, col) => (
-                        <div key={_id} style={{ display: 'flex', width: 'min-content', gap: '4.5px', textDecoration: status ? 'line-through' : 'none' }}>
+                        <div key={_id} style={{ display: 'flex', width: 'min-content', gap: '4.5px',  }}>
                           <input type="checkbox" name="district" id={name} value={name} style={{ width: 'min-content' }} checked={assignedDistricts.includes(name) || currDistrictStatus[row][col] === true} onChange={(e) => { handleChangesCheckBox(e, row, col) }} />
-                          <label htmlFor={name} style={{ padding: '0px', color: status ? 'rgb(120, 120, 120)' : '#000', fontSize: '12px', width: 'max-content' }}>
+                          <label htmlFor={name} style={{ padding: '0px',color:"black", fontSize: '12px', width: 'max-content' }}>
                             {name}
                           </label>
                         </div>
