@@ -353,9 +353,9 @@ const Update = ({ data2, setdata }) => {
         name: form?.emp,
         mobile: form?.phone,
         teamleader: teamLeaderId,
-        stateId: selectedState,
+        // stateId: selectedState,
         // district: selectedDistricts,
-        // stateId: currentStateStatus.filter(state => state !== 0 && state !== undefined),
+        stateId: currentStateStatus.filter(state => state !== 0 && state !== undefined),
         district: assignedDistricts, // Send final updated districts
         // addedDistricts: addedDistricts,  // Send added separately
         // removedDistricts: removedDistricts // Send removed separately
