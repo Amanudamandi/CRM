@@ -53,6 +53,7 @@ const Index = ({ updateCoordinatorProfile = '', setCoordinatorProfile }) => {
     setCurrentStateStatus(stateStatusList);
   }
 
+  
   const handleOnSubmit = (event) => {
     event.preventDefault();
     const selectedStateList = [];

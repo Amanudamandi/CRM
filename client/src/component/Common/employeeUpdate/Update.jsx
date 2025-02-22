@@ -12,8 +12,8 @@ const Update = ({ data2, setdata }) => {
     emp: data2[0]?.name || '',
     phone: data2[0]?.mobile || '',
     leader: data2[0]?.teamLeader?.name || '',
-    state: data2[0]?.stateID || '',
-    distict: data2[0]?.district
+    state: data2[0]?.stateID || [],
+    distict: data2[0]?.district ||[]
   })
   console.log("district : ", form.distict);
 
@@ -57,7 +57,7 @@ const Update = ({ data2, setdata }) => {
     const response = await axios.get(`${process.env.REACT_APP_URL}/auth/showTeamLeaderName`);
     // console.log("response is:",response.data);
     setTeamLeaderList(response?.data?.data);
-    setDefaultTeamLeader(form.leader, null);
+    setDefaultTeamLeader("Select Team leader", null);
   }
 
   console.log("all team leader", teamLeaderList);
@@ -164,6 +164,7 @@ const Update = ({ data2, setdata }) => {
       stateStatusList[pos] = stateId;
       console.log("my check state is ", stateStatusList); 
       showDistrict(stateId, pos);
+      // console.log("district checked: ",district);
     } else {
 
       // stateStatusList = stateStatusList.filter((id) => id !== stateId); //change here
@@ -249,6 +250,8 @@ const Update = ({ data2, setdata }) => {
         }
       }
       console.log("state selected: ", selectedState)
+
+      
       const oldSelectedDistrict=[form.distict];
       console.log("old selected district",oldSelectedDistrict);
      
