@@ -13,11 +13,11 @@ const Update = ({ data2, setdata }) => {
     phone: data2[0]?.mobile || '',
     leader: data2[0]?.teamLeader?.name || '',
     state: data2[0]?.stateID || [],
-    distict: data2[0]?.district ||[]
+    distict: data2[0]?.district || []
   })
   console.log("district : ", form.distict);
 
-  console.log("form  state: ",form.state)
+  console.log("form  state: ", form.state)
 
   const [teamLeaderList, setTeamLeaderList] = useState(null);
   const [teamLeaderId, setTeamLeaderId] = useState(null);
@@ -34,7 +34,7 @@ const Update = ({ data2, setdata }) => {
   //   // Ensure selected states are set when loading the component
   //   setCurrentStateStatus(data2[0]?.stateID?.map(({ _id }) => _id) || []);
   // }, [data2]);
-  
+
 
   const setDefaultTeamLeader = (value, id) => {
     setTeamLeaderId(id);
@@ -64,7 +64,6 @@ const Update = ({ data2, setdata }) => {
   console.log("selectes Team leader : ", selectedTeamLeader);
 
 
-  // const handleStateChangeCheckBoxes = () => { }
 
   useEffect(() => {
     showTeamLeader();
@@ -100,12 +99,17 @@ const Update = ({ data2, setdata }) => {
   console.log("state store : ", stateNames);
 
   // fetching district ===========
+  const [oldAssignedDistricts, setOldAssignedDistricts] = useState([]);
+  useEffect(() => {
+    setOldAssignedDistricts([...form.distict]); // Store initial selected districts
+  }, [form.distict]);
 
   const [district, setDistrict] = useState([]);
-  const [assignedDistricts, setAssignedDistricts] = useState(form.distict || []);
+  const [assignedDistricts, setAssignedDistricts] = useState(form.distict);
   const [currDistrictStatus, setCurrentDistrictStatus] = useState(new Array(stateNames.length).fill().map(() => new Array()));
 
-  // console.log('Check defaultDistrict', defaultDistrict);
+  console.log("assigned district :", assignedDistricts);
+  console.log("district status :", currDistrictStatus);
 
   useEffect(() => {
     setDistrict(new Array(stateNames.length).fill().map(() => new Array()));
@@ -162,7 +166,7 @@ const Update = ({ data2, setdata }) => {
 
 
       stateStatusList[pos] = stateId;
-      console.log("my check state is ", stateStatusList); 
+      console.log("my check state is ", stateStatusList);
       showDistrict(stateId, pos);
       // console.log("district checked: ",district);
     } else {
@@ -187,30 +191,76 @@ const Update = ({ data2, setdata }) => {
     setCurrentStateStatus(stateStatusList);
   }
 
+  // const handleChangesCheckBox = (e, row, col) => {
+  //   console.log("row and col are : ", row, col);
+  //   const checkBoxedUpdated = currDistrictStatus.map((data) => [...data]);
+  //   console.log("checkboxStatus: ", checkBoxedUpdated);
+
+
+  //   if (currDistrictStatus !== -1) {
+  //     if (e.target.checked) {
+  //       checkBoxedUpdated[row][col] = true;
+  //     } else {
+  //       checkBoxedUpdated[row][col] = false;
+  //     }
+  //   }
+  //   console.log("current disrtrict Status", currDistrictStatus[row][col]);
+  //   console.log("updated list of checked boxed", checkBoxedUpdated);
+  //   setCurrentDistrictStatus(checkBoxedUpdated);
+
+  //   // Remove unselected districts from assignedDistricts list
+  //   const selectedDistrictName = district[row][col].name;
+  //   if (!e.target.checked) {
+  //     setAssignedDistricts((prev) => prev.filter((dist) => dist !== selectedDistrictName));
+  //   }
+
+  // }
+
+  // const handleChangesCheckBox=(e,row,col)=>{ // in 
+  //   const districtName=district[row][col].name;
+  //   const isChecked=e.target.value;
+
+  //   setCurrentDistrictStatus((prevStatus)=>{
+  //     const updatedStatus=prevStatus.map((data)=>[...data]);
+  //      updatedStatus[row][col]=isChecked;
+  //      return updatedStatus;
+  //   });
+
+  //   setAssignedDistricts((prevAssigned)=>{
+  //     if(isChecked){
+  //       return [...new Set([...prevAssigned, districtName])];
+  //     }else{
+  //       return prevAssigned.filter((dist) => dist === districtName);
+  //     }
+  //   })
+  // }
+
   const handleChangesCheckBox = (e, row, col) => {
-    console.log("row and col are : ", row, col);
-    const checkBoxedUpdated = currDistrictStatus.map((data) => [...data]);
-    console.log("checkboxStatus: ", checkBoxedUpdated);
+    const districtName = district[row][col].name;
+    const isChecked = e.target.checked;
 
+    setCurrentDistrictStatus((prevStatus) => {
+      const updatedStatus = prevStatus.map((data) => [...data]);
+      updatedStatus[row][col] = isChecked;
+      return updatedStatus;
+    });
 
-    if (currDistrictStatus !== -1) {
-      if (e.target.checked) {
-        checkBoxedUpdated[row][col] = true;
-      } else {
-        checkBoxedUpdated[row][col] = false;
-      }
-    }
-    console.log("current disrtrict Status", currDistrictStatus[row][col]);
-    console.log("updated list of checked boxed", checkBoxedUpdated);
-    setCurrentDistrictStatus(checkBoxedUpdated);
+    setAssignedDistricts((prevAssigned) => {
+      const updatedAssigned = isChecked
+        ? [...new Set([...prevAssigned, districtName])]  // ✅ Add if checked
+        : prevAssigned.filter((dist) => dist !== districtName);  // ✅ Remove if unchecked
 
-    // Remove unselected districts from assignedDistricts list
-    const selectedDistrictName = district[row][col].name;
-    if (!e.target.checked) {
-      setAssignedDistricts((prev) => prev.filter((dist) => dist !== selectedDistrictName));
-    }
+      // Find newly added districts
+      const addedDistricts = updatedAssigned.filter(dist => !oldAssignedDistricts.includes(dist));
+      console.log("Added Districts:", addedDistricts);
 
-  }
+      // Find removed districts
+      const removedDistricts = oldAssignedDistricts.filter(dist => !updatedAssigned.includes(dist));
+      console.log("Removed Districts:", removedDistricts);
+
+      return updatedAssigned;
+    });
+  };
 
   function changehandler(e) {
     e.preventDefault();
@@ -236,7 +286,12 @@ const Update = ({ data2, setdata }) => {
       alert('Enter the name');
       return;
     }
+    const addedDistricts = assignedDistricts.filter(dist => !oldAssignedDistricts.includes(dist));
+    const removedDistricts = oldAssignedDistricts.filter(dist => !assignedDistricts.includes(dist));
 
+    console.log("Final Assigned Districts:", assignedDistricts);
+    console.log("Added Districts:", addedDistricts);
+    console.log("Removed Districts:", removedDistricts);
 
     try {
       const states = currentStateStatus.filter(state => state !== 0 && state !== undefined);
@@ -251,40 +306,36 @@ const Update = ({ data2, setdata }) => {
       }
       console.log("state selected: ", selectedState)
 
-      
-      const oldSelectedDistrict=[form.distict];
-      console.log("old selected district",oldSelectedDistrict);
-     
 
-       // Extracting district names where status is true
-       const selectedDistricts = [];
-       currDistrictStatus.forEach((districtRow, rowIndex) => {
-         districtRow.forEach((status, colIndex) => {
-           if (status === true) {
-             selectedDistricts.push(district[rowIndex][colIndex].name); // Extracting name
-           }
-         });
-       });
- 
-       
-       console.log(" New Selected Districts: ", selectedDistricts);
+      const oldSelectedDistrict = [form.distict];
+      console.log("old selected district", oldSelectedDistrict);
 
-     
-     
-       // finding the status of newSeleted district
+
+
+      // Extracting district names where status is true
+      const selectedDistricts = [];
+      currDistrictStatus.forEach((districtRow, rowIndex) => {
+        districtRow.forEach((status, colIndex) => {
+          if (status === true) {
+            selectedDistricts.push(district[rowIndex][colIndex].name); // Extracting name
+          }
+        });
+      });
+
+
+      console.log(" New Selected Districts: ", selectedDistricts);
+
+
+
+      //// finding the status of newSeleted district
       const districtSts = [];
       for (let index = 0; index < currDistrictStatus.length; index++) {
-       
-        if (currDistrictStatus[index] !== 0 && currDistrictStatus[index] !== undefined) {
+
+        if (currDistrictStatus[index] !== 0 || currDistrictStatus[index] === undefined) {
           districtSts.push(currDistrictStatus[index]);
         }
-        
+
       }
-      console.log("district selected status : ", districtSts);
-
-
-
-     
 
       if (selectedState.length === 0) {
         alert('Select the states');
@@ -300,9 +351,13 @@ const Update = ({ data2, setdata }) => {
         name: form?.emp,
         mobile: form?.phone,
         teamleader: teamLeaderId,
-        stateId: selectedState,
-        district: selectedDistricts,
-        status:districtSts   // Sending district names instead of indices
+        // stateId: selectedState,
+        // district: selectedDistricts,
+        // status: districtSts   // Sending district names instead of indices
+        stateId: currentStateStatus.filter(state => state !== 0 && state !== undefined),
+        district: assignedDistricts, // Send final updated districts
+        addedDistricts: addedDistricts,  // Send added separately
+        removedDistricts: removedDistricts // Send removed separately
       });
       alert("Employee added Successfully");
 
@@ -314,7 +369,7 @@ const Update = ({ data2, setdata }) => {
         setCurrentDistrictStatus(new Array(stateNames.length).fill().map(() => new Array()));
         setAssignedDistricts([]); // Reset assigned districts
 
-        navigate("/admin/employee-dashboard");  
+        navigate("/admin/employee-dashboard");
       }
 
       console.log("updated data: ", updateData);
@@ -364,15 +419,15 @@ const Update = ({ data2, setdata }) => {
               <fieldset style={{ border: "1px solid black", fontSize: "15px", padding: "10px", borderRadius: "5px", marginTop: "15px", marginBottom: "15px" }}>
                 <legend style={{ fontWeight: '700', margin: '1rem', padding: '0px 5px', fontSize: "15px", color: '#880104' }}>State</legend>
                 <section style={{ overflowY: 'auto', height: '5rem', width: '95%', margin: 'auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start', alignItems: 'flex-start', gap: '10px' }}>
-                
+
                   {
-                      stateNames?.map(({ _id, state }, index) => (
-                          <div key={_id} style={{ display: 'flex', width: 'min-content', gap: '4.5px' }}>
-                            <input type="checkbox" name="state" id={state} value={_id} style={{ width: 'min-content', fontSize: '15px', }} onChange={(event) => { handleStateChangeCheckBoxes(event, index) }} />
-                            <label style={{ padding: '5px', fontSize: '15px', width: 'max-content', color: 'black' }} htmlFor={state}>{state}</label>
-                          </div>
-                        ))                      
-                      }
+                    stateNames?.map(({ _id, state }, index) => (
+                      <div key={_id} style={{ display: 'flex', width: 'min-content', gap: '4.5px' }}>
+                        <input type="checkbox" name="state" id={state} value={_id} style={{ width: 'min-content', fontSize: '15px', }} onChange={(event) => { handleStateChangeCheckBoxes(event, index) }} />
+                        <label style={{ padding: '5px', fontSize: '15px', width: 'max-content', color: 'black' }} htmlFor={state}>{state}</label>
+                      </div>
+                    ))
+                  }
                 </section>
               </fieldset>
             </div>
@@ -390,7 +445,7 @@ const Update = ({ data2, setdata }) => {
                       // console.log("items ",item);
                       <div>
                         <input type="checkbox" checked name={item} id={item} />
-                        <label style={{color:"black"}} htmlFor={item}>{item}</label>
+                        <label style={{ color: "black" }} htmlFor={item}>{item}</label>
                       </div>
                     ))
 
@@ -398,9 +453,9 @@ const Update = ({ data2, setdata }) => {
                     /* Show assigned districts when a state is selected */
                     district.map((eachDistrict, row) =>
                       eachDistrict.map(({ _id, name, status }, col) => (
-                        <div key={_id} style={{ display: 'flex', width: 'min-content', gap: '4.5px',  }}>
+                        <div key={_id} style={{ display: 'flex', width: 'min-content', gap: '4.5px', }}>
                           <input type="checkbox" name="district" id={name} value={name} style={{ width: 'min-content' }} checked={assignedDistricts.includes(name) || currDistrictStatus[row][col] === true} onChange={(e) => { handleChangesCheckBox(e, row, col) }} />
-                          <label htmlFor={name} style={{ padding: '0px',color:"black", fontSize: '12px', width: 'max-content' }}>
+                          <label htmlFor={name} style={{ padding: '0px', color: "black", fontSize: '12px', width: 'max-content' }}>
                             {name}
                           </label>
                         </div>
