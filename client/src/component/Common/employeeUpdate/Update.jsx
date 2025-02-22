@@ -108,8 +108,8 @@ const Update = ({ data2, setdata }) => {
   const [assignedDistricts, setAssignedDistricts] = useState(form.distict);
   const [currDistrictStatus, setCurrentDistrictStatus] = useState(new Array(stateNames.length).fill().map(() => new Array()));
 
-  console.log("assigned district :", assignedDistricts);
-  console.log("district status :", currDistrictStatus);
+  // console.log("assigned district :", assignedDistricts);
+  // console.log("district status :", currDistrictStatus);
 
   useEffect(() => {
     setDistrict(new Array(stateNames.length).fill().map(() => new Array()));
@@ -161,11 +161,6 @@ const Update = ({ data2, setdata }) => {
 
     const stateStatusList = [...currentStateStatus];
     if (e.target.checked) {
-
-      // if (!stateStatusList.includes(stateId)) { //change here
-      //   stateStatusList.push(stateId); // Assign new state
-      // }
-
 
       stateStatusList[pos] = stateId;
       console.log("my check state is ", stateStatusList);
@@ -244,13 +239,14 @@ const Update = ({ data2, setdata }) => {
     setCurrentDistrictStatus((prevStatus) => {
       const updatedStatus = prevStatus.map((data) => [...data]);
       updatedStatus[row][col] = isChecked;
+      console.log("updateStatus : ",updatedStatus);
       return updatedStatus;
     });
 
     setAssignedDistricts((prevAssigned) => {
       const updatedAssigned = isChecked
-        ? [...new Set([...prevAssigned, districtName])]  // ✅ Add if checked
-        : prevAssigned.filter((dist) => dist !== districtName);  // ✅ Remove if unchecked
+        ? [...new Set([...prevAssigned, districtName])]  // Add if checked
+        : prevAssigned.filter((dist) => dist !== districtName);  // Remove if unchecked
 
       // Find newly added districts
       const addedDistricts = updatedAssigned.filter(dist => !oldAssignedDistricts.includes(dist));
