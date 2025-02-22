@@ -157,6 +157,8 @@ const Update = ({ data2, setdata }) => {
   const handleStateChangeCheckBoxes = (e, pos) => {
     const stateId = e.target.value;
 
+    console.log("state Id : ",stateId);
+
     const stateStatusList = [...currentStateStatus];
     if (e.target.checked) {
 
@@ -346,18 +348,17 @@ const Update = ({ data2, setdata }) => {
         return;
       }
 
-      let updateData = await axios.put(`${process.env.REACT_APP_URL}/emp/update`, {
+      let updateData = await axios.put(`${process.env.REACT_APP_URL}/emp/UpdateEmployee`, {
         empId: data2[0]?.empID,
         name: form?.emp,
         mobile: form?.phone,
         teamleader: teamLeaderId,
-        // stateId: selectedState,
+        stateId: selectedState,
         // district: selectedDistricts,
-        // status: districtSts   // Sending district names instead of indices
-        stateId: currentStateStatus.filter(state => state !== 0 && state !== undefined),
+        // stateId: currentStateStatus.filter(state => state !== 0 && state !== undefined),
         district: assignedDistricts, // Send final updated districts
-        addedDistricts: addedDistricts,  // Send added separately
-        removedDistricts: removedDistricts // Send removed separately
+        // addedDistricts: addedDistricts,  // Send added separately
+        // removedDistricts: removedDistricts // Send removed separately
       });
       alert("Employee added Successfully");
 
@@ -454,7 +455,7 @@ const Update = ({ data2, setdata }) => {
                     district.map((eachDistrict, row) =>
                       eachDistrict.map(({ _id, name, status }, col) => (
                         <div key={_id} style={{ display: 'flex', width: 'min-content', gap: '4.5px', }}>
-                          <input type="checkbox" name="district" id={name} value={name} style={{ width: 'min-content' }} checked={assignedDistricts.includes(name) || currDistrictStatus[row][col] === true} onChange={(e) => { handleChangesCheckBox(e, row, col) }} />
+                          <input type="checkbox" name="district" id={name} value={name} style={{ width: 'min-content' }} checked={assignedDistricts.includes(name) || currDistrictStatus[row][col] === true} onChange={(e) => { handleChangesCheckBox(e, row, col) }}  />
                           <label htmlFor={name} style={{ padding: '0px', color: "black", fontSize: '12px', width: 'max-content' }}>
                             {name}
                           </label>
