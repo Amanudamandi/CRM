@@ -164,7 +164,7 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
             <div style={Style.updateLeadInfoContainer}>
                 <div style={Style.showOnlyDetailsContainer}>
                     <div style={Style.leadLogoContainer}>
-                        <p style={Style.leadLogo}>C</p>
+                        <p style={Style.leadLogo}></p>
                     </div>
                     <div style={Style.leadInfoContainer}>
                         <div style={Style.leadInfo}>
