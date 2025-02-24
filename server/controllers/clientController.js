@@ -15,11 +15,13 @@ const endDateConvertor = require('../helpers/common/dateConversion/endDate');
 const equalDateFunction = require('../helpers/common/dateConversion/equalDate');
 const FollowUp = require('../models/followUp');
 // const welcomeTemplate = require("../helpers/aiSensy/welcomeTemplate");
-const Employee = require("../models/employee");
+const Employee= require("../models/employee");
 const TeamLeader = require("../models/teamLeader");
 const findEmpIDAndTLID =  require('../helpers/employee/findEmpIDAndTLID');
 const CurrentDate = require('../helpers/common/dateConversion/currentDate');
 const mongoose = require('mongoose');
+const employee = require('../models/employee');
+const Department= require("../models/department");
 
 const clientAdd = async(req,res) =>{
     try {
@@ -213,7 +215,7 @@ const fetchClients = async(req,res) =>{
             { $skip: skipValue },       // Skip documents for pagination
             ...(limitValue !== undefined ? [{ $limit: limitValue }] : [])
         ]);
-
+  
 
         const updatedClients =await Promise.all(uniqueClients.map(async(client) =>{
             const clientID =await client._id.toString();
@@ -530,11 +532,117 @@ const bulkAssign = async(req,res) =>{
         })
     }
 }
+
+// const Fetchemployee=async(req,res)=>{
+//     try{
+//         // const{Statename}=req.body;
+//         // if(!Statename){
+//         //     res.status(400).json({
+//         //         success:false,
+//         //         message:"please enter a valid state"
+//         //     })
+            
+//         // }
+//         const arr=[];
+//         const user = await Employee.find({empID:'CL001'})
+//         .populate("department")
+//         .populate("teamLeader")
+//         .populate("stateID");
+//         console.log(user);
+//         console.log(user.stateID)
+      
+
+//     //   console.log(user?.stateID);
+//     //     console.log(user);
+//         res.status(200).json({
+//             message:"succesfulyy fetched",
+            
+//         })
+
+//     }catch(error){
+//    console.log(error);
+//    res.status(400).json({
+//     status:false,
+//     message:"Error in assign employee",
+
+//    })
+//     }
+// }
+
+const  Assignfieldemployee=async(req,res)=>{
+    try{
+   
+        const{Statename}=req.body;
+        if(!Statename){
+            res.status(400).json({
+            message:"State not found",
+            status:false,
+            })
+        }
+
+     
+  
+
+  const response= await  employee.aggregate([
+    
+        // populate the states
+        {
+            $lookup: {
+                from: "states", // Collection name for State
+                localField: "stateID",
+                foreignField: "_id",
+                as: "statedetails"
+            },
+            
+        },{
+            $unwind:"$statedetails"
+        },{
+            $match:{
+                "statedetails.state":Statename,
+            }
+        }, {
+            $lookup: {
+                from: "departments",
+                localField: "department",
+                foreignField: "_id",
+                as: "depratmentdetails",
+            }
+        },
+    
+        { $unwind: "$depratmentdetails" }, // Unwind department details
+    
+        // Match only employees from "Field Sales" department
+        {
+            $match: {
+                "depratmentdetails.department": "Field Sales"
+            }
+        }
+        
+    
+  ]);
+
+
+
+     
+ 
+     res.status(200).json({
+         message:"success",
+         data:response,
+     })
+ 
+    }catch(err){
+     console.log(err);
+ res.status(400).json({
+     message:"error",
+ })
+    }
+ }
 module.exports = {
     clientAdd,
     fetchClients,
     updateClient,
     fetchByFile,
     fetchAssignEmployee,
-    bulkAssign
+    bulkAssign,
+   Assignfieldemployee
 }

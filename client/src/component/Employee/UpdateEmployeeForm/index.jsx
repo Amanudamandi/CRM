@@ -8,6 +8,8 @@ import { IoClose } from "react-icons/io5";
 import { showStageApi } from '../../../Utils/showStagesAPI';
 import { showEmployeeApi } from '../../../Utils/showEmployeeAPI';
 import { updateLeadApi } from '../../../Utils/updateLeadFormAPI';
+import axios from 'axios';
+import { use } from 'react';
 
 const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAllStages = false, setUpdateLeadBtnClicked }) => {
     console.log("LeadInformation sended", leadInformation);
@@ -98,6 +100,31 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
         return `${convertDate.getFullYear()}-${convertDate.getMonth() + 1}-${convertDate.getDate()}`;
     }
 
+    console.log("visiting date : ",formData.visitingDate);
+
+    const[empAssign,setEmpAssign]=useState([])
+    const assignEmp = async () => {
+        try {
+            const response = await axios.post(
+                `${process.env.REACT_APP_URL}/client/FetchAssignemployee`, {
+               Statename :formData.state }// Sending state as request body
+            );
+            // console.log("assign emp response:", response?.data?.data);
+
+            setEmpAssign(response?.data?.data);
+        } catch (error) {
+            console.error("Error assigning employee:", error);
+        }
+    };
+
+    console.log("assign emp data : ",empAssign);
+    console.log("update lead info ",updateLeadInfo)
+    
+
+    useEffect(()=>{
+        assignEmp();
+    },[]);
+    
     const onSubmitLeadUpdateForm = (event) => {
         event.preventDefault();
         console.log("form data fetched when we upload ", formData);
@@ -125,7 +152,7 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
         }
         else {
             const { clientID, type, stageID, kwpInterested, email, remark, address, electricBil, state } = formData;
-            updateLeadApi({ clientID, type, stageID, kwpInterested, email, remark, address, electricBil, state,location }, closeForm).then(() => {
+            updateLeadApi({ clientID, type, stageID, kwpInterested, email, remark, address, electricBil, state,location  }, closeForm).then(() => {
                 // if (!setUpdateLeadBtnClicked)
                 setUpdateLeadBtnClicked(true);
             });
@@ -282,12 +309,15 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
                                     setFormData((previousData) => ({ ...previousData, selectedFieldSales: event.target.value }));
                                     console.log(event.target.value);
                                 }}
-                                disabled={updateLeadInfo.selectedStage.stageIndex === 4 || updateLeadInfo.selectedStage.stageIndex === 7 ? false : true}
+                                // disabled={updateLeadInfo.selectedStage.stageIndex === 4 || updateLeadInfo.selectedStage.stageIndex === 7 ? false : true}
                             >
+                               <option value="">Select an Employee</option>
                                 {
-                                    showFieldSalesMan.map(({ _id, name }) => (
-                                        <option key={_id} value={_id}>{formData.assignEmp !== null ? name : 'Select the Field Man'}</option>
-                                    ))
+                                        empAssign.map((item)=>(
+                                            <option key={item._id} value={item._id} >
+                                            {item.name}
+                                        </option>
+                                        ))
                                 }
                             </select>
                         </div>
@@ -295,9 +325,11 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
                             <label htmlFor="date" style={Style.inputLabel}>{(updateLeadInfo.selectedStage.stageIndex) === 7 ? 'Revisit Date' : (updateLeadInfo.selectedStage.stageIndex) === 3 ? 'Follow-Up Date' : 'Visiting Date'}</label>
                             <input style={Style.inputField} type="date"
                                 name={(updateLeadInfo.selectedStage.stageIndex) === 7 ? 'revisitDate' : (updateLeadInfo.selectedStage.stageIndex) === 3 ? 'followUpDate' : 'visitingDate'}
-                                id="date" value={(updateLeadInfo.selectedStage.stageIndex) === 3 ? dateObj(formData.followUpDate) : (updateLeadInfo.selectedStage.stageIndex) === 4 ? dateObj(formData.visitingDate) : (updateLeadInfo.selectedStage.stageIndex) === 7 ? dateObj(formData.revisitDate) : ''}
-                                disabled={updateLeadInfo.selectedStage.stageIndex === 4 || updateLeadInfo.selectedStage.stageIndex === 3 || updateLeadInfo.selectedStage.stageIndex === 7 ? false : true}
+                                id="date" 
+                                // value={(updateLeadInfo.selectedStage.stageIndex) === 3 ? dateObj(formData.followUpDate) : (updateLeadInfo.selectedStage.stageIndex) === 4 ? dateObj(formData.visitingDate) : (updateLeadInfo.selectedStage.stageIndex) === 7 ? dateObj(formData.revisitDate) : ''}
+                                // disabled={updateLeadInfo.selectedStage.stageIndex === 4 || updateLeadInfo.selectedStage.stageIndex === 3 || updateLeadInfo.selectedStage.stageIndex === 7 ? false : true}
                                 onChange={handleOnInputChange}
+                                value={formData.visitingDate}
                             />
                         </div>
                         <div style={Style.inputFieldContainer}>
