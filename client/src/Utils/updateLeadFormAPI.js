@@ -2,11 +2,13 @@ import axios from "axios"
 
 export const updateLeadApi = async( updateDetails, closeForm ) => {
     try{
+      
+
         const sendRequest = await axios.put(`${process.env.REACT_APP_URL}/client/updateClient`, updateDetails);
         const response = sendRequest.data;
         const { success } = response;
         if( success ){
-            console.log(response);
+            console.log("response after update lead",response);
             alert(response.msg);
             closeForm((previous) => ({...previous, clicked: false}));
         }

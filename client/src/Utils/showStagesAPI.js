@@ -15,7 +15,7 @@ export const showStageApi = async( isMounted, setShowStages ) => {
 
         const { success } = response;
         if(success && isMounted){
-            console.log("bjjk",response.stages);
+            console.log(" All Stages",response.stages);
             setShowStages(response?.stages);
             return response.stages;
         }

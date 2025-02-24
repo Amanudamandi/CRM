@@ -10,7 +10,7 @@ import { showEmployeeApi } from '../../../Utils/showEmployeeAPI';
 import { updateLeadApi } from '../../../Utils/updateLeadFormAPI';
 
 const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAllStages = false, setUpdateLeadBtnClicked }) => {
-    console.log(leadInformation);
+    console.log("LeadInformation sended", leadInformation);
     const Style = {
         updateLeadContainer: { position: 'fixed', width: '75%', height: '92vh', margin: '0rem 1rem 0rem 8.2rem', padding: '3.5rem 1rem', backgroundColor: '#fff', top: '50%', left: '50%', zIndex: '9999', boxShadow: '0px 0px 2px black', borderRadius: '8px', overflow: 'auto', transform: 'translate(-50%, -50%)' },
         closeFormBtn: { position: 'absolute', top: '1rem', right: '1rem', cursor: 'pointer', transition: 'transform 0.4s ease' },
@@ -45,6 +45,9 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
         selectedStage: { _id: leadInformation.stageID._id, stageIndex: leadInformation.stageID.stageValue },
     });
 
+    const [location, setLocation] = useState({ latitude: null, longitude: null });
+    const [error, setError] = useState(null);
+
     const [formData, setFormData] = useState({
         clientID: leadInformation._id,
         revisitDate: leadInformation?.revisitDate || '',
@@ -56,8 +59,33 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
         kwpInterested: leadInformation.kwpInterested,
         email: leadInformation.email,
         selectedFieldSales: '',
-        remark: (leadInformation.stageActivity[leadInformation.stageActivity.length-1])?.remark || ''
-    });
+        remark: (leadInformation.stageActivity[leadInformation.stageActivity.length - 1])?.remark || '',
+        address: leadInformation.address,
+        electricBil: leadInformation.electricBil,
+        state: leadInformation.state,
+        location:location
+    }); 
+
+
+
+    useEffect(() => {
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    setLocation({
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude,
+                    });
+                },
+                (error) => {
+                    setError(error.message);
+                }
+            );
+        } else {
+            setError("Geolocation is not supported by this browser.");
+        }
+    }, []);
+
 
     const handleOnInputChange = (event) => {
         const { name, value } = event.target;
@@ -67,37 +95,37 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
 
     const dateObj = (newDate) => {
         const convertDate = new Date(newDate);
-        return `${convertDate.getFullYear()}-${convertDate.getMonth()+1}-${convertDate.getDate()}`;
+        return `${convertDate.getFullYear()}-${convertDate.getMonth() + 1}-${convertDate.getDate()}`;
     }
 
     const onSubmitLeadUpdateForm = (event) => {
         event.preventDefault();
-        console.log(formData);
-        console.log(updateLeadInfo.selectedStage.stageIndex);
-        if(updateLeadInfo.selectedStage.stageIndex === 3){
-            const { clientID, type, stageID, kwpInterested, email, remark, followUpDate } = formData;
-            updateLeadApi( { clientID, type, stageID, kwpInterested, email, remark, followUpDate }, closeForm).then(() => {
+        console.log("form data fetched when we upload ", formData);
+        console.log("final lead updated : ", updateLeadInfo.selectedStage.stageIndex);
+        if (updateLeadInfo.selectedStage.stageIndex === 3) {
+            const { clientID, type, stageID, kwpInterested, email, remark, followUpDate, address, electricBil, state ,location } = formData;
+            updateLeadApi({ clientID, type, stageID, kwpInterested, email, remark, followUpDate, address, electricBil, state ,location}, closeForm).then(() => {
                 // if (!setUpdateLeadBtnClicked)
                 setUpdateLeadBtnClicked(true);
             });
         }
-        else if(updateLeadInfo.selectedStage.stageIndex === 4){
-            const { clientID, type, stageID, kwpInterested, email, remark, visitingDate } = formData;
-            updateLeadApi( { clientID, type, stageID, kwpInterested, email, remark, visitingDate }, closeForm).then(() => {
+        else if (updateLeadInfo.selectedStage.stageIndex === 4) {
+            const { clientID, type, stageID, kwpInterested, email, remark, visitingDate, address, electricBil, state,location } = formData;
+            updateLeadApi({ clientID, type, stageID, kwpInterested, email, remark, visitingDate, address, electricBil, state,location }, closeForm).then(() => {
                 // if (!setUpdateLeadBtnClicked)
                 setUpdateLeadBtnClicked(true);
             });
         }
-        else if(updateLeadInfo.selectedStage.stageIndex === 7){
-            const { clientID, type, stageID, kwpInterested, email, remark, revisitDate } = formData;
-            updateLeadApi( { clientID, type, stageID, kwpInterested, email, remark, revisitDate }, closeForm).then(() => {
+        else if (updateLeadInfo.selectedStage.stageIndex === 7) {
+            const { clientID, type, stageID, kwpInterested, email, remark, revisitDate, address, electricBil, state } = formData;
+            updateLeadApi({ clientID, type, stageID, kwpInterested, email, remark, revisitDate, address, electricBil, state,location }, closeForm).then(() => {
                 // if (!setUpdateLeadBtnClicked)
                 setUpdateLeadBtnClicked(true);
             });
         }
-        else{
-            const { clientID, type, stageID, kwpInterested, email, remark } = formData;
-            updateLeadApi({ clientID, type, stageID, kwpInterested, email, remark }, closeForm).then(() => {
+        else {
+            const { clientID, type, stageID, kwpInterested, email, remark, address, electricBil, state } = formData;
+            updateLeadApi({ clientID, type, stageID, kwpInterested, email, remark, address, electricBil, state,location }, closeForm).then(() => {
                 // if (!setUpdateLeadBtnClicked)
                 setUpdateLeadBtnClicked(true);
             });
@@ -105,7 +133,7 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
     }
 
     useEffect(() => {
-        console.log(formData);
+        console.log("Form Data sended: ", formData);
         let isMounted = true;
         showStageApi(isMounted, setShowStages);
         return () => {
@@ -145,7 +173,7 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
                             <span style={Style.leadInfoText}>Email: {leadInformation.email ? leadInformation.email : 'N/A'}</span>
                         </div>
                         <div style={Style.leadInfo}>
-                            <span style={Style.leadInfoText}>State: {leadInformation.state ? leadInformation.state : 'N/A'}</span>
+                            <span style={Style.leadInfoText} value={leadInformation.state}>State: {leadInformation.state ? leadInformation.state : 'N/A'}</span>
                             <span style={Style.leadInfoText}>District: {leadInformation.district ? leadInformation.district : 'N/A'}</span>
                             <span style={Style.leadInfoText}>City: {leadInformation.city ? leadInformation.city : 'N/A'}</span>
                         </div>
@@ -182,6 +210,39 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
                             <label htmlFor="email" style={Style.inputLabel}>Email ID</label>
                             <input style={Style.inputField} type="text" name="email" id="email" onChange={handleOnInputChange} autoComplete='off' />
                         </div>
+
+                        {/* adding address field */}
+
+                        <div>
+                            <label htmlFor="address" style={Style.inputLabel}>Address</label>
+                            <textarea style={Style.inputField} name="address" id="address" cols={45} rows={5} placeholder='Enter Your Address' onChange={(e) => {
+                                setUpdateLeadInfo((previous) => (
+                                    { ...previous, address: (e.target.value) }
+                                ));
+                                setFormData((previous) => ({
+                                    ...previous,
+                                    address: (e.target.value),
+                                }
+                                ));
+                                console.log("address: ", e.target.value)
+
+                            }} ></textarea>
+                        </div>
+                        <div>
+                            <label htmlFor="electricBil" style={Style.inputLabel}>Enter Electric Bil</label>
+                            <input type="file" name='electricBil' id='electricBil' onChange={(e) => (
+                                setUpdateLeadInfo((previous) => (
+                                    { ...previous, electricBil: e.target.files }
+                                )),
+                                setFormData((previous) => (
+                                    {
+                                        ...previous,
+                                        electricBil: e.target.files
+                                    }
+                                )),
+                                console.log("electric bill : ", e.target.files)
+                            )} />
+                        </div>
                         <div>
                             <button type="submit" style={Style.updateBtn}>Update</button>
                         </div>
@@ -198,13 +259,13 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
                                 onChange={(event) => {
                                     const store = [...event.target.value].join('').split(',');
                                     console.log(store);
-                                    setUpdateLeadInfo((previousData) => ({ ...previousData, selectedStage: { _id: store[0], stageIndex: parseInt(store[1])+1}}))
+                                    setUpdateLeadInfo((previousData) => ({ ...previousData, selectedStage: { _id: store[0], stageIndex: parseInt(store[1]) + 1 } }))
                                     setFormData((previousData) => ({ ...previousData, stageID: store[0] }))
                                 }}
                             >
                                 {
                                     !BooleanShowAllStages ? showStages.map(({ _id, stage }, index) => (
-                                        index >= (leadInformation.stageID.stageValue-1) && <option key={_id} value={[_id, index]} selected={formData.stageID === _id ? true : false}>{stage}</option>
+                                        index >= (leadInformation.stageID.stageValue - 1) && <option key={_id} value={[_id, index]} selected={formData.stageID === _id ? true : false}>{stage}</option>
                                     )) : showAllStages.map(({ _id, stage }, index) => (
                                         <option key={_id} value={[_id, index]} selected={formData.stageID === _id ? true : false} >{stage}</option>
                                     ))
@@ -232,9 +293,9 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
                         </div>
                         <div style={Style.inputFieldContainer}>
                             <label htmlFor="date" style={Style.inputLabel}>{(updateLeadInfo.selectedStage.stageIndex) === 7 ? 'Revisit Date' : (updateLeadInfo.selectedStage.stageIndex) === 3 ? 'Follow-Up Date' : 'Visiting Date'}</label>
-                            <input style={Style.inputField} type="date" 
+                            <input style={Style.inputField} type="date"
                                 name={(updateLeadInfo.selectedStage.stageIndex) === 7 ? 'revisitDate' : (updateLeadInfo.selectedStage.stageIndex) === 3 ? 'followUpDate' : 'visitingDate'}
-                                id="date" value={ (updateLeadInfo.selectedStage.stageIndex) === 3 ? dateObj(formData.followUpDate) : (updateLeadInfo.selectedStage.stageIndex) === 4 ? dateObj(formData.visitingDate) : (updateLeadInfo.selectedStage.stageIndex) === 7 ? dateObj(formData.revisitDate) : '' }
+                                id="date" value={(updateLeadInfo.selectedStage.stageIndex) === 3 ? dateObj(formData.followUpDate) : (updateLeadInfo.selectedStage.stageIndex) === 4 ? dateObj(formData.visitingDate) : (updateLeadInfo.selectedStage.stageIndex) === 7 ? dateObj(formData.revisitDate) : ''}
                                 disabled={updateLeadInfo.selectedStage.stageIndex === 4 || updateLeadInfo.selectedStage.stageIndex === 3 || updateLeadInfo.selectedStage.stageIndex === 7 ? false : true}
                                 onChange={handleOnInputChange}
                             />
@@ -242,6 +303,27 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
                         <div style={Style.inputFieldContainer}>
                             <label htmlFor="remark" style={Style.inputLabel}>Remark</label>
                             <input style={Style.inputField} type="text" name="remark" id="remark" value={formData.remark} onChange={handleOnInputChange} />
+                        </div>
+
+                        <div>
+                            <label htmlFor="location" style={Style.inputLabel}>Enter Your Location (latitude,longitude)</label>
+                                <div>
+                            <input
+                                type="text"
+                                placeholder="Enter your city..."
+                                    onChange={(event)=>(
+                                        setLocation({ city: event.target.value }),
+                                        setUpdateLeadInfo((previous)=>({
+                                            ...previous, location 
+                                            :event.target.value,
+                                        })),
+                                        setFormData((previous)=>({
+                                            ...previous,location:event.target.value
+                                        }))
+                                    )}
+                            />
+                            </div>
+
                         </div>
                     </div>
                 </form>

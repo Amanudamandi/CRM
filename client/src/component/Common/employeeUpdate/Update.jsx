@@ -284,6 +284,7 @@ const Update = ({ data2, setdata }) => {
       alert('Enter the name');
       return;
     }
+
     const addedDistricts = assignedDistricts.filter(dist => !oldAssignedDistricts.includes(dist));
     const removedDistricts = oldAssignedDistricts.filter(dist => !assignedDistricts.includes(dist));
 
@@ -302,14 +303,8 @@ const Update = ({ data2, setdata }) => {
           selectedState.push(currentStateStatus[index]);
         }
       }
-      console.log("state selected: ", selectedState)
-
-
-      const oldSelectedDistrict = [form.distict];
-      console.log("old selected district", oldSelectedDistrict);
-
-
-
+      console.log("state selected: ", selectedState);
+      
       // Extracting district names where status is true
       const selectedDistricts = [];
       currDistrictStatus.forEach((districtRow, rowIndex) => {
