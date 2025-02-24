@@ -1,9 +1,13 @@
 const assignEmp = require("../models/assignEmployee");
 const client = require("../models/client");
+const employee = require("../models/employee")
+const District= require("../models/district")
+
 const startDateConvertor  = require('../helpers/common/dateConversion/startDate');
 const endDateConvertor = require("../helpers/common/dateConversion/endDate");
 const StageActivity = require('../models/stageActivity');
-const employee = require("../models/employee");
+const ExtraDetail= require("../models/Extradetails");
+const Extradetail = require("../models/Extradetails");
 const assignEmployee = async(req,res) =>{
     try {
         const {clientID, callingEmpID, fieldEmpID} = req.body;
@@ -135,19 +139,192 @@ const remark = async(req,res) =>{
     }
 }
 const empdetail=async(req,res)=>{
+   try{
+    const id = req.query.id;
+    const user =await employee.find({empID:id}).populate("department").populate("teamLeader").populate(`stateID`);
+    res.status(200).json({
+        message:"success",
+        data:user,
+    })
+
+   }catch(err){
+    console.log(err);
+res.status(400).json({
+    message:"error",
+})
+   }
+}
+const fetchLeads = async(req,res)=>{
     try{
-     const id = req.query.id;
-     const user =await employee.find({empID:id}).populate("department").populate("teamLeader").populate(`stateID`);
-     res.status(200).json({
-         message:"success",
-         data:user,
-     })
- 
+        const id= req.id;
+        if(!id){
+            return res.status(400).json({
+                success:false,
+                message:"please enter the employee ID"
+            })
+        }
+        const user=await assignEmp.find({fieldEmpID:id}).populate("fieldEmpID");
+        if(user){
+            console.log(user);
+            res.status(200).json({
+                success:true,
+                data:user
+            })
+
+        }
+    }catch(error){
+        res.status(400).json({
+            message:"error in fetching",
+            error:error.message
+        })
+    }
+ }
+
+ const updateclient=async(req,res)=>{
+    try{
+        const{AccountNo,IFSC,BankAddress}=req.body;
+
+        const AadharCard= req.files["aadhaarPhotos"] ? `/uploads/aadhar/${req.files["aadhaarPhotos"][0].filename}` : null;
+        const  PanCard = req.files["pancard"] ? `/uploads/pancard/${req.files["pancard"][0].filename}` : null;
+        const ElectrcityBill=req.files["electricitybill"]?`/uploads/ElectricityBill/${req.files["electricitybill"][0].filename}`:null;
+        const Videos=req.files["Video"]?`/uploads/Video/${req.files["Video"][0].filename}`:null;
+
+        const ExtraDetails= new Extradetail({
+            AccountNo,IFSC,BankAddress,AadharCard,PanCard,ElectrcityBill,Videos
+        })
+        ExtraDetails.save();
+
+        res.status(200).json({
+            message:"save succesfully",
+            data:ExtraDetails,
+            success:true,
+        })
+
+
+    
+
+
+
     }catch(err){
-     console.log(err);
- res.status(400).json({
-     message:"error",
- })
+        console.log(err)
+        res.status(400).json({
+            message:"Unsuccesfull",
+            success:false,
+        })
+    }
+ }
+
+ const  
+ updateEmployee=async(req,res)=>{
+    try{
+        const {empId,name,teamleader,mobile,stateID,district,status} = req.body;
+        console.log(empId);
+        console.log(stateID);
+        console.log(district);
+       
+        
+        // if(!district || !Array.isArray(district) || district.length==0){
+        //     res.status(400).json({
+        //         message:"District cannot be empty"
+        //     })
+        // }
+        const empdetail=await employee.findOneAndUpdate({empID:empId},{
+            $set:{
+                name:name,
+                teamLeader:teamleader,
+                mobile:mobile,
+                stateID:stateID,
+                district:district
+            },
+           
+        })
+        if(!empdetail){
+            return res.status(500).json({
+                success:false,
+                msg:'Employeee ID not exits!'
+            })
+        }
+       
+        
+
+        // for (let state of stateID) {
+        // //     console.log(state);
+        // //     const districtlist = await District.find({ stateID: state });
+        // //     console.log(districtlist)
+        // //           districtlist.district = districtlist.district?.map(d => {
+        // //             if (district.includes(d.name)  && d.status==false) {
+        // //               d.status=true;
+                        
+        // //             }
+        // //             return d;
+        // //         });
+        // //      await districtlist.save();
+        // // }
+        
+        // for (let state of stateID) {
+        //     console.log(state);
+            
+        //     // Fetch all district documents matching the stateID
+        //     const districtlist = await District.find({ stateID: state });
+        
+        //     console.log(districtlist);
+        
+        //     // Iterate over each district document and update
+        //     for (let district of districtlist) {
+        //         district.district = district.district?.map(d => {
+        //             if (district.includes(d.name) && d.status === false) {
+        //                 d.status = true;
+        //             }
+        //             return d;
+        //         });
+        
+        //         // Save each updated document
+        //         await district.save();
+        //     }
+        // }
+        for( let eachState of stateID ){
+            // Find the District document by stateID for change district status value
+            const districtDoc = await District.findOne({ stateID: eachState });
+            console.log(districtDoc)
+            let isModified = false;
+
+            // Loop through each district in the document and toggle the status if the name matches
+            districtDoc.district = districtDoc?.district.map(d => {
+                if (district?.includes(d.name)) {
+                    d.status = !d.status; // Toggle status
+                    isModified = true; // Indicate that we made a change
+                }
+                return d;
+            });
+            if (isModified) {
+                await districtDoc.save();
+            }
+        }
+        
+        if(await empdetail.save()){
+            res.status(200).json({ 
+                success:true,
+                msg:'Employee updated succesfully.',
+                data:empdetail,
+            });
+        }else{
+            res.status(400).json({ 
+                success:false,
+                msg:'Something is missing!'
+            });
+        }
+
+
+
+        
+
+    }catch(err){
+        console.log(err);
+        res.status(400).json({
+            success:false,
+            message:"Error in up-dating data",
+
+        })
     }
  }
 module.exports ={
@@ -156,5 +333,9 @@ module.exports ={
     updateClientByFieldEmp,
     todayLead,
     remark,
-    empdetail
+    empdetail,
+    fetchLeads,
+    updateclient,
+    updateEmployee
+    
 }

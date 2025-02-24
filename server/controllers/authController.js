@@ -2,6 +2,7 @@ const employee = require('../models/employee');
 const admin = require('../models/admin'); 
 const teamLeader = require('../models/teamLeader');
 const District = require('../models/district');
+const assignemp=require("../models/assignEmployee");
 const {validationResult} = require('express-validator') // get error response  
 const jwt =require('jsonwebtoken');
 const startDateConvertor = require('../helpers/common/dateConversion/startDate');
@@ -191,9 +192,9 @@ const deleteTeamLeader = async(req,res) =>{
 }
 const adminAdd = async(req,res) =>{
     try {
-        const {email,mobile,department} = req.body;
+        const {email,mobile,department,name} = req.body;
         const addAdmin = new admin({
-            email,mobile,department
+            email,mobile,department,name
         });
 
         if(await addAdmin.save()){
@@ -218,6 +219,7 @@ const empLogin = async(req,res) =>{
         }
         if(department == 1){
             const adminData = await admin.findOne({email}).populate('department');
+            console.log(adminData)
             if(!adminData){
                 return res.status(500).json({
                     success:false,
@@ -225,6 +227,7 @@ const empLogin = async(req,res) =>{
                 })
             }
             const errors = validationResult(req);
+            console.log(errors)
             if(!errors.isEmpty()){
                 return res.status(500).json({
                 success:false,
@@ -244,12 +247,14 @@ const empLogin = async(req,res) =>{
             const adminLoggedData = await admin.findOne({email})
             .populate('department')
             .select("-mobile -email");
-            await admin.findByIdAndUpdate(
+            console.log(adminLoggedData);
+          const data=  await admin.findByIdAndUpdate(
                 adminLoggedData._id,
                 {$set:{ refreshToken: refreshToken }},
                 {new:true}
             )
-            return res.status(200)
+            console.log(data);
+     res.status(200)
             .cookie("accessToken", accessToken, options)
             .cookie("refreshToken", refreshToken, options)
             .json({
@@ -309,9 +314,12 @@ const empLogin = async(req,res) =>{
                   });
 
             } catch (error) {
+                console.log(error)
                 return res.status(400).json({
+                   
                     success:false,
-                    msg:error.message
+                    msg:error.message,
+                    
                 });
             }
             
@@ -357,7 +365,8 @@ const empLogin = async(req,res) =>{
     } catch (error) {
         return res.status(400).json({
             success:false,
-            msg:error.message
+            msg:error.message,
+            
         });
     }
 };
@@ -710,5 +719,6 @@ module.exports={
     findEmpID,
     teamLeaderProfile,
     teamLeaderProfileUpdate,
-    logout
+    logout,
+
 }

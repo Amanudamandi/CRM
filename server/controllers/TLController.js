@@ -1,4 +1,6 @@
-const showClients = async(req,res) =>{
+     const teamleader= require("../models/teamLeader")
+     
+     const showClients = async(req,res) =>{
     try {
         const {empID, name, district, state, email, mobile, source, stage, page, limit, date, startDate, endDate}= req.query;
         const filters ={};
@@ -86,6 +88,27 @@ const showClients = async(req,res) =>{
     }
 }
 
+const fetchteamleader=async(req,res)=>{
+    try{
+
+        const {id}=req.query;
+        
+        const res=teamleader.find({_id:id});
+        if(!res){
+            res.status(400).json({
+                message:"error no data"
+            })
+        }
+        res.status(200).json({
+            message:"success",
+            data:res,
+        })
+    }catch(err){
+console.log(err);
+    }
+}
+
 module.exports ={
-    showClients
+    showClients,
+    fetchteamleader,
 }

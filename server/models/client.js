@@ -49,6 +49,13 @@ const clientSchema = mongoose.Schema({
     zipCode:{
         type:Number
     },
+    address:{
+        type:String,
+        default:null
+    },
+     
+ 
+     
     kwpInterested:{
         type:String,
         default:'N/A'
