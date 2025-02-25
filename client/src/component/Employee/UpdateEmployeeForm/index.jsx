@@ -66,7 +66,7 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
         selectedFieldSales: '',
         remark: (leadInformation.stageActivity[leadInformation.stageActivity.length - 1])?.remark || '',
         address: leadInformation.address,
-        electrictybill: leadInformation?.electrictybill,
+        electricitybill: leadInformation?.electricitybill,
         state: leadInformation.state,
         location:location,
         proposalpdf: file,
@@ -145,29 +145,29 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
         console.log("form data fetched when we upload ", formData);
         console.log("final lead updated : ", updateLeadInfo.selectedStage.stageIndex);
         if (updateLeadInfo.selectedStage.stageIndex === 3) {
-            const { clientID, type, stageID, kwpInterested, email, remark, followUpDate, address, electrictybill, state ,location,assignEmp,proposalpdf } = formData;
-            updateLeadApi({ clientID, type, stageID, kwpInterested, email, remark, followUpDate, address, electrictybill, state ,location ,assignEmp,proposalpdf}, closeForm).then(() => {
+            const { clientID, type, stageID, kwpInterested, email, remark, followUpDate, address, electricitybill, state ,location,assignEmp,proposalpdf,visitingDate,selectedFieldSales } = formData;
+            updateLeadApi({ clientID, type, stageID, kwpInterested, email, remark, followUpDate, address, electricitybill, state ,location ,assignEmp,proposalpdf,visitingDate,selectedFieldSales}, closeForm).then(() => {
                 // if (!setUpdateLeadBtnClicked)
                 setUpdateLeadBtnClicked(true);
             });
         }
         else if (updateLeadInfo.selectedStage.stageIndex === 4) {
-            const { clientID, type, stageID, kwpInterested, email, remark, visitingDate, address, electrictybill, state,location ,assignEmp,proposalpdf } = formData;
-            updateLeadApi({ clientID, type, stageID, kwpInterested, email, remark, visitingDate, address, electrictybill, state,location ,assignEmp,proposalpdf}, closeForm).then(() => {
+            const { clientID, type, stageID, kwpInterested, email, remark, visitingDate, address, electricitybill, state,location ,assignEmp,proposalpdf,selectedFieldSales } = formData;
+            updateLeadApi({ clientID, type, stageID, kwpInterested, email, remark, visitingDate, address, electricitybill, state,location ,assignEmp,proposalpdf,selectedFieldSales}, closeForm).then(() => {
                 // if (!setUpdateLeadBtnClicked)
                 setUpdateLeadBtnClicked(true);
             });
         }
         else if (updateLeadInfo.selectedStage.stageIndex === 7) {
-            const { clientID, type, stageID, kwpInterested, email, remark, revisitDate, address, electrictybill, state,assignEmp,proposalpdf } = formData;
-            updateLeadApi({ clientID, type, stageID, kwpInterested, email, remark, revisitDate, address, electrictybill, state,location,assignEmp,proposalpdf }, closeForm).then(() => {
+            const { clientID, type, stageID, kwpInterested, email, remark, revisitDate, address, electricitybill, state,assignEmp,proposalpdf,selectedFieldSales } = formData;
+            updateLeadApi({ clientID, type, stageID, kwpInterested, email, remark, revisitDate, address, electricitybill, state,location,assignEmp,proposalpdf ,selectedFieldSales}, closeForm).then(() => {
                 // if (!setUpdateLeadBtnClicked)
                 setUpdateLeadBtnClicked(true);
             });
         }
         else {
-            const { clientID, type, stageID, kwpInterested, email, remark, address, electrictybill, state,location,assignEmp,proposalpdf } = formData;
-            updateLeadApi({ clientID, type, stageID, kwpInterested, email, remark, address, electrictybill, state,location,assignEmp ,proposalpdf }, closeForm).then(() => {
+            const { clientID, type, stageID, kwpInterested, email, remark, address, electricitybill, state,location,assignEmp,proposalpdf,selectedFieldSales } = formData;
+            updateLeadApi({ clientID, type, stageID, kwpInterested, email, remark, address, electricitybill, state,location,assignEmp ,proposalpdf ,selectedFieldSales}, closeForm).then(() => {
                 // if (!setUpdateLeadBtnClicked)
                 setUpdateLeadBtnClicked(true);
             });
@@ -271,15 +271,15 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
                             }} ></textarea>
                         </div>
                         <div>
-                            <label htmlFor="electrictybill" style={Style.inputLabel}>Enter Electric Bil</label>
-                            <input type="file" name='electrictybill' id='electrictybill' onChange={(e) => (
+                            <label htmlFor="electricitybill" style={Style.inputLabel}>Enter Electric Bil</label>
+                            <input type="file" name='electricitybill' id='electricitybill' onChange={(e) => (
                                 setUpdateLeadInfo((previous) => (
-                                    { ...previous, electrictybill: e.target.files }
+                                    { ...previous, electricitybill: e.target.files }
                                 )),
                                 setFormData((previous) => (
                                     {
                                         ...previous,
-                                        electrictybill: e.target.files
+                                        electricitybill: e.target.files
                                     }
                                 )),
                                 console.log("electric bill : ", e.target.files)
