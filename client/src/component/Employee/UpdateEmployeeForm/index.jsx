@@ -48,14 +48,17 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
     });
 
     const [location, setLocation] = useState({ latitude: null, longitude: null });
+    // const [latitude,setLatitude]=useState(null);
+    // const [longitude,setLongitude]
     const [error, setError] = useState(null);
+    const [file,setFile]=useState(null);
 
     const [formData, setFormData] = useState({
         clientID: leadInformation._id,
         revisitDate: leadInformation?.revisitDate || '',
         visitingDate: leadInformation?.visitingDate || '',
         followUpDate: leadInformation?.followUpDate || '',
-        assignEmp: leadInformation?.assignEmp || '',
+        // assignEmp:leadInformation?.assignEmp || '',
         type: leadInformation.type,
         stageID: leadInformation.stageID._id,
         kwpInterested: leadInformation.kwpInterested,
@@ -63,9 +66,10 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
         selectedFieldSales: '',
         remark: (leadInformation.stageActivity[leadInformation.stageActivity.length - 1])?.remark || '',
         address: leadInformation.address,
-        electricBil: leadInformation.electricBil,
+        electrictybill: leadInformation?.electrictybill,
         state: leadInformation.state,
-        location:location
+        location:location,
+        proposalpdf: file,
     }); 
 
 
@@ -95,12 +99,23 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
         setFormData((previous) => ({ ...previous, [name]: value }));
     }
 
-    const dateObj = (newDate) => {
-        const convertDate = new Date(newDate);
-        return `${convertDate.getFullYear()}-${convertDate.getMonth() + 1}-${convertDate.getDate()}`;
-    }
+    // const dateObj = (newDate) => {
+    //     const convertDate = new Date(newDate);
+    //     return `${convertDate.getFullYear()}-${convertDate.getMonth() + 1}-${convertDate.getDate()}`;
+    // }
 
     console.log("visiting date : ",formData.visitingDate);
+
+    const handleFile=(event)=>{
+        const selectFile=event.target.files[0];
+        if(selectFile && selectFile.type ==="application/pdf"){
+         setFile(selectFile);
+        }else{
+         alert("Please Upload a vaild pdf file")
+        }
+     }
+
+   
 
     const[empAssign,setEmpAssign]=useState([])
     const assignEmp = async () => {
@@ -130,29 +145,29 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
         console.log("form data fetched when we upload ", formData);
         console.log("final lead updated : ", updateLeadInfo.selectedStage.stageIndex);
         if (updateLeadInfo.selectedStage.stageIndex === 3) {
-            const { clientID, type, stageID, kwpInterested, email, remark, followUpDate, address, electricBil, state ,location } = formData;
-            updateLeadApi({ clientID, type, stageID, kwpInterested, email, remark, followUpDate, address, electricBil, state ,location}, closeForm).then(() => {
+            const { clientID, type, stageID, kwpInterested, email, remark, followUpDate, address, electrictybill, state ,location,assignEmp,proposalpdf } = formData;
+            updateLeadApi({ clientID, type, stageID, kwpInterested, email, remark, followUpDate, address, electrictybill, state ,location ,assignEmp,proposalpdf}, closeForm).then(() => {
                 // if (!setUpdateLeadBtnClicked)
                 setUpdateLeadBtnClicked(true);
             });
         }
         else if (updateLeadInfo.selectedStage.stageIndex === 4) {
-            const { clientID, type, stageID, kwpInterested, email, remark, visitingDate, address, electricBil, state,location } = formData;
-            updateLeadApi({ clientID, type, stageID, kwpInterested, email, remark, visitingDate, address, electricBil, state,location }, closeForm).then(() => {
+            const { clientID, type, stageID, kwpInterested, email, remark, visitingDate, address, electrictybill, state,location ,assignEmp,proposalpdf } = formData;
+            updateLeadApi({ clientID, type, stageID, kwpInterested, email, remark, visitingDate, address, electrictybill, state,location ,assignEmp,proposalpdf}, closeForm).then(() => {
                 // if (!setUpdateLeadBtnClicked)
                 setUpdateLeadBtnClicked(true);
             });
         }
         else if (updateLeadInfo.selectedStage.stageIndex === 7) {
-            const { clientID, type, stageID, kwpInterested, email, remark, revisitDate, address, electricBil, state } = formData;
-            updateLeadApi({ clientID, type, stageID, kwpInterested, email, remark, revisitDate, address, electricBil, state,location }, closeForm).then(() => {
+            const { clientID, type, stageID, kwpInterested, email, remark, revisitDate, address, electrictybill, state,assignEmp,proposalpdf } = formData;
+            updateLeadApi({ clientID, type, stageID, kwpInterested, email, remark, revisitDate, address, electrictybill, state,location,assignEmp,proposalpdf }, closeForm).then(() => {
                 // if (!setUpdateLeadBtnClicked)
                 setUpdateLeadBtnClicked(true);
             });
         }
         else {
-            const { clientID, type, stageID, kwpInterested, email, remark, address, electricBil, state } = formData;
-            updateLeadApi({ clientID, type, stageID, kwpInterested, email, remark, address, electricBil, state,location  }, closeForm).then(() => {
+            const { clientID, type, stageID, kwpInterested, email, remark, address, electrictybill, state,location,assignEmp,proposalpdf } = formData;
+            updateLeadApi({ clientID, type, stageID, kwpInterested, email, remark, address, electrictybill, state,location,assignEmp ,proposalpdf }, closeForm).then(() => {
                 // if (!setUpdateLeadBtnClicked)
                 setUpdateLeadBtnClicked(true);
             });
@@ -256,15 +271,15 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
                             }} ></textarea>
                         </div>
                         <div>
-                            <label htmlFor="electricBil" style={Style.inputLabel}>Enter Electric Bil</label>
-                            <input type="file" name='electricBil' id='electricBil' onChange={(e) => (
+                            <label htmlFor="electrictybill" style={Style.inputLabel}>Enter Electric Bil</label>
+                            <input type="file" name='electrictybill' id='electrictybill' onChange={(e) => (
                                 setUpdateLeadInfo((previous) => (
-                                    { ...previous, electricBil: e.target.files }
+                                    { ...previous, electrictybill: e.target.files }
                                 )),
                                 setFormData((previous) => (
                                     {
                                         ...previous,
-                                        electricBil: e.target.files
+                                        electrictybill: e.target.files
                                     }
                                 )),
                                 console.log("electric bill : ", e.target.files)
@@ -303,7 +318,7 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
                             <label htmlFor="assign" style={Style.inputLabel}>Assign Employee</label>
                             <select
                                 style={Style.inputField}
-                                name="assign" id="assign"
+                                name="assignEmp" id="assignEmp"
                                 onChange={(event) => {
                                     setUpdateLeadInfo((previousData) => ({ ...previousData, selectedFieldSales: event.target.value }));
                                     setFormData((previousData) => ({ ...previousData, selectedFieldSales: event.target.value }));
@@ -339,7 +354,6 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
 
                         <div>
                             <label htmlFor="location" style={Style.inputLabel}>Enter Your Location (latitude,longitude)</label>
-                                <div>
                             <input
                                 type="text"
                                 placeholder="Enter your city..."
@@ -354,8 +368,20 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
                                         }))
                                     )}
                             />
-                            </div>
+                        </div>
 
+                        <div>
+                            <label htmlFor="proposalpdf" style={Style.inputLabel} >  Enter Your Proposal </label>
+                            <input  type="file" name="proposalpdf" id="proposalpdf" accept='application/pdf' style={Style.inputField} onChange={(event)=>(handleFile,
+                                setUpdateLeadInfo((previous)=>({
+                                    ...previous,proposalpdf:event.target.files,
+                                }),
+                                setFormData((previous)=>({
+                                    ...previous,proposalpdf:event.target.files
+                                }))
+                                )
+                            )} />
+                             {file && <p>Selected File: {file.name}</p>}
                         </div>
                     </div>
                 </form>
