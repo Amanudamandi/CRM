@@ -4,12 +4,16 @@ export const updateLeadApi = async( updateDetails, closeForm ) => {
     try{
       
 
-        const sendRequest = await axios.put(`${process.env.REACT_APP_URL}/client/updateClient`, updateDetails);
+        const sendRequest = await axios.put(`${process.env.REACT_APP_URL}/client/updateClient`, updateDetails,{
+            headers:{
+                'Content-Type':'multipart/form-data'
+            }
+        });
         const response = sendRequest.data;
         const { success } = response;
         if( success ){
             console.log("response after update lead",response);
-            alert(response.msg);
+            // alert(response.msg);
             closeForm((previous) => ({...previous, clicked: false}));
         }
     }catch(error){

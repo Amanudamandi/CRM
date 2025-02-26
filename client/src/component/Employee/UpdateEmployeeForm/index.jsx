@@ -347,10 +347,7 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
                                 value={formData.visitingDate}
                             />
                         </div>
-                        <div style={Style.inputFieldContainer}>
-                            <label htmlFor="remark" style={Style.inputLabel}>Remark</label>
-                            <input style={Style.inputField} type="text" name="remark" id="remark" value={formData.remark} onChange={handleOnInputChange} />
-                        </div>
+                       
 
                         <div>
                             <label htmlFor="location" style={Style.inputLabel}>Enter Your Location (latitude,longitude)</label>
@@ -382,6 +379,10 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
                                 )
                             )} />
                              {file && <p>Selected File: {file.name}</p>}
+                        </div>
+                        <div style={Style.inputFieldContainer}>
+                            <label htmlFor="remark" style={Style.inputLabel}>Remark</label>
+                            <input style={Style.inputField} type="text" name="remark" id="remark" value={formData.remark} onChange={handleOnInputChange} />
                         </div>
                     </div>
                 </form>
