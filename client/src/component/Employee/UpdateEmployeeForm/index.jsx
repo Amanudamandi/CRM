@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
-import { memo } from 'react';
-import { useState } from 'react';
+
+import React, { useEffect, useState, memo } from 'react';
 import Hot from '../../../Assest/Images/hot.png';
 import Warm from '../../../Assest/Images/warm.png';
 import Cold from '../../../Assest/Images/cold.png';
@@ -8,11 +7,9 @@ import { IoClose } from "react-icons/io5";
 import { showStageApi } from '../../../Utils/showStagesAPI';
 import { showEmployeeApi } from '../../../Utils/showEmployeeAPI';
 import { updateLeadApi } from '../../../Utils/updateLeadFormAPI';
-import axios from 'axios';
-import { use } from 'react';
+import axios, { all } from 'axios';
 
 const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAllStages = false, setUpdateLeadBtnClicked }) => {
-    console.log("LeadInformation sended", leadInformation);
     const Style = {
         updateLeadContainer: { position: 'fixed', width: '75%', height: '92vh', margin: '0rem 1rem 0rem 8.2rem', padding: '3.5rem 1rem', backgroundColor: '#fff', top: '50%', left: '50%', zIndex: '9999', boxShadow: '0px 0px 2px black', borderRadius: '8px', overflow: 'auto', transform: 'translate(-50%, -50%)' },
         closeFormBtn: { position: 'absolute', top: '1rem', right: '1rem', cursor: 'pointer', transition: 'transform 0.4s ease' },
@@ -37,28 +34,22 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
         eachStageCircle: { width: '0.75rem', border: '2px solid #AA0B2B' }
     };
 
-    const copyStageValue = leadInformation.stageID.stageValue;
     const [isHoveredOnClose, setIsHoveredOnClose] = useState(false);
     const [showAllStages, setShowAllStages] = useState([]);
     const [showStages, setShowStages] = useState([]);
     const [showFieldSalesMan, setShowFieldSalesMan] = useState([]);
-    const [updateLeadInfo, setUpdateLeadInfo] = useState({
-        type: leadInformation.type,
-        selectedStage: { _id: leadInformation.stageID._id, stageIndex: leadInformation.stageID.stageValue },
-    });
-
+    const [file, setFile] = useState(null);
+    const [empAssign, setEmpAssign] = useState([]);
+    const [electricitybill, setElectrictybill]=useState(null);
     const [location, setLocation] = useState({ latitude: null, longitude: null });
-    // const [latitude,setLatitude]=useState(null);
-    // const [longitude,setLongitude]
     const [error, setError] = useState(null);
-    const [file,setFile]=useState(null);
+
 
     const [formData, setFormData] = useState({
         clientID: leadInformation._id,
         revisitDate: leadInformation?.revisitDate || '',
         visitingDate: leadInformation?.visitingDate || '',
         followUpDate: leadInformation?.followUpDate || '',
-        // assignEmp:leadInformation?.assignEmp || '',
         type: leadInformation.type,
         stageID: leadInformation.stageID._id,
         kwpInterested: leadInformation.kwpInterested,
@@ -66,139 +57,106 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
         selectedFieldSales: '',
         remark: (leadInformation.stageActivity[leadInformation.stageActivity.length - 1])?.remark || '',
         address: leadInformation.address,
-        electricitybill: leadInformation?.electricitybill,
+        electricitybill: electricitybill,
         state: leadInformation.state,
-        location:location,
         proposalpdf: file,
-    }); 
-
-
-
-    useEffect(() => {
-        if ("geolocation" in navigator) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    setLocation({
-                        latitude: position.coords.latitude,
-                        longitude: position.coords.longitude,
-                    });
-                },
-                (error) => {
-                    setError(error.message);
-                }
-            );
-        } else {
-            setError("Geolocation is not supported by this browser.");
-        }
-    }, []);
-
+        location:location,
+    });
 
     const handleOnInputChange = (event) => {
         const { name, value } = event.target;
-        console.log(name, value);
         setFormData((previous) => ({ ...previous, [name]: value }));
     }
+    useEffect(() => {
+                if ("geolocation" in navigator) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            setLocation({
+                                latitude: parseFloat(position.coords.latitude),
+                                longitude: parseFloat(position.coords.longitude),
+                            });
+                        },
+                        (error) => {
+                            setError(error.message);
+                        }
+                    );
+                } else {
+                    setError("Geolocation is not supported by this browser.");
+                }
+            }, []);
 
-    // const dateObj = (newDate) => {
-    //     const convertDate = new Date(newDate);
-    //     return `${convertDate.getFullYear()}-${convertDate.getMonth() + 1}-${convertDate.getDate()}`;
-    // }
-
-    console.log("visiting date : ",formData.visitingDate);
-
-    const handleFile=(event)=>{
-        const selectFile=event.target.files[0];
-        if(selectFile && selectFile.type ==="application/pdf"){
-         setFile(selectFile);
-        }else{
-         alert("Please Upload a vaild pdf file")
+    const handleFile = (event) => {
+        const selectFile = event.target.files[0];
+        if (selectFile && selectFile.type === "application/pdf") {
+            setFile(selectFile);
+        } else {
+            alert("Please Upload a valid PDF file");
         }
-     }
+    }
 
    
+    
 
-    const[empAssign,setEmpAssign]=useState([])
+    const handleBill=(event)=>{
+        const selectBill=event.target.files[0];
+        if(selectBill){
+            // console.log("electricBill: ",selectBill);
+
+            // Check if the file type is an image
+           const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+
+            if(allowedTypes.includes(selectBill.type)){
+                setElectrictybill(selectBill);
+            }else{
+                alert("enter vaild bill that type is png , jpeg ,jpg");
+            }
+        }
+    }  
+    // console.log("electricBill: ",electricitybill);
+
     const assignEmp = async () => {
         try {
             const response = await axios.post(
                 `${process.env.REACT_APP_URL}/client/FetchAssignemployee`, {
-               Statename :formData.state }// Sending state as request body
+                    Statename: formData.state
+                }
             );
-            // console.log("assign emp response:", response?.data?.data);
-
             setEmpAssign(response?.data?.data);
         } catch (error) {
             console.error("Error assigning employee:", error);
         }
     };
 
-    console.log("assign emp data : ",empAssign);
-    console.log("update lead info ",updateLeadInfo)
-    
-
-    useEffect(()=>{
+    useEffect(() => {
         assignEmp();
-    },[]);
-    
-    const onSubmitLeadUpdateForm = (event) => {
+    }, [formData.state]);
+
+    const onSubmitLeadUpdateForm = async (event) => {
         event.preventDefault();
-        console.log("form data fetched when we upload ", formData);
-        console.log("final lead updated : ", updateLeadInfo.selectedStage.stageIndex);
-        if (updateLeadInfo.selectedStage.stageIndex === 3) {
-            const { clientID, type, stageID, kwpInterested, email, remark, followUpDate, address, electricitybill, state ,location,assignEmp,proposalpdf,visitingDate,selectedFieldSales } = formData;
-            updateLeadApi({ clientID, type, stageID, kwpInterested, email, remark, followUpDate, address, electricitybill, state ,location ,assignEmp,proposalpdf,visitingDate,selectedFieldSales}, closeForm).then(() => {
-                // if (!setUpdateLeadBtnClicked)
-                setUpdateLeadBtnClicked(true);
-            });
+        const formDataToSend = new FormData();
+        for (const key in formData) {
+            formDataToSend.append(key, formData[key]);
         }
-        else if (updateLeadInfo.selectedStage.stageIndex === 4) {
-            const { clientID, type, stageID, kwpInterested, email, remark, visitingDate, address, electricitybill, state,location ,assignEmp,proposalpdf,selectedFieldSales } = formData;
-            updateLeadApi({ clientID, type, stageID, kwpInterested, email, remark, visitingDate, address, electricitybill, state,location ,assignEmp,proposalpdf,selectedFieldSales}, closeForm).then(() => {
-                // if (!setUpdateLeadBtnClicked)
-                setUpdateLeadBtnClicked(true);
-            });
+        if(electricitybill){
+            formDataToSend.append('electricitybill',electricitybill);
         }
-        else if (updateLeadInfo.selectedStage.stageIndex === 7) {
-            const { clientID, type, stageID, kwpInterested, email, remark, revisitDate, address, electricitybill, state,assignEmp,proposalpdf,selectedFieldSales } = formData;
-            updateLeadApi({ clientID, type, stageID, kwpInterested, email, remark, revisitDate, address, electricitybill, state,location,assignEmp,proposalpdf ,selectedFieldSales}, closeForm).then(() => {
-                // if (!setUpdateLeadBtnClicked)
-                setUpdateLeadBtnClicked(true);
-            });
+        if (file) {
+            formDataToSend.append('proposalpdf', file);
         }
-        else {
-            const { clientID, type, stageID, kwpInterested, email, remark, address, electricitybill, state,location,assignEmp,proposalpdf,selectedFieldSales } = formData;
-            updateLeadApi({ clientID, type, stageID, kwpInterested, email, remark, address, electricitybill, state,location,assignEmp ,proposalpdf ,selectedFieldSales}, closeForm).then(() => {
-                // if (!setUpdateLeadBtnClicked)
-                setUpdateLeadBtnClicked(true);
-            });
+
+        try {
+            await updateLeadApi(formDataToSend, closeForm);
+            setUpdateLeadBtnClicked(true);
+        } catch (error) {
+            console.error("Error updating lead:", error);
         }
     }
 
     useEffect(() => {
-        console.log("Form Data sended: ", formData);
-        let isMounted = true;
-        showStageApi(isMounted, setShowStages);
-        return () => {
-            isMounted = false;
-        }
-    }, []);
-
-    useEffect(() => {
-        let isMounted = true;
-        showStageApi(isMounted, setShowAllStages);
-        return () => {
-            isMounted = false;
-        }
-    }, []);
-
-    useEffect(() => {
-        let isMounted = true;
-        if (isMounted)
-            showEmployeeApi(setShowFieldSalesMan, pageCount, leadInformation._id, '');
-        return () => {
-            isMounted = false;
-        }
-    }, []);
+        showStageApi(true, setShowStages);
+        showStageApi(true, setShowAllStages);
+        showEmployeeApi(setShowFieldSalesMan, pageCount, leadInformation._id, '');
+    }, [pageCount, leadInformation._id]);
 
     return (
         <section style={showForm ? { ...Style.updateLeadContainer, animation: 'slideUp 0.5s ease forwards' } : Style.updateLeadContainer}>
@@ -215,12 +173,12 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
                             <span style={Style.leadInfoText}>Email: {leadInformation.email ? leadInformation.email : 'N/A'}</span>
                         </div>
                         <div style={Style.leadInfo}>
-                            <span style={Style.leadInfoText} value={leadInformation.state}>State: {leadInformation.state ? leadInformation.state : 'N/A'}</span>
+                            <span style={Style.leadInfoText}>State: {leadInformation.state ? leadInformation.state : 'N/A'}</span>
                             <span style={Style.leadInfoText}>District: {leadInformation.district ? leadInformation.district : 'N/A'}</span>
                             <span style={Style.leadInfoText}>City: {leadInformation.city ? leadInformation.city : 'N/A'}</span>
                         </div>
                         <div style={Style.leadType}>
-                            <img src={updateLeadInfo.type === 1 ? Hot : updateLeadInfo.type === 2 ? Warm : Cold} alt={updateLeadInfo.type === 1 ? 'Hot' : updateLeadInfo.type === 2 ? 'Warm' : 'Cold'} />
+                            <img src={leadInformation.type === 1 ? Hot : leadInformation.type === 2 ? Warm : Cold} alt={leadInformation.type === 1 ? 'Hot' : leadInformation.type === 2 ? 'Warm' : 'Cold'} />
                         </div>
                     </div>
                 </div>
@@ -238,60 +196,32 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
                                 style={Style.inputField}
                                 name="types" id="types"
                                 onChange={(event) => {
-                                    setUpdateLeadInfo((previousData) => ({ ...previousData, type: parseInt(event.target.value) }));
-                                    setFormData((previousData) => ({ ...previousData, type: parseInt(event.target.value) }))
-                                    console.log(parseInt(event.target.value), typeof (type));
+                                    setFormData((previousData) => ({ ...previousData, type: parseInt(event .target.value) }));
                                 }}
                             >
-                                <option value='1' selected={updateLeadInfo.type === 1 ? true : false}>High Priority</option>
-                                <option value='2' selected={updateLeadInfo.type === 2 ? true : false}>Medium</option>
-                                <option value='3' selected={updateLeadInfo.type === 3 ? true : false}>Low Priority</option>
+                                <option value='1'>High Priority</option>
+                                <option value='2'>Medium</option>
+                                <option value='3'>Low Priority</option>
                             </select>
                         </div>
                         <div style={Style.inputFieldContainer}>
                             <label htmlFor="email" style={Style.inputLabel}>Email ID</label>
                             <input style={Style.inputField} type="text" name="email" id="email" onChange={handleOnInputChange} autoComplete='off' />
                         </div>
-
-                        {/* adding address field */}
-
                         <div>
                             <label htmlFor="address" style={Style.inputLabel}>Address</label>
-                            <textarea style={Style.inputField} name="address" id="address" cols={45} rows={5} placeholder='Enter Your Address' onChange={(e) => {
-                                setUpdateLeadInfo((previous) => (
-                                    { ...previous, address: (e.target.value) }
-                                ));
-                                setFormData((previous) => ({
-                                    ...previous,
-                                    address: (e.target.value),
-                                }
-                                ));
-                                console.log("address: ", e.target.value)
-
-                            }} ></textarea>
+                            <textarea style={Style.inputField} name="address" id="address" cols={45} rows={5} placeholder='Enter Your Address' onChange={handleOnInputChange}></textarea>
                         </div>
                         <div>
-                            <label htmlFor="electricitybill" style={Style.inputLabel}>Enter Electric Bil</label>
-                            <input type="file" name='electricitybill' id='electricitybill' onChange={(e) => (
-                                setUpdateLeadInfo((previous) => (
-                                    { ...previous, electricitybill: e.target.files }
-                                )),
-                                setFormData((previous) => (
-                                    {
-                                        ...previous,
-                                        electricitybill: e.target.files
-                                    }
-                                )),
-                                console.log("electric bill : ", e.target.files)
-                            )} />
+                            <label htmlFor="electricitybill" style={Style.inputLabel}>Enter Electric Bill</label>
+                            <input type="file" name='electricitybill' id='electricitybill' onChange={handleBill} accept="image/*"  />
+                            {electricitybill && <p>Selected File: {electricitybill.name}</p>}
                         </div>
                         <div>
                             <button type="submit" style={Style.updateBtn}>Update</button>
                         </div>
                     </div>
-
                     <hr style={{ width: '0.166rem', border: 'none', height: '92%', alignSelf: 'flex-end', backgroundColor: '#AA0B2B' }} />
-
                     <div style={Style.rightForm}>
                         <div style={Style.inputFieldContainer}>
                             <label htmlFor="stage" style={Style.inputLabel}>Stage</label>
@@ -300,16 +230,14 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
                                 name="stage" id="stage"
                                 onChange={(event) => {
                                     const store = [...event.target.value].join('').split(',');
-                                    console.log(store);
-                                    setUpdateLeadInfo((previousData) => ({ ...previousData, selectedStage: { _id: store[0], stageIndex: parseInt(store[1]) + 1 } }))
-                                    setFormData((previousData) => ({ ...previousData, stageID: store[0] }))
+                                    setFormData((previousData) => ({ ...previousData, stageID: store[0] }));
                                 }}
                             >
                                 {
                                     !BooleanShowAllStages ? showStages.map(({ _id, stage }, index) => (
-                                        index >= (leadInformation.stageID.stageValue - 1) && <option key={_id} value={[_id, index]} selected={formData.stageID === _id ? true : false}>{stage}</option>
-                                    )) : showAllStages.map(({ _id, stage }, index) => (
-                                        <option key={_id} value={[_id, index]} selected={formData.stageID === _id ? true : false} >{stage}</option>
+                                        index >= (leadInformation.stageID.stageValue - 1) && <option key={_id} value={[_id, index]}>{stage}</option>
+                                    )) : showAllStages.map(({ _id, stage }) => (
+                                        <option key={_id} value={_id}>{stage}</option>
                                     ))
                                 }
                             </select>
@@ -320,83 +248,55 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
                                 style={Style.inputField}
                                 name="assignEmp" id="assignEmp"
                                 onChange={(event) => {
-                                    setUpdateLeadInfo((previousData) => ({ ...previousData, selectedFieldSales: event.target.value }));
                                     setFormData((previousData) => ({ ...previousData, selectedFieldSales: event.target.value }));
-                                    console.log(event.target.value);
                                 }}
-                                // disabled={updateLeadInfo.selectedStage.stageIndex === 4 || updateLeadInfo.selectedStage.stageIndex === 7 ? false : true}
                             >
-                               <option value="">Select an Employee</option>
+                                <option value="">Select an Employee</option>
                                 {
-                                        empAssign.map((item)=>(
-                                            <option key={item._id} value={item._id} >
-                                            {item.name}
-                                        </option>
-                                        ))
+                                    empAssign.map((item) => (
+                                        <option key={item._id} value={item._id}>{item.name}</option>
+                                    ))
                                 }
                             </select>
                         </div>
                         <div style={Style.inputFieldContainer}>
-                            <label htmlFor="date" style={Style.inputLabel}>{(updateLeadInfo.selectedStage.stageIndex) === 7 ? 'Revisit Date' : (updateLeadInfo.selectedStage.stageIndex) === 3 ? 'Follow-Up Date' : 'Visiting Date'}</label>
+                            <label htmlFor="date" style={Style.inputLabel}>{(formData.stageID === 7 ? 'Revisit Date' : (formData.stageID === 3 ? 'Follow-Up Date' : 'Visiting Date'))}</label>
                             <input style={Style.inputField} type="date"
-                                name={(updateLeadInfo.selectedStage.stageIndex) === 7 ? 'revisitDate' : (updateLeadInfo.selectedStage.stageIndex) === 3 ? 'followUpDate' : 'visitingDate'}
-                                id="date" 
-                                // value={(updateLeadInfo.selectedStage.stageIndex) === 3 ? dateObj(formData.followUpDate) : (updateLeadInfo.selectedStage.stageIndex) === 4 ? dateObj(formData.visitingDate) : (updateLeadInfo.selectedStage.stageIndex) === 7 ? dateObj(formData.revisitDate) : ''}
-                                // disabled={updateLeadInfo.selectedStage.stageIndex === 4 || updateLeadInfo.selectedStage.stageIndex === 3 || updateLeadInfo.selectedStage.stageIndex === 7 ? false : true}
+                                name={(formData.stageID === 7 ? 'revisitDate' : (formData.stageID === 3 ? 'followUpDate' : 'visitingDate'))}
+                                id="date"
                                 onChange={handleOnInputChange}
-                                value={formData.visitingDate}
                             />
                         </div>
-                       
-
                         <div>
                             <label htmlFor="location" style={Style.inputLabel}>Enter Your Location (latitude,longitude)</label>
                             <input
                                 type="text"
                                 placeholder="Enter your city..."
-                                    onChange={(event)=>(
-                                        setLocation({ city: event.target.value }),
-                                        setUpdateLeadInfo((previous)=>({
-                                            ...previous, location 
-                                            :event.target.value,
-                                        })),
-                                        setFormData((previous)=>({
-                                            ...previous,location:event.target.value
-                                        }))
-                                    )}
+                                onChange={(event) => {
+                                    setFormData((previous) => ({ ...previous, location: event.target.value }));
+                                }}
                             />
                         </div>
-
                         <div>
-                            <label htmlFor="proposalpdf" style={Style.inputLabel} >  Enter Your Proposal </label>
-                            <input  type="file" name="proposalpdf" id="proposalpdf" accept='application/pdf' style={Style.inputField} onChange={(event)=>(handleFile,
-                                setUpdateLeadInfo((previous)=>({
-                                    ...previous,proposalpdf:event.target.files,
-                                }),
-                                setFormData((previous)=>({
-                                    ...previous,proposalpdf:event.target.files
-                                }))
-                                )
-                            )} />
-                             {file && <p>Selected File: {file.name}</p>}
+                            <label htmlFor="proposalpdf" style={Style.inputLabel}>Enter Your Proposal</label>
+                            <input type="file" name="proposalpdf" id="proposalpdf" accept='application/pdf' style={Style.inputField} onChange={handleFile} />
+                            {file && <p>Selected File: {file.name}</p>}
                         </div>
                         <div style={Style.inputFieldContainer}>
                             <label htmlFor="remark" style={Style.inputLabel}>Remark</label>
-                            <input style={Style.inputField} type="text" name="remark" id="remark" value={formData.remark} onChange={handleOnInputChange} />
+                            <input style={Style.inputField} type="text" name="remark" id="remark" value={formData.remark } onChange={handleOnInputChange} />
                         </div>
                     </div>
                 </form>
                 <div style={Style.stagesMainContainer}>
-                    <div style={Style.stagesContainer} >
+                    <div style={Style.stagesContainer}>
                         {
                             showAllStages.map(({ _id, stage }, index) => (
                                 <div key={_id} style={Style.eachStageContainer}>
-                                    <span style={
-                                        {
-                                            ...Style.eachStageCircle,
-                                            borderColor: updateLeadInfo.selectedStage.stageIndex === (index + 1) ? '#4FE081' : '#AA0B2B'
-                                        }}>
-                                    </span>
+                                    <span style={{
+                                        ...Style.eachStageCircle,
+                                        borderColor: formData.stageID === _id ? '#4FE081' : '#AA0B2B'
+                                    }}></span>
                                     <span>{stage}</span>
                                 </div>
                             ))
@@ -409,3 +309,4 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
 }
 
 export default memo(Index);
+

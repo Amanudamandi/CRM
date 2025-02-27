@@ -53,6 +53,33 @@ const clientSchema = mongoose.Schema({
         type:String,
         default:null
     },
+    AdditionalDetails:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"ExtraDetail",
+   
+
+    },
+    latitude: {
+        type: Number,
+       default:null,
+        min: -90,
+        max: 90,
+        validate: {
+          validator: (v) => v >= -90 && v <= 90,
+          message: (props) => ` Not a valid latitude!`,
+        },
+      },
+      longitude: {
+        type: Number,
+     default:null,
+        min: -180,
+        max: 180,
+        validate: {
+          validator: (v) => v >= -180 && v <= 180,
+          message: (props) => ` is Not a valid longitude!`,
+        },
+      },
+ 
      
  
      

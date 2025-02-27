@@ -2,6 +2,7 @@ const assignEmp = require("../models/assignEmployee");
 const client = require("../models/client");
 const employee = require("../models/employee")
 const District= require("../models/district")
+require("dotenv").config();
 
 const startDateConvertor  = require('../helpers/common/dateConversion/startDate');
 const endDateConvertor = require("../helpers/common/dateConversion/endDate");
@@ -163,12 +164,12 @@ const fetchLeads = async(req,res)=>{
                 message:"please enter the employee ID"
             })
         }
-        const user=await assignEmp.find({fieldEmpID:id}).populate("fieldEmpID");
-        if(user){
+        const user = await assignEmp.find({ fieldEmpID: id }).populate({ path: "clientID", populate: [{ path: "AdditionalDetails" }, { path: "stateID" }] });
+        if (user) {
             console.log(user);
             res.status(200).json({
-                success:true,
-                data:user
+                success: true,
+                data: user
             })
 
         }
@@ -180,42 +181,110 @@ const fetchLeads = async(req,res)=>{
     }
  }
 
- const updateclient=async(req,res)=>{
-    try{
-        const{AccountNo,IFSC,BankAddress}=req.body;
 
-        const AadharCard= req.files["aadhaarPhotos"] ? `/uploads/aadhar/${req.files["aadhaarPhotos"][0].filename}` : null;
-        const  PanCard = req.files["pancard"] ? `/uploads/pancard/${req.files["pancard"][0].filename}` : null;
-        const ElectrcityBill=req.files["electricitybill"]?`/uploads/ElectricityBill/${req.files["electricitybill"][0].filename}`:null;
-        const Videos=req.files["Video"]?`/uploads/Video/${req.files["Video"][0].filename}`:null;
+//  const updateclient=async(req,res)=>{
+//     try{
+//         const{AccountNo,IFSC,BankAddress}=req.body;
 
-        const ExtraDetails= new Extradetail({
-            AccountNo,IFSC,BankAddress,AadharCard,PanCard,ElectrcityBill,Videos
-        })
-        ExtraDetails.save();
+//         const AadharCard= req.files["aadhaarPhotos"] ? `${process.env.SERVER_URL}uploads/aadhar/${req.files["aadhaarPhotos"][0].filename}` : null;
+//         const  PanCard = req.files["pancard"] ? `${process.env.SERVER_URL}uploads/pancard/${req.files["pancard"][0].filename}` : null;
+//         const ElectrcityBill=req.files["electricitybill"]?`${process.env.SERVER_URL}uploads/ElectricityBill/${req.files["electricitybill"][0].filename}`:null;
+//         const Videos=req.files["Video"]?`${process.env.SERVER_URL}uploads/Video/${req.files["Video"][0].filename}`:null;
+//         const Dimension=req.files["dimensions"]?`${process.env.SERVER_URL}uploads/dimensions/${req.files["dimensions"][0].filename}`:null;
+//         const CancelCheack=req.files["cancelcheack"]?`${process.env.SERVER_URL}uploads/cancelcheack/${req.files["cancelcheack"][0].filename}`:null;
+//          const   ProposalPdf=req.files["proposalpdf"]?`${process.env.SERVER_URL}uploads/proposalpdf/${req.files["proposalpdf"][0].filename}`:null;
+       
+//         const ExtraDetails= new Extradetail({
+//             AccountNo,IFSC,BankAddress,AadharCard,PanCard,ElectrcityBill,Videos,Dimension,CancelCheack, ProposalPdf
+//         })
+//         ExtraDetails.save();
 
-        res.status(200).json({
-            message:"save succesfully",
-            data:ExtraDetails,
-            success:true,
-        })
+//         res.status(200).json({
+//             message:"save succesfully",
+//             data:ExtraDetails,
+//             success:true,
+//         })
 
 
     
 
 
 
-    }catch(err){
-        console.log(err)
-        res.status(400).json({
-            message:"Unsuccesfull",
-            success:false,
-        })
-    }
- }
+//     }catch(err){
+//         console.log(err)
+//         res.status(400).json({
+//             message:"Unsuccesfull",
+//             success:false,
+//         })
+//     }
+//  }
 
- const  
- updateEmployee=async(req,res)=>{
+const updateclient = async (req, res) => {
+    try {
+        const { AccountNo, IFSC, BankAddress, additonalDetailsID,  Remainder } = req.body;
+        console.log(additonalDetailsID);
+        console.log(AccountNo);
+        console.log(Remainder);
+
+        const AadharCard = req.files["aadhaarPhotos"]
+            ? `${process.env.SERVER_URL}uploads/aadhar/${req.files["aadhaarPhotos"][0].filename}`
+            : null;
+        const PanCard = req.files["pancard"]
+            ? `${process.env.SERVER_URL}uploads/pancard/${req.files["pancard"][0].filename}`
+            : null;
+        const ElectrcityBill = req.files["electricitybill"]
+            ? `${process.env.SERVER_URL}uploads/ElectricityBill/${req.files["electricitybill"][0].filename}`
+            : null;
+        const Videos = req.files["Video"]
+            ? `${process.env.SERVER_URL}uploads/Video/${req.files["Video"][0].filename}`
+            : null;
+        const Dimension = req.files["dimensions"]
+            ? `${process.env.SERVER_URL}uploads/dimensions/${req.files["dimensions"][0].filename}`
+            : null;
+        const CancelCheack = req.files["cancelcheack"]
+            ? `${process.env.SERVER_URL}uploads/cancelcheack/${req.files["cancelcheack"][0].filename}`
+            : null;
+        const ProposalPdf = req.files["proposalpdf"]
+            ? `${process.env.SERVER_URL}uploads/proposalpdf/${req.files["proposalpdf"][0].filename}`
+            : null;
+
+        // Ensure that additonalDetailsID is a valid ObjectId
+        if (!additonalDetailsID) {
+            return res.status(400).json({ message: "Missing additonalDetailsID", success: false });
+        }
+
+        const updatedData = await Extradetail.findOneAndUpdate(
+            { _id: additonalDetailsID }, // Find the document
+            {
+                $set: {
+                    Remainder, AadharCard, PanCard, ElectrcityBill, Videos,
+                    Dimension, CancelCheack, ProposalPdf,
+                    AccountNo, IFSC, BankAddress
+                }
+            },
+            { new: true } // Return the updated document
+        );
+
+        if (!updatedData) {
+            return res.status(404).json({ message: "Document not found", success: false });
+        }
+
+        res.status(200).json({
+            message: "Save successfully",
+            data: updatedData,
+            success: true,
+        });
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: "Unsuccessful",
+            success: false,
+            error: err.message,
+        });
+    }
+};
+const updateEmployee=async(req,res)=>{
     try{
         const {empId,name,teamleader,mobile,stateID,district,status} = req.body;
         console.log(empId);

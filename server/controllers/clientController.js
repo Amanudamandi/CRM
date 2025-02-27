@@ -22,6 +22,7 @@ const CurrentDate = require('../helpers/common/dateConversion/currentDate');
 const mongoose = require('mongoose');
 const employee = require('../models/employee');
 const Department= require("../models/department");
+const Extradetails= require("../models/Extradetails");
 
 const clientAdd = async(req,res) =>{
     try {
@@ -274,14 +275,27 @@ const fetchClients = async(req,res) =>{
 }
 const updateClient = async(req,res) =>{
     try {
+        console.log("hgff",req.query || req.body || req.params);
         let newVisit = null;
-        const {kwpInterested, type, email, stageID, assignEmp, visitingDate, followUpDate, remark, clientID, empID} = req.body;
-        if(!clientID){
+        const {kwpInterested, type, email, stageID, selectedFieldSales, visitingDate, followUpDate, remark, clientID, empID,address,location} = req.body;
+        const [latitude, longitude] = location.split(", ").map(Number);
+        
+        if(!req?.body?.clientID){
             return res.status(400).json({
                 success:false,
                 msg:"client Id not Exist!"
             });
         }
+
+        
+        const ElectrcityBill=await req.files["electricitybill"]?`${process.env.SERVER_URL}uploads/ElectricityBill/${req.files["electricitybill"][0].filename}`:null;
+        console.log(ElectrcityBill);
+        const   ProposalPdf=await req.files["proposalpdf"]?`${process.env.SERVER_URL}uploads/proposalpdf/${req.files["proposalpdf"][0].filename}`:null;
+        const additionalsdetails=new Extradetails({
+       ElectrcityBill,ProposalPdf
+        })
+        additionalsdetails.save();
+
         if(followUpDate || visitingDate){ // check given date is not less the current date 
             const queryData = new Date(followUpDate || visitingDate);
             const today = new Date();
@@ -308,7 +322,7 @@ const updateClient = async(req,res) =>{
             console.log("missin Success")
             const newVisitingDate = await equalDateFunction(visitingDate);
             const visit = new AssignEmployee({
-                clientID, fieldEmpID:assignEmp, visitingDate:newVisitingDate
+                clientID, fieldEmpID:selectedFieldSales, visitingDate:newVisitingDate
             });
             newVisit = await visit.save();
             console.log(newVisit)
@@ -317,10 +331,15 @@ const updateClient = async(req,res) =>{
             kwpInterested:kwpInterested,
             type:type,
             email:email,
-            stageID:stageID
+            stageID:stageID,
+            AdditionalDetails:additionalsdetails._id,
+            address:address,
+            latitude:latitude,
+            longitude:longitude,
+            
         }
         
-        const updateClient = await Client.findByIdAndUpdate(clientID, UpdatedData, { new:true, runValidators: true });
+        const updateClient = await Client.findByIdAndUpdate(clientID, UpdatedData, { new:true, runValidators: true }).populate("AdditionalDetails");
         if(!updateClient){
             return res.status(404).json({
                 success:false,
@@ -333,7 +352,8 @@ const updateClient = async(req,res) =>{
         }
         return res.status(200).json({
             success:true,
-            msg:"Update SuccessFully ."
+            msg:"Update SuccessFully .",
+            data:updateClient,
         });
     } catch (error) {
         console.log(error)
