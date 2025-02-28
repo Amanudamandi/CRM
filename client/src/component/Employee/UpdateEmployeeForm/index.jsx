@@ -46,21 +46,21 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
 
 
     const [formData, setFormData] = useState({
-        clientID: leadInformation._id,
+        clientID: leadInformation?._id,
         revisitDate: leadInformation?.revisitDate || '',
         visitingDate: leadInformation?.visitingDate || '',
         followUpDate: leadInformation?.followUpDate || '',
-        type: leadInformation.type,
-        stageID: leadInformation.stageID._id,
-        kwpInterested: leadInformation.kwpInterested,
-        email: leadInformation.email,
+        type: leadInformation?.type || '',
+        stageID: leadInformation?.stageID?._id || '',
+        kwpInterested: leadInformation?.kwpInterested || '',
+        email: leadInformation?.email ||'',
         selectedFieldSales: '',
-        remark: (leadInformation.stageActivity[leadInformation.stageActivity.length - 1])?.remark || '',
-        address: leadInformation.address,
-        electricitybill: electricitybill,
-        state: leadInformation.state,
-        proposalpdf: file,
-        location:location,
+        remark: (leadInformation?.stageActivity[leadInformation?.stageActivity?.length - 1])?.remark || '',
+        address: leadInformation?.address ||'',
+        electricitybill: electricitybill ||'',
+        state: leadInformation?.state || '',
+        proposalpdf: file || '',
+        location:location ||'',
     });
 
     const handleOnInputChange = (event) => {
@@ -230,7 +230,7 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
                                 name="stage" id="stage"
                                 onChange={(event) => {
                                     const store = [...event.target.value].join('').split(',');
-                                    setFormData((previousData) => ({ ...previousData, stageID: store[0] }));
+                                    setFormData((previousData)=> ({ ...previousData, stageID: store[0] }));
                                 }}
                             >
                                 {

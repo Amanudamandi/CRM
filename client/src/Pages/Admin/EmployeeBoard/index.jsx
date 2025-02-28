@@ -21,7 +21,7 @@ const Index = () => {
     const headingList = 
     [ 
         'Employee Id', 'Name', 'Department', 'Team_Leader', 
-        'Mobile', 'State', 'District'
+        'Mobile', 'State', 'District',
     ];
 
     const [ limit, setLimit ] = useState(35);

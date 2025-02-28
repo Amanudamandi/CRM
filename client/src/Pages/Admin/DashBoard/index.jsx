@@ -96,6 +96,8 @@ const Index = () => {
             {heading: '', values: []}
         ]
     );
+
+    // console.log("current ",currentEmployeeCardInformation)
     const [ isLoading, setIsLoading ] = useState(false);
 
     const Styles = {
@@ -115,7 +117,7 @@ const Index = () => {
     const callStageCountNnumberOfTimes = async(count, showAllStages) => {
         const resultArray = [];
         const today = new Date();
-        console.log(today);
+        console.log("date",today);
         let index = 0
         setIsLoading(true);
         for(; index < count; index++){
@@ -147,10 +149,12 @@ const Index = () => {
             setIsLoading(false);
         }
 
-        console.log(resultArray);
+        // console.log("resultArray : ",resultArray);
         setCurrentEmployeeCardInformation(resultArray);
     }
 
+
+    // console.log("showAllStages ",showAllStages)
     useEffect(() => {
         setIsLoading(true);
         let isMounted = true;
