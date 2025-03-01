@@ -385,7 +385,7 @@ const fetchClients = async(req,res) =>{
                     localField:"stageID",
                     foreignField: "_id",
                     as: "stageID"
-                }
+                } 
             },
             { $unwind: { path: "$stageID", preserveNullAndEmptyArrays: true } },
             {
@@ -478,96 +478,166 @@ const fetchClients = async(req,res) =>{
         });
     }
 }
-const updateClient = async(req,res) =>{
-    try {
-        console.log("hgff",req.query || req.body || req.params);
-        let newVisit = null;
-        const {kwpInterested, type, email, stageID, selectedFieldSales, visitingDate, followUpDate, remark, clientID, empID,address,location} = req.body;
-        const [latitude, longitude] = location.split(", ").map(Number);
+// const updateClient = async(req,res) =>{
+//     try {
+//         console.log("hgff",req.query || req.body || req.params);
+//         let newVisit = null;
+//         const {kwpInterested, type, email, stageID, selectedFieldSales, visitingDate, followUpDate, remark, clientID, empID,address,location} = req.body;
+//         const [latitude, longitude] = location.split(", ").map(Number);
         
-        if(!req?.body?.clientID){
-            return res.status(400).json({
-                success:false,
-                msg:"client Id not Exist!"
-            });
-        }
+//         if(!req?.body?.clientID){
+//             return res.status(400).json({
+//                 success:false,
+//                 msg:"client Id not Exist!"
+//             });
+//         }
 
         
-        const ElectrcityBill=await req.files["electricitybill"]?`${process.env.SERVER_URL}uploads/ElectricityBill/${req.files["electricitybill"][0].filename}`:null;
-        console.log(ElectrcityBill);
-        const   ProposalPdf=await req.files["proposalpdf"]?`${process.env.SERVER_URL}uploads/proposalpdf/${req.files["proposalpdf"][0].filename}`:null;
-        const additionalsdetails=new Extradetails({
-       ElectrcityBill,ProposalPdf
-        })
-        additionalsdetails.save();
+//         const ElectrcityBill=await req.files["electricitybill"]?`${process.env.SERVER_URL}uploads/ElectricityBill/${req.files["electricitybill"][0].filename}`:null;
+//         console.log(ElectrcityBill);
+//         const   ProposalPdf=await req.files["proposalpdf"]?`${process.env.SERVER_URL}uploads/proposalpdf/${req.files["proposalpdf"][0].filename}`:null;
+//         const additionalsdetails=new Extradetails({
+//        ElectrcityBill,ProposalPdf
+//         })
+//         additionalsdetails.save();
 
-        if(followUpDate || visitingDate){ // check given date is not less the current date 
-            const queryData = new Date(followUpDate || visitingDate);
-            const today = new Date();
-            if(queryData.getDate() < today.getDate() && queryData.getMonth() < today.getMonth() && queryData.getYear() < today.getYear()){
-                return res.status(400).json({
-                    success:false,
-                    msg:" Please give valid Date."
-                })
-            }  
-        }
-        if(followUpDate){
-            const newFollowUpDate = await equalDateFunction(followUpDate);
-            console.log(newFollowUpDate);
-            await FollowUp.findOneAndUpdate({clientID: clientID}, {$set : {followUpDate:newFollowUpDate}},{new: true, upsert:true, runValidators: true });
-        }
-        // console.log("RB",req.body);
-        // if(visitingDate && assignEmp == ''){
-        //     return res.status(400).json({
-        //         success:false,
-        //         msg:"Visiting date not save without assign employee."
-        //     })
-        // }
-        if(visitingDate){
-            console.log("missin Success")
-            const newVisitingDate = await equalDateFunction(visitingDate);
-            const visit = new AssignEmployee({
-                clientID, fieldEmpID:selectedFieldSales, visitingDate:newVisitingDate
-            });
-            newVisit = await visit.save();
-            console.log(newVisit)
-        }
-        const UpdatedData ={
-            kwpInterested:kwpInterested,
-            type:type,
-            email:email,
-            stageID:stageID,
-            AdditionalDetails:additionalsdetails._id,
-            address:address,
-            latitude:latitude?latitude:null,
-            longitude:longitude?longitude:null,
+//         if(followUpDate || visitingDate){ // check given date is not less the current date 
+//             const queryData = new Date(followUpDate || visitingDate);
+//             const today = new Date();
+//             if(queryData.getDate() < today.getDate() && queryData.getMonth() < today.getMonth() && queryData.getYear() < today.getYear()){
+//                 return res.status(400).json({
+//                     success:false,
+//                     msg:" Please give valid Date."
+//                 })
+//             }  
+//         }
+//         if(followUpDate){
+//             const newFollowUpDate = await equalDateFunction(followUpDate);
+//             console.log(newFollowUpDate);
+//             await FollowUp.findOneAndUpdate({clientID: clientID}, {$set : {followUpDate:newFollowUpDate}},{new: true, upsert:true, runValidators: true });
+//         }
+//         // console.log("RB",req.body);
+//         // if(visitingDate && assignEmp == ''){
+//         //     return res.status(400).json({
+//         //         success:false,
+//         //         msg:"Visiting date not save without assign employee."
+//         //     })
+//         // }
+//         if(visitingDate){
+//             console.log("missin Success")
+//             const newVisitingDate = await equalDateFunction(visitingDate);
+//             const visit = new AssignEmployee({
+//                 clientID, fieldEmpID:selectedFieldSales, visitingDate:newVisitingDate
+//             });
+//             newVisit = await visit.save();
+//             console.log(newVisit)
+//         }
+//         const UpdatedData ={
+//             kwpInterested:kwpInterested,
+//             type:type,
+//             email:email,
+//             stageID:stageID,
+//             AdditionalDetails:additionalsdetails._id,
+//             address:address,
+//             latitude:latitude?latitude:null,
+//             longitude:longitude?longitude:null,
             
-        }
+//         }
         
-        const updateClient = await Client.findByIdAndUpdate(clientID, UpdatedData, { new:true, runValidators: true }).populate("AdditionalDetails");
-        if(!updateClient){
-            return res.status(404).json({
-                success:false,
-                msg:'Something is Wrong please try again !'
-            });
+//         const updateClient = await Client.findByIdAndUpdate(clientID, UpdatedData, { new:true, runValidators: true }).populate("AdditionalDetails");
+//         if(!updateClient){
+//             return res.status(404).json({
+//                 success:false,
+//                 msg:'Something is Wrong please try again !'
+//             });
+//         }
+//         if(stageID){
+//             const stageUpdateDate = new Date();
+//             await insertStageActivity(clientID, empID, stageID, stageUpdateDate, remark);
+//         }
+//         return res.status(200).json({
+//             success:true,
+//             msg:"Update SuccessFully .",
+//             data:updateClient,
+//         });
+//     } catch (error) {
+//         console.log(error)
+//         return res.status(400).json({
+//             success:false,
+//             msg:error.message
+//         });
+//     }
+// }
+
+const updateClient = async (req, res) => {
+    try {
+        const { AccountNo, IFSC, BankAddress, additonalDetailsID, Remainder } = req.body;
+
+        console.log(additonalDetailsID);
+        console.log(AccountNo);
+        console.log(Remainder);
+
+        // Ensure that additonalDetailsID is provided
+        if (!additonalDetailsID) {
+            return res.status(400).json({ message: "Missing additonalDetailsID", success: false });
         }
-        if(stageID){
-            const stageUpdateDate = new Date();
-            await insertStageActivity(clientID, empID, stageID, stageUpdateDate, remark);
+
+        // Create an update object dynamically
+        let updateFields = {
+            Remainder, AccountNo, IFSC, BankAddress
+        };
+
+        // Handle file updates only if they exist
+        if (req.files) {
+            if (req.files["aadhaarPhotos"]) {
+                updateFields.AadharCard = `${process.env.SERVER_URL}uploads/aadhar/${req.files["aadhaarPhotos"][0].filename}`;
+            }
+            if (req.files["pancard"]) {
+                updateFields.PanCard = `${process.env.SERVER_URL}uploads/pancard/${req.files["pancard"][0].filename}`;
+            }
+            if (req.files["electricitybill"]) {
+                updateFields.ElectrcityBill = `${process.env.SERVER_URL}uploads/ElectricityBill/${req.files["electricitybill"][0].filename}`;
+            }
+            if (req.files["Video"]) {
+                updateFields.Videos = `${process.env.SERVER_URL}uploads/Video/${req.files["Video"][0].filename}`;
+            }
+            if (req.files["dimensions"]) {
+                updateFields.Dimension = `${process.env.SERVER_URL}uploads/dimensions/${req.files["dimensions"][0].filename}`;
+            }
+            if (req.files["cancelcheack"]) {
+                updateFields.CancelCheack = `${process.env.SERVER_URL}uploads/cancelcheack/${req.files["cancelcheack"][0].filename}`;
+            }
+            if (req.files["proposalpdf"]) {
+                updateFields.ProposalPdf = `${process.env.SERVER_URL}uploads/proposalpdf/${req.files["proposalpdf"][0].filename}`;
+            }
         }
-        return res.status(200).json({
-            success:true,
-            msg:"Update SuccessFully .",
-            data:updateClient,
+
+        // Update only provided fields
+        const updatedData = await Extradetail.findOneAndUpdate(
+            { _id: additonalDetailsID },
+            { $set: updateFields },
+            { new: true } // Return the updated document
+        );
+
+        if (!updatedData) {
+            return res.status(404).json({ message: "Document not found", success: false });
+        }
+
+        res.status(200).json({
+            message: "Save successfully",
+            data: updatedData,
+            success: true,
         });
-    } catch (error) {
-        console.log(error)
-        return res.status(400).json({
-            success:false,
-            msg:error.message
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: "Unsuccessful",
+            success: false,
+            error: err.message,
         });
     }
-}
+};
 
 const fetchByFile = async(req,res) =>{
     let uploadedFreshClient = 0;
