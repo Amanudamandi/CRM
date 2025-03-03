@@ -219,49 +219,54 @@ const fetchLeads = async(req,res)=>{
 //     }
 //  }
 
+
 const updateclient = async (req, res) => {
     try {
-        const { AccountNo, IFSC, BankAddress, additonalDetailsID,  Remainder } = req.body;
+        const { AccountNo, IFSC, BankAddress, additonalDetailsID, Remainder } = req.body;
+
         console.log(additonalDetailsID);
         console.log(AccountNo);
         console.log(Remainder);
 
-        const AadharCard = req.files["aadhaarPhotos"]
-            ? `${process.env.SERVER_URL}uploads/aadhar/${req.files["aadhaarPhotos"][0].filename}`
-            : null;
-        const PanCard = req.files["pancard"]
-            ? `${process.env.SERVER_URL}uploads/pancard/${req.files["pancard"][0].filename}`
-            : null;
-        const ElectrcityBill = req.files["electricitybill"]
-            ? `${process.env.SERVER_URL}uploads/ElectricityBill/${req.files["electricitybill"][0].filename}`
-            : null;
-        const Videos = req.files["Video"]
-            ? `${process.env.SERVER_URL}uploads/Video/${req.files["Video"][0].filename}`
-            : null;
-        const Dimension = req.files["dimensions"]
-            ? `${process.env.SERVER_URL}uploads/dimensions/${req.files["dimensions"][0].filename}`
-            : null;
-        const CancelCheack = req.files["cancelcheack"]
-            ? `${process.env.SERVER_URL}uploads/cancelcheack/${req.files["cancelcheack"][0].filename}`
-            : null;
-        const ProposalPdf = req.files["proposalpdf"]
-            ? `${process.env.SERVER_URL}uploads/proposalpdf/${req.files["proposalpdf"][0].filename}`
-            : null;
-
-        // Ensure that additonalDetailsID is a valid ObjectId
+        // Ensure that additonalDetailsID is provided
         if (!additonalDetailsID) {
             return res.status(400).json({ message: "Missing additonalDetailsID", success: false });
         }
 
+        // Create an update object dynamically
+        let updateFields = {
+            Remainder, AccountNo, IFSC, BankAddress
+        };
+
+        // Handle file updates only if they exist
+        if (req.files) {
+            if (req.files["aadhaarPhotos"]) {
+                updateFields.AadharCard = `${process.env.SERVER_URL}uploads/aadhar/${req.files["aadhaarPhotos"][0].filename}`;
+            }
+            if (req.files["pancard"]) {
+                updateFields.PanCard = `${process.env.SERVER_URL}uploads/pancard/${req.files["pancard"][0].filename}`;
+            }
+            if (req.files["electricitybill"]) {
+                updateFields.ElectrcityBill = `${process.env.SERVER_URL}uploads/ElectricityBill/${req.files["electricitybill"][0].filename}`;
+            }
+            if (req.files["Video"]) {
+                updateFields.Videos = `${process.env.SERVER_URL}uploads/Video/${req.files["Video"][0].filename}`;
+            }
+            if (req.files["dimensions"]) {
+                updateFields.Dimension = `${process.env.SERVER_URL}uploads/dimensions/${req.files["dimensions"][0].filename}`;
+            }
+            if (req.files["cancelcheack"]) {
+                updateFields.CancelCheack = `${process.env.SERVER_URL}uploads/cancelcheack/${req.files["cancelcheack"][0].filename}`;
+            }
+            if (req.files["proposalpdf"]) {
+                updateFields.ProposalPdf = `${process.env.SERVER_URL}uploads/proposalpdf/${req.files["proposalpdf"][0].filename}`;
+            }
+        }
+
+        // Update only provided fields
         const updatedData = await Extradetail.findOneAndUpdate(
-            { _id: additonalDetailsID }, // Find the document
-            {
-                $set: {
-                    Remainder, AadharCard, PanCard, ElectrcityBill, Videos,
-                    Dimension, CancelCheack, ProposalPdf,
-                    AccountNo, IFSC, BankAddress
-                }
-            },
+            { _id: additonalDetailsID },
+            { $set: updateFields },
             { new: true } // Return the updated document
         );
 

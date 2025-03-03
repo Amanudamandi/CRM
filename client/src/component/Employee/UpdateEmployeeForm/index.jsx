@@ -127,8 +127,14 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
         }
     };
 
+    // useEffect(() => {
+    //     assignEmp();
+    // }, [formData.state]);
     useEffect(() => {
-        assignEmp();
+        const fetchAssignedEmployees = async () => {
+            await assignEmp();
+        };
+        fetchAssignedEmployees();
     }, [formData.state]);
 
     const onSubmitLeadUpdateForm = async (event) => {
