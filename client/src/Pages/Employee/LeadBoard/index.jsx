@@ -38,7 +38,7 @@ const Index = () => {
     const headingList =
         [
             'Stage', 'Name', 'Mobile', 'Email', 'Type', 'State', 'District', 'KWP Interested', 'Source',
-            'Date'
+            'Date','Proposal','Aadhar Card','Pancard','Electricity Bill','Bank Details','Cancle Check',"Layout","Video"
         ];
 
     const showDropDownList = new Array(headingList.length).fill(true);

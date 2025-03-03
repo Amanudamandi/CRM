@@ -37,8 +37,8 @@ const Index = () => {
 
     const headingList = 
     [ 
-        'Stage', 'Lead Handler', 'Name', 'Mobile', 'Email', 'Type', 'State', 'District', 'KWP Interested', 'Source',
-        'Date'
+        'Stage', 'Lead Handler', 'Name', 'Mobile', 'Email', 'Type', 'State', 'District', 'KWP Interested', 'Source','Date',
+        
     ];
 
     const showDropDownList = new Array(headingList.length).fill(true);
