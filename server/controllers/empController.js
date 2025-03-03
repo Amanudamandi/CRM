@@ -250,7 +250,7 @@ const updateclient = async (req, res) => {
                 updateFields.ElectrcityBill = `${process.env.SERVER_URL}uploads/ElectricityBill/${req.files["electricitybill"][0].filename}`;
             }
             if (req.files["Video"]) {
-                updateFields.Videos = `${process.env.SERVER_URL}uploads/Video/${req.files["Video"][0].filename}`;
+                updateFields.Videos = `${process.env.SERVER_URL}uploads/video/${req.files["Video"][0].filename}`;
             }
             if (req.files["dimensions"]) {
                 updateFields.Dimension = `${process.env.SERVER_URL}uploads/dimensions/${req.files["dimensions"][0].filename}`;
