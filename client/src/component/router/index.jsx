@@ -25,14 +25,21 @@ import Update from '../Common/employeeUpdate/Update';
 import Up from '../Common/employeeUpdate/Up';
 // import { getCookie } from '../cookieUtils';
 
+import AdminEmployeeDLBoard from '../../Pages/Admin/EmployeeDLBoard/index';
+import EmployeeDLRegister from '../../Pages/employeeDLRegister/index';
+import LeadDLBoard from "../../Pages/Admin/LeadDLBoard/Index"
+import TeamLeaderDLRegister from '../../Pages/TeamLeaderDLRegister/Index'
+import ShowTeamDLLLeader from '../../Pages/showTeamDLLeader/updateCoordinatorDLProfile/Index'
+import AddDLClient from '../../Pages/Admin/LeadDLRegister/Index'
+
 const Index = () => {
     // removeCookie('accessToken')
     // console.log(getCookie('accessToken'));
-    const { setIsAuthenticated  } = useAuth();
+    const { setIsAuthenticated } = useAuth();
     useEffect(() => {
         const _id = localStorage.getItem('employeeId');
         const role = localStorage.getItem('role');
-        if(_id !== '' || _id !== null || _id !== undefined){
+        if (_id !== '' || _id !== null || _id !== undefined) {
             setIsAuthenticated((previousData) => ({ ...previousData, employeeId: _id, role }));
         }
     }, [setIsAuthenticated]);
@@ -40,44 +47,53 @@ const Index = () => {
     return (
         <React.Fragment>
             {/* <AuthProvider> */}
-                <Routes>
-                    <Route path='/' element={<Navigate to='/login' replace />} />
-                    <Route path='/login' element={<Login />} />
-                    {/* Admin Router */}
-                    <Route path='/' element={<Layout />} >
-                        <Route path='admin/dashboard' element={<AdminDashboard />} />
-                        <Route path='admin/employee-dashboard' element={<AdminEmployeeBoard />} />
-                        <Route path='admin/employee-dashboard/add' element={<EmployeeRegistration CoordinatorStartIndexDropDown={2} />} />
-                        <Route path='admin/show-leads' element={<LeadBoard />} />
-                        <Route path='admin/show-coordinator' element={<ShowTeamLeader />} />
-                        <Route path='admin/show-coordinator/add' element={<TeamLeaderRegister />} />
-                        <Route path='admin/show-leads/add' element={<AddClient />} />
-                        <Route path='admin/download-report' element={<DownloadReport />} />
-                    </Route>
+            <Routes>
+                <Route path='/' element={<Navigate to='/login' replace />} />
+                <Route path='/login' element={<Login />} />
+                {/* Admin Router */}
+                <Route path='/' element={<Layout />} >
+                    <Route path='admin/dashboard' element={<AdminDashboard />} />
+                    <Route path='admin/employee-dashboard' element={<AdminEmployeeBoard />} />
+                    <Route path='admin/employee-dashboard/add' element={<EmployeeRegistration CoordinatorStartIndexDropDown={2} />} />
+                    <Route path='admin/show-leads' element={<LeadBoard />} />
+                    <Route path='admin/show-coordinator' element={<ShowTeamLeader />} />
+                    <Route path='admin/show-coordinator/add' element={<TeamLeaderRegister />} />
+                    <Route path='admin/show-leads/add' element={<AddClient />} />
+                    <Route path='admin/download-report' element={<DownloadReport />} />
+                    {/* creating update Route */}
+                    <Route path='admin/employee-dashboard/update/:id' element={<Up />} />
 
-                    {/* Coordinator Router */}
-                    <Route path='/' element={<CoordinatorLayout />}>
-                        <Route path='coordinator/dashboard' element={<CoordinatorDashboard />} />
-                        <Route path='coordinator/employee-dashboard' element={<CoordinatorEmployeeBoard />} />
-                        <Route path='coordinator/employee-dashboard/add' element={<CoordinatorAddEmployee />} />
-                         
-                         {/* creating update Route */}
-                         <Route path='admin/employee-dashboard/update/:id' element={<Up/>} />
+                    {/* Employee Dealer Route */}               
+                       <Route path='/admin/employeeDL-dashboard' element={<AdminEmployeeDLBoard/>} ></Route>
+                        <Route path='/admin/employeeDL-dashboard/add' element={<EmployeeDLRegister/>}></Route>
+                        <Route path='/admin/showDL-coordinator' element={<ShowTeamDLLLeader/>}></Route>
+                        <Route path='/admin/showDL-coordinator/add' element={<TeamLeaderDLRegister/>}></Route>
+                        <Route path='/admin/showDL-leads' element={<LeadDLBoard/>} ></Route>
+                        <Route path='/admin/showDL-leads/add' element={<AddDLClient/>} ></Route>
+                </Route>
 
+                {/* Coordinator Router */}
+                <Route path='/' element={<CoordinatorLayout />}>
+                    <Route path='coordinator/dashboard' element={<CoordinatorDashboard />} />
+                    <Route path='coordinator/employee-dashboard' element={<CoordinatorEmployeeBoard />} />
+                    <Route path='coordinator/employee-dashboard/add' element={<CoordinatorAddEmployee />} />
+                    <Route path='coordinator/leads' element={<CoordinatorLeads />} />
+                    <Route path='coordinator/leads/add' element={<AddClient />} />
+                    <Route path='coordinator/download-report' element={<CoordinatorCanDownloadReport />} />
+                   
+                </Route>
 
-                        <Route path='coordinator/leads' element={<CoordinatorLeads />} />
-                        <Route path='coordinator/leads/add' element={<AddClient />} />
-                        <Route path='coordinator/download-report' element={<CoordinatorCanDownloadReport />} />
-                    </Route>
-
-                    {/* Employee Router */}
-                    <Route path='/' element={<EmployeeLayout />}>
-                        <Route path='employee/dashboard' element={<EmployeeDashboard />} />
-                        <Route path='employee/show-leads' element={<EmployeeLeads />} />
-                        <Route path='employee/show-leads/add' element={<AddClient employeeID={localStorage.getItem('employeeId')} />} />
-                    </Route>
-                </Routes>
+                {/* Employee Router */}
+                <Route path='/' element={<EmployeeLayout />}>
+                    <Route path='employee/dashboard' element={<EmployeeDashboard />} />
+                    <Route path='employee/show-leads' element={<EmployeeLeads />} />
+                    <Route path='employee/show-leads/add' element={<AddClient employeeID={localStorage.getItem('employeeId')} />} />
+                </Route>
+            </Routes>
             {/* </AuthProvider> */}
+
+
+
 
         </React.Fragment>
     )

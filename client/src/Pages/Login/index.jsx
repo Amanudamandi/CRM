@@ -35,6 +35,12 @@ const Index = () => {
             else if (localStorage.getItem('role') === '3') {
                 Navigate('/employee/dashboard');
             }
+            else if (localStorage.getItem('role') === '5') {
+                Navigate('/Dealer TL/dashboard');
+            }
+            else if (localStorage.getItem('role') === '6') {
+                Navigate('/employeeDL/dashboard');
+            }
         }
     }, []);
 
