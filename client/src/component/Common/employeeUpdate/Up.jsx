@@ -18,7 +18,7 @@ console.log("data2",data2)
 async function fetch(){
   setloading(true);
     try{
-      const response=await axios.get(`http://localhost:8080/emp/Employee/?id=${id}`);
+      const response=await axios.get(`${process.env.REACT_APP_URL}/emp/Employee/?id=${id}`);
       // console.log("abcd",response.data.data);
       setdata(response.data.data);
     }catch(error){

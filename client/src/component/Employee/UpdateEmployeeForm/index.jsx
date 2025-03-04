@@ -208,7 +208,7 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
                                 {/* Show dropdown only if state is "N/A" */}
                                 {leadInformation.state === "N/A" ? (
                                     <select
-                                        style={Style.inputField}
+                                        style={Style.inputField}    
                                         name="state"
                                         id="state"
                                         value={formData.state}

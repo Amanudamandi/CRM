@@ -3,6 +3,7 @@ import DynamicDropDown from '../../component/DropDown2/index';
 import { useEffect } from 'react';
 import axios from 'axios';
 import './index.css';
+import { useNavigate } from 'react-router-dom';
 
 const Index = ({ CoordinatorStartIndexDropDown }) => {
 
@@ -11,6 +12,8 @@ const Index = ({ CoordinatorStartIndexDropDown }) => {
     name: '',
     mobile: ''
   });
+
+  const navigator = useNavigate();
 
   // showDepartment API
   const [departmentId, setDepartmentId] = useState(null);
@@ -37,7 +40,7 @@ const Index = ({ CoordinatorStartIndexDropDown }) => {
     try {
       const sendRequest = await axios.get(`${process.env.REACT_APP_URL}/field/showDepartment`);
       const response = await sendRequest.data;
-      console.log(response.departments);
+      console.log(" department : ", response.departments);
       setDepartmentList(response.departments);
       // setDefaultDepartment("Select Department", null);
     } catch (error) {
@@ -49,7 +52,9 @@ const Index = ({ CoordinatorStartIndexDropDown }) => {
     getShowDepartment();
   }, []);
 
-  
+  // console.log("department id ",departmentId);
+
+
   // showTeamLeader API
   const [teamLeaderList, setTeamLeaderList] = useState(null);
   const [teamLeaderId, setTeamLeaderId] = useState(null);
@@ -143,7 +148,7 @@ const Index = ({ CoordinatorStartIndexDropDown }) => {
     const stateStatusList = [...currentStateStatus];
     console.log(e.target.checked);
     if (e.target.checked) {
-      stateStatusList[pos] = e.target.value;   
+      stateStatusList[pos] = e.target.value;
       showDistrict(e.target.value, pos);
     } else {
       stateStatusList[pos] = 0;
@@ -168,33 +173,33 @@ const Index = ({ CoordinatorStartIndexDropDown }) => {
   //         showDistrict(currentStateStatus[index], index);
   //     }
   //     else {
-        // setShowDistrictList((previousData) => {
-        //   const copyCurrentDistrictStatus = previousData.map((data) => [...data]);
-        //   copyCurrentDistrictStatus[index] = [];
-        //   return copyCurrentDistrictStatus;
-        // });
-        // setCurrentDistrictStatus((previousData) => {
-        //   const copyCurrentDistrictStatus = previousData.map((data) => [...data]);
-        //   copyCurrentDistrictStatus[index] = [];
-        //   return copyCurrentDistrictStatus;
-        // });
+  // setShowDistrictList((previousData) => {
+  //   const copyCurrentDistrictStatus = previousData.map((data) => [...data]);
+  //   copyCurrentDistrictStatus[index] = [];
+  //   return copyCurrentDistrictStatus;
+  // });
+  // setCurrentDistrictStatus((previousData) => {
+  //   const copyCurrentDistrictStatus = previousData.map((data) => [...data]);
+  //   copyCurrentDistrictStatus[index] = [];
+  //   return copyCurrentDistrictStatus;
+  // });
   //     }
   //   }
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [currentStateStatus]);
 
   const handleChangeCheckBoxes = (e, row, col) => {
-    console.log("xyz",currentDistrictStatus);
+    console.log("xyz", currentDistrictStatus);
     console.log(row, col);
-    const updatedListOfCheckBoxed = currentDistrictStatus.map((data) => [...data ]);
-    console.log("updated Checked box ",updatedListOfCheckBoxed);
-    if (currentDistrictStatus[row][col] !== -1){
-      if(e.target.checked)
+    const updatedListOfCheckBoxed = currentDistrictStatus.map((data) => [...data]);
+    console.log("updated Checked box ", updatedListOfCheckBoxed);
+    if (currentDistrictStatus[row][col] !== -1) {
+      if (e.target.checked)
         updatedListOfCheckBoxed[row][col] = true;
-      else 
+      else
         updatedListOfCheckBoxed[row][col] = false;
     }
-    console.log("current disrtrict Status",currentDistrictStatus[row][col]);
+    console.log("current disrtrict Status", currentDistrictStatus[row][col]);
     console.log(updatedListOfCheckBoxed);
     setCurrentDistrictStatus(updatedListOfCheckBoxed);
   }
@@ -212,6 +217,8 @@ const Index = ({ CoordinatorStartIndexDropDown }) => {
     const { name, value } = e.target;
     setRegistration({ ...RegistrationData, [name]: value });
   }
+
+
 
   const handleEmployeeRegisterSubmit = async (e) => {
     e.preventDefault();
@@ -238,7 +245,7 @@ const Index = ({ CoordinatorStartIndexDropDown }) => {
     if (!teamLeaderId) {
       alert('Select the Team Leader');
       return;
-    } 
+    }
     try {
       const states = [];
       for (let index = 0; index < currentStateStatus.length; index++) {
@@ -260,10 +267,10 @@ const Index = ({ CoordinatorStartIndexDropDown }) => {
         alert('Select the states');
         return;
       }
-      if (district.length === 0) {
-        alert('Select the districts to be assigned');
-        return;
-      }
+      // if (district.length === 0) {
+      //   alert('Select the districts to be assigned');
+      //   return;
+      // }
 
       console.log(states);
 
@@ -281,6 +288,7 @@ const Index = ({ CoordinatorStartIndexDropDown }) => {
         setStateNames([]);
         setShowDistrictList(new Array(stateNames.length).fill().map(() => new Array()));
         setCurrentDistrictStatus(new Array(stateNames.length).fill().map(() => new Array()));
+        navigator("/admin/employee-dashboard");
       }
       // set
     } catch (error) {
@@ -294,6 +302,8 @@ const Index = ({ CoordinatorStartIndexDropDown }) => {
       alert(errorsStr);
     }
   }
+
+
   return (
     <>
       <style>
@@ -382,21 +392,24 @@ const Index = ({ CoordinatorStartIndexDropDown }) => {
                 </section>
               </fieldset>
 
-              <fieldset style={{ marginTop: '0.5rem' }}>
-                <legend style={{ fontWeight: '700', margin: '1rem', padding: '0px 5px', color: '#880104' }}>District</legend>
-                <section style={{ overflowY: 'auto', height: '180px', width: '95%', margin: 'auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start', alignItems: 'flex-start', gap: '10px' }}>
-                  {
-                    showDistrictList.map((eachDistrict, row) => {
-                      return eachDistrict.map(({ _id, name, status }, col) => (
-                        <div key={_id} style={{ display: 'flex', width: 'min-content', gap: '4.5px', textDecoration: status ? 'line-through' : 'none' }}>
-                          <input type="checkbox" name="district" id={name} value={name} style={{ width: 'min-content' }} disabled={status ? true : false} onChange={(e) => handleChangeCheckBoxes(e, row, col)} />
-                          <label htmlFor={name} style={{ padding: '0px', color: status ? 'rgb(120, 120, 120)' : '#000', fontSize: '12px', width: 'max-content' }}>{name}</label>
-                        </div>
-                      ))
-                    }
-                    )}
-                </section>
-              </fieldset>
+
+              {departmentId!== "66e139caa9afb40e2bbbd82e" &&
+                <fieldset style={{ marginTop: '0.5rem' }}>
+                  <legend style={{ fontWeight: '700', margin: '1rem', padding: '0px 5px', color: '#880104' }}>District</legend>
+                  <section style={{ overflowY: 'auto', height: '180px', width: '95%', margin: 'auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start', alignItems: 'flex-start', gap: '10px' }}>
+                    {
+                      showDistrictList.map((eachDistrict, row) => {
+                        return eachDistrict.map(({ _id, name, status }, col) => (
+                          <div key={_id} style={{ display: 'flex', width: 'min-content', gap: '4.5px', color: "black" }}>
+                            <input type="checkbox" name="district" id={name} value={name} style={{ width: 'min-content' }} onChange={(e) => handleChangeCheckBoxes(e, row, col)} />
+                            <label htmlFor={name} style={{ padding: '0px', color: 'black', fontSize: '12px', width: 'max-content' }}>{name}</label>
+                          </div>
+                        ))
+                      }
+                      )}
+                  </section>
+                </fieldset>
+              }
             </div>
           </div>
         </div>

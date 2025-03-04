@@ -478,13 +478,103 @@ const fetchClients = async(req,res) =>{
         });
     }
 }
+// const updateClient = async(req,res) =>{
+//     try {
+//         console.log("hgff",req.query || req.body || req.params);
+//         let newVisit = null;
+//         const {kwpInterested, type, email, stageID, selectedFieldSales, visitingDate, followUpDate, remark, clientID, empID,address,location} = req.body;
+//         const [latitude, longitude] = location.split(", ").map(Number);
+        
+//         if(!req?.body?.clientID){
+//             return res.status(400).json({
+//                 success:false,
+//                 msg:"client Id not Exist!"
+//             });
+//         }
+
+        
+//         const ElectrcityBill=await req.files["electricitybill"]?`${process.env.SERVER_URL}uploads/ElectricityBill/${req.files["electricitybill"][0].filename}`:null;
+//         console.log(ElectrcityBill);
+//         const   ProposalPdf=await req.files["proposalpdf"]?`${process.env.SERVER_URL}uploads/proposalpdf/${req.files["proposalpdf"][0].filename}`:null;
+//         const additionalsdetails=new Extradetails({
+//        ElectrcityBill,ProposalPdf
+//         })
+//         additionalsdetails.save();
+
+//         if(followUpDate || visitingDate){ // check given date is not less the current date 
+//             const queryData = new Date(followUpDate || visitingDate);
+//             const today = new Date();
+//             if(queryData.getDate() < today.getDate() && queryData.getMonth() < today.getMonth() && queryData.getYear() < today.getYear()){
+//                 return res.status(400).json({
+//                     success:false,
+//                     msg:" Please give valid Date."
+//                 })
+//             }  
+//         }
+//         if(followUpDate){
+//             const newFollowUpDate = await equalDateFunction(followUpDate);
+//             console.log(newFollowUpDate);
+//             await FollowUp.findOneAndUpdate({clientID: clientID}, {$set : {followUpDate:newFollowUpDate}},{new: true, upsert:true, runValidators: true });
+//         }
+//         // console.log("RB",req.body);
+//         // if(visitingDate && assignEmp == ''){
+//         //     return res.status(400).json({
+//         //         success:false,
+//         //         msg:"Visiting date not save without assign employee."
+//         //     })
+//         // }
+//         if(visitingDate){
+//             console.log("missin Success")
+//             const newVisitingDate = await equalDateFunction(visitingDate);
+//             const visit = new AssignEmployee({
+//                 clientID, fieldEmpID:selectedFieldSales, visitingDate:newVisitingDate
+//             });
+//             newVisit = await visit.save();
+//             console.log(newVisit)
+//         }
+//         const UpdatedData ={
+//             kwpInterested:kwpInterested,
+//             type:type,
+//             email:email,
+//             stageID:stageID,
+//             AdditionalDetails:additionalsdetails._id,
+//             address:address,
+//             latitude:latitude?latitude:null,
+//             longitude:longitude?longitude:null,
+            
+//         }
+        
+//         const updateClient = await Client.findByIdAndUpdate(clientID, UpdatedData, { new:true, runValidators: true }).populate("AdditionalDetails");
+//         if(!updateClient){
+//             return res.status(404).json({
+//                 success:false,
+//                 msg:'Something is Wrong please try again !'
+//             });
+//         }
+//         if(stageID){
+//             const stageUpdateDate = new Date();
+//             await insertStageActivity(clientID, empID, stageID, stageUpdateDate, remark);
+//         }
+//         return res.status(200).json({
+//             success:true,
+//             msg:"Update SuccessFully .",
+//             data:updateClient,
+//         });
+//     } catch (error) {
+//         console.log(error)
+//         return res.status(400).json({
+//             success:false,
+//             msg:error.message
+//         });
+//     }
+// }
 const updateClient = async(req,res) =>{
     try {
         console.log("hgff",req.query || req.body || req.params);
         let newVisit = null;
-        const {kwpInterested, type, email, stageID, selectedFieldSales, visitingDate, followUpDate, remark, clientID, empID,address,location} = req.body;
+        const {kwpInterested, type, email, stageID, selectedFieldSales, visitingDate, followUpDate, remark, clientID, empID,address,location,state} = req.body;
         const [latitude, longitude] = location.split(", ").map(Number);
-        
+       
         if(!req?.body?.clientID){
             return res.status(400).json({
                 success:false,
@@ -492,7 +582,13 @@ const updateClient = async(req,res) =>{
             });
         }
 
-        
+        // const StateName="Delhi";
+        const response=await State.find({state:state});
+   
+        console.log(response,"state response");
+       
+
+       
         const ElectrcityBill=await req.files["electricitybill"]?`${process.env.SERVER_URL}uploads/ElectricityBill/${req.files["electricitybill"][0].filename}`:null;
         console.log(ElectrcityBill);
         const   ProposalPdf=await req.files["proposalpdf"]?`${process.env.SERVER_URL}uploads/proposalpdf/${req.files["proposalpdf"][0].filename}`:null;
@@ -501,7 +597,7 @@ const updateClient = async(req,res) =>{
         })
         additionalsdetails.save();
 
-        if(followUpDate || visitingDate){ // check given date is not less the current date 
+        if(followUpDate || visitingDate){ // check given date is not less the current date
             const queryData = new Date(followUpDate || visitingDate);
             const today = new Date();
             if(queryData.getDate() < today.getDate() && queryData.getMonth() < today.getMonth() && queryData.getYear() < today.getYear()){
@@ -533,6 +629,7 @@ const updateClient = async(req,res) =>{
             console.log(newVisit)
         }
         const UpdatedData ={
+             stateID:response[0]._id,
             kwpInterested:kwpInterested,
             type:type,
             email:email,
@@ -541,9 +638,9 @@ const updateClient = async(req,res) =>{
             address:address,
             latitude:latitude?latitude:null,
             longitude:longitude?longitude:null,
-            
+           
         }
-        
+       
         const updateClient = await Client.findByIdAndUpdate(clientID, UpdatedData, { new:true, runValidators: true }).populate("AdditionalDetails");
         if(!updateClient){
             return res.status(404).json({

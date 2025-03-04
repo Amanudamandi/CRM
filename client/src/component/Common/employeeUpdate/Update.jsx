@@ -116,10 +116,10 @@ const Update = ({ data2, setdata }) => {
     setCurrentDistrictStatus(new Array(stateNames.length).fill().map(() => new Array()));
   }, [teamLeaderId])
 
-  const showDistrict = async (stateId, row) => {
+  const showDistrict = async (stateID, row) => {
     try {
-      if (!stateId) return;
-      const districtData = await axios.get(`${process.env.REACT_APP_URL}/field/showDistrict/?stateID=${stateId}`);
+      if (!stateID) return;
+      const districtData = await axios.get(`${process.env.REACT_APP_URL}/field/showDistrict/?stateID=${stateID}`);
 
       console.log("District Data : ", districtData.data.Districts.district);
       const response = await districtData.data.Districts.district;
@@ -155,20 +155,20 @@ const Update = ({ data2, setdata }) => {
   }
 
   const handleStateChangeCheckBoxes = (e, pos) => {
-    const stateId = e.target.value;
+    const stateID = e.target.value;
 
-    console.log("state Id : ",stateId);
+    console.log("state Id : ",stateID);
 
     const stateStatusList = [...currentStateStatus];
     if (e.target.checked) {
 
-      stateStatusList[pos] = stateId;
+      stateStatusList[pos] = stateID;
       console.log("my check state is ", stateStatusList);
-      showDistrict(stateId, pos);
+      showDistrict(stateID, pos);
       // console.log("district checked: ",district);
     } else {
 
-      // stateStatusList = stateStatusList.filter((id) => id !== stateId); //change here
+      // stateStatusList = stateStatusList.filter((id) => id !== stateID); //change here
 
       // it work when we unchecked input
       stateStatusList[pos] = 0;
@@ -344,9 +344,9 @@ const Update = ({ data2, setdata }) => {
         name: form?.emp,
         mobile: form?.phone,
         teamleader: teamLeaderId,
-        // stateId: selectedState,
+        // stateID: selectedState,
         // district: selectedDistricts,
-        stateId: currentStateStatus.filter(state => state !== 0 && state !== undefined),
+        stateID: currentStateStatus.filter(state => state !== 0 && state !== undefined),
         district: assignedDistricts, // Send final updated districts
         // addedDistricts: addedDistricts,  // Send added separately
         // removedDistricts: removedDistricts // Send removed separately

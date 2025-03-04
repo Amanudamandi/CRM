@@ -128,3 +128,12 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+
+upload/aadhar/
+upload/pancard/
+upload/proposalpdf/
+upload/Electricitybill
+upload/dimensions
+upload/cancelcheack
+upload/video
