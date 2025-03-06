@@ -39,6 +39,8 @@ const Index = ({ updateCoordinatorProfile = '', setCoordinatorProfile }) => {
     setCoordinatorRegistrationData((previous) => ({ ...previous, [name]: value }));
   }
 
+  // console.log("coordinateRegisterData ",coordinatorRegistrationData);
+
   const [currentStateStatus, setCurrentStateStatus] = useState(new Array(36).fill(0));
 
 
@@ -88,7 +90,7 @@ const Index = ({ updateCoordinatorProfile = '', setCoordinatorProfile }) => {
     if (updateCoordinatorProfile) {
       const { name, mobile, stateID } = registrationData;
       const { uniqueID } = updateCoordinatorProfile
-      console.log(uniqueID, name, mobile, stateID);
+      console.log("data " ,uniqueID, name, mobile, stateID);
       updateCoordinatorProfileApi(uniqueID, { name, mobile, stateID });
       setCoordinatorProfile({ clicked: false });
     } else {
@@ -189,26 +191,7 @@ const Index = ({ updateCoordinatorProfile = '', setCoordinatorProfile }) => {
             <div className="bottomLeft ">
               <label htmlFor='empName'>Name</label>
               <input type="text" name="name" id="empName" value={coordinatorRegistrationData.name} onChange={handleOnChangeInput} />
-
-              {/* <label htmlFor='empDOB'>Date Of Birth</label>
-                  <input type="date" className='' name="dob"  id="empDOB"  /> */}
-
-              {/* <div className='gender'>
-                    <label htmlFor='empGender'>Gender</label>
-                    <div style={{display: 'flex', gap: '8px'}}>
-                      <span>
-                        <input  type="radio" name="gender" id="inlineRadio1"  value="Male" checked/>
-                        <label  htmlFor="inlineRadio1" style={{color:'black'}}>&nbsp; Male</label>
-                      </span>
-                      <span>
-                        <input  type="radio" name="gender" id="inlineRadio2"   value="Female"/>
-                        <label htmlFor="inlineRadio2" style={{color:'black'}}>&nbsp; Female</label>
-                      </span>
-                    </div>
-                  </div> */}
-
-              {/* <label htmlFor='empEmail'>Email ID</label>
-                  <input type="email"  name="emailId"  id="empEmail" onChange={handleOnChangeInput} /> */}
+              
               <label htmlFor='empMobile'>Mobile</label>
               <input type="number" name="mobile" id="empMobile" value={coordinatorRegistrationData.mobile} onChange={handleOnChangeInput} />
               <button type="submit" className='submitBtn' style={Styles.submitBtnForTL}>Submit</button>

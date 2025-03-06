@@ -46,6 +46,14 @@ const crmLoginAPI = async( loginCredentials ) => {
               Navigate('employee/dashboard');
               setIsAuthenticated((previousData) => ({...previousData, employeeId: localStorage.getItem('employeeId')}));
             }
+            else if(role === 5){
+              Navigate('dealerTL/dashboard');
+              setIsAuthenticated((previousData) => ({...previousData, employeeId: localStorage.getItem('employeeId')}));
+            }
+            else if(role === 6){
+              Navigate('employeeDL/dashboard');
+              setIsAuthenticated((previousData) => ({...previousData, employeeId: localStorage.getItem('employeeId')}));
+            }
         }
     } catch (error) {
         const status = error.response.status;

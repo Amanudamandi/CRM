@@ -36,7 +36,7 @@ const Index = () => {
                 Navigate('/employee/dashboard');
             }
             else if (localStorage.getItem('role') === '5') {
-                Navigate('/Dealer TL/dashboard');
+                Navigate('/dealerTL/dashboard');
             }
             else if (localStorage.getItem('role') === '6') {
                 Navigate('/employeeDL/dashboard');

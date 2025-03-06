@@ -28,6 +28,8 @@ require('./db/conn');
     const messageRouter = require('./routers/messageRouter.js');
     const landingPageRouter = require('./routers/landingPages/landingPageRouter.js');
     const accountRouter = require('./routers/account/accountRouter.js');
+    const DealerTLRouter= require("../server/routers/TLdealerRoutes.js");
+    const Dealeremployee= require("../server/routers/TLemployeeRoutes.js");
     app.use(cookieParser());
     const allowedOrigins = [
         'http://88.222.214.93:3000',
@@ -61,6 +63,8 @@ require('./db/conn');
     app.use("/message", messageRouter);
     app.use("/landingPage", landingPageRouter);
     app.use("/account", accountRouter);
+    app.use("/dealerTL",DealerTLRouter);
+    app.use("/DLemp",Dealeremployee);
     const port = 8080;
     app.listen(port, ()=>{
         console.log(`server is running ${port}`);

@@ -7,6 +7,8 @@ const {validationResult} = require('express-validator') // get error response
 const jwt =require('jsonwebtoken');
 const startDateConvertor = require('../helpers/common/dateConversion/startDate');
 const endDateConvertor = require('../helpers/common/dateConversion/endDate');
+const DealerTL= require("../models/Dealer Models/DealerTL");
+const TLemployee= require("../models/Dealer Models/DealerEmployee")
 
 const generateAccessToken = async (user) =>{
     const token = jwt.sign(user, process.env.JWT_SECRET, {expiresIn:"12h"});
@@ -213,6 +215,8 @@ const adminAdd = async(req,res) =>{
 const empLogin = async(req,res) =>{
     try {
         const{department,email,password} = req.body;
+        console.log(password);
+        console.log(department);
         const options ={
             httpOnly : true,
             secure : true
@@ -323,8 +327,129 @@ const empLogin = async(req,res) =>{
                 });
             }
             
+        }else if(department == 5){
+            try {
+                const teamLeaderData = await DealerTL.findOne({empID:email}).populate('department').populate('stateID');
+                console.log(teamLeaderData);
+                if(!teamLeaderData){
+                    return res.status(500).json({
+                        success:false,
+                        msg:'Employee ID not exist!'
+                    })
+                }
+              
+                // if(!errors.isEmpty()){
+                //     return res.status(500).json({
+                //     success:false,
+                //     errors:errors.array()
+                //     }) 
+                // }
+                if(teamLeaderData.mobile != password){
+                    return res.status(401).json({ 
+                        success:false,
+                        msg: 'Employee ID and password is Incorrect!'
+                    });
+                }
+                const accessToken = await generateAccessToken({ teamLeader:teamLeaderData });
+                console.log(accessToken);
+                const refreshToken = await generateRefreshToken({ teamLeader:teamLeaderData._id });
+                console.log(refreshToken);
+                // console.log(teamLeaderData);    
+                const TLLoggedData = await DealerTL.findOne({empID:email})
+                .populate('department')
+                .populate('stateID')
+                .select("-mobile -empID");
+                await teamLeader.findByIdAndUpdate(
+                    TLLoggedData._id,
+                    {$set:{ refreshToken: refreshToken }},
+                    {new:true}
+                )
+                return res.status(200)
+                .cookie("accessToken", accessToken, options)
+                .cookie("refreshToken", refreshToken, options)
+                .json({
+                    success:true,
+                    msg:'Login Successfully',
+                    data:TLLoggedData,
+                    prefixName:teamLeaderData.name[0],
+                    accessToken:accessToken,
+                    refreshToken:refreshToken,
+                    tokenType:'Bearer'
+                  });
+
+            } catch (error) {
+                console.log(error)
+                return res.status(400).json({
+                   message:"Error ",
+                    success:false,
+                    msg:error.message,
+                    
+                });
+            }
+            
+        }else if(department == 6){
+            try {
+                const TLemployeeData = await TLemployee.findOne({empID:email}).populate('department').populate('stateID').populate('teamLeader');
+                console.log(TLemployeeData);
+                if(!TLemployeeData){
+                    return res.status(500).json({
+                        success:false,
+                        msg:'Employee ID not exist!'
+                    })
+                }
+              
+                // if(!errors.isEmpty()){
+                //     return res.status(500).json({
+                //     success:false,
+                //     errors:errors.array()
+                //     }) 
+                // }
+                if(TLemployeeData.mobile != password){
+                    return res.status(401).json({ 
+                        success:false,
+                        msg: 'Employee ID and password is Incorrect!'
+                    });
+                }
+                const accessToken = await generateAccessToken({ TLemployee:TLemployeeData });
+                console.log(accessToken);
+                const refreshToken = await generateRefreshToken({ TLemployee:TLemployeeData._id});
+                console.log(refreshToken);
+                // console.log(teamLeaderData);    
+                const TLEoggedData = await TLemployee.findOne({empID:email})
+                .populate('department')
+                .populate('stateID')
+                .select("-mobile -empID");
+                await TLemployee.findByIdAndUpdate(
+                    TLEoggedData._id,
+                    {$set:{ refreshToken: refreshToken }},
+                    {new:true}
+                )
+                console.log(TLEoggedData?.name,"name");
+                return res.status(200)
+                .cookie("accessToken", accessToken, options)
+                .cookie("refreshToken", refreshToken, options)
+                .json({
+                    success:true,
+                    msg:'Login Successfully',
+                    data:TLEoggedData,
+                    prefixName:TLEoggedData?.name,
+                    accessToken:accessToken,
+                    refreshToken:refreshToken,
+                    tokenType:'Bearer'
+                  });
+
+            } catch (error) {
+                console.log(error)
+                return res.status(400).json({
+                   message:"Error ",
+                    success:false,
+                    msg:error.message,
+                    
+                });
+            }
+            
         }
-        else{
+        else {
             const employeeData = await employee.findOne({empID:email}).populate('department').populate('teamLeader');
             const errors = validationResult(req);
             if(!errors.isEmpty()){
@@ -360,7 +485,7 @@ const empLogin = async(req,res) =>{
                 refreshToken:refreshToken,
                 tokenType:'Bearer'
               });
-        }
+        } 
         
     } catch (error) {
         return res.status(400).json({

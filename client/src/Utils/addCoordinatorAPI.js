@@ -6,7 +6,7 @@ export const coordinatorRegistration = async( coordinatorRegistrationData ) => {
         const response = await sendRequest.data;
         const success = response.success;
         if(!success){
-            alert(response.msg);
+            alert(response.msg); 
         }
         else{
             alert(response.msg);

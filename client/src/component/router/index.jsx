@@ -31,6 +31,8 @@ import LeadDLBoard from "../../Pages/Admin/LeadDLBoard/Index"
 import TeamLeaderDLRegister from '../../Pages/TeamLeaderDLRegister/Index'
 import ShowTeamDLLLeader from '../../Pages/showTeamDLLeader/updateCoordinatorDLProfile/Index'
 import AddDLClient from '../../Pages/Admin/LeadDLRegister/Index'
+import DealerLayout from '../DealerLayout/Index'
+import DealerDashBoard from '../../Pages/DealerTL/Dashboard/Index'
 
 const Index = () => {
     // removeCookie('accessToken')
@@ -63,13 +65,13 @@ const Index = () => {
                     {/* creating update Route */}
                     <Route path='admin/employee-dashboard/update/:id' element={<Up />} />
 
-                    {/* Employee Dealer Route */}               
-                       <Route path='/admin/employeeDL-dashboard' element={<AdminEmployeeDLBoard/>} ></Route>
-                        <Route path='/admin/employeeDL-dashboard/add' element={<EmployeeDLRegister/>}></Route>
-                        <Route path='/admin/showDL-coordinator' element={<ShowTeamDLLLeader/>}></Route>
-                        <Route path='/admin/showDL-coordinator/add' element={<TeamLeaderDLRegister/>}></Route>
-                        <Route path='/admin/showDL-leads' element={<LeadDLBoard/>} ></Route>
-                        <Route path='/admin/showDL-leads/add' element={<AddDLClient/>} ></Route>
+                    {/* Employee Dealer Route */}
+                    <Route path='/admin/employeeDL-dashboard' element={<AdminEmployeeDLBoard />} ></Route>
+                    <Route path='/admin/employeeDL-dashboard/add' element={<EmployeeDLRegister />}></Route>
+                    <Route path='/admin/showDL-coordinator' element={<ShowTeamDLLLeader />}></Route>
+                    <Route path='/admin/showDL-coordinator/add' element={<TeamLeaderDLRegister />}></Route>
+                    <Route path='/admin/showDL-leads' element={<LeadDLBoard />} ></Route>
+                    <Route path='/admin/showDL-leads/add' element={<AddDLClient />} ></Route>
                 </Route>
 
                 {/* Coordinator Router */}
@@ -80,7 +82,7 @@ const Index = () => {
                     <Route path='coordinator/leads' element={<CoordinatorLeads />} />
                     <Route path='coordinator/leads/add' element={<AddClient />} />
                     <Route path='coordinator/download-report' element={<CoordinatorCanDownloadReport />} />
-                   
+
                 </Route>
 
                 {/* Employee Router */}
@@ -89,8 +91,15 @@ const Index = () => {
                     <Route path='employee/show-leads' element={<EmployeeLeads />} />
                     <Route path='employee/show-leads/add' element={<AddClient employeeID={localStorage.getItem('employeeId')} />} />
                 </Route>
+
+                {/* dealerTL dashboard */}
+                <Route path='/' element={<DealerLayout />}>
+                    <Route path='/dealerTL/dashboard' element={<DealerDashBoard />}></Route>
+                </Route>
             </Routes>
             {/* </AuthProvider> */}
+
+
 
 
 

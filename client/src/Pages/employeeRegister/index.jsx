@@ -86,6 +86,7 @@ const Index = ({ CoordinatorStartIndexDropDown }) => {
       console.log(response.data);
       setTeamLeaderList(response.data);
       setDefaultTeamLeader('Assign a TL', null);
+        
     } catch (error) {
       console.error(error);
     }
@@ -146,6 +147,7 @@ const Index = ({ CoordinatorStartIndexDropDown }) => {
 
   const handleStateChangeCheckBoxes = (e, pos) => {
     const stateStatusList = [...currentStateStatus];
+    console.log("stateStatusList : ",stateStatusList);
     console.log(e.target.checked);
     if (e.target.checked) {
       stateStatusList[pos] = e.target.value;
@@ -346,6 +348,7 @@ const Index = ({ CoordinatorStartIndexDropDown }) => {
                 <DynamicDropDown
                   objectList={departmentList}
                   startIndex={CoordinatorStartIndexDropDown}
+                  // endIndex={CoordinatorEndIndexDropDown}
                   selectedValue={selectedDepart}
                   setSelectedValue={toggleDepartment}
                   isOpen={isOpen}

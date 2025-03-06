@@ -57,6 +57,8 @@ const Index = () => {
             const sendRequest = await axios.get(`${process.env.REACT_APP_URL}/auth/showTeamLeader`);
             if (isMounted) {
                 const response = await sendRequest.data;
+               
+                console.log("Team leader ",response);
                 const success = response.success;
                 if (success) {
                     console.log(response.data, success);
