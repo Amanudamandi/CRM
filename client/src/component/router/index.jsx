@@ -33,6 +33,7 @@ import ShowTeamDLLLeader from '../../Pages/showTeamDLLeader/updateCoordinatorDLP
 import AddDLClient from '../../Pages/Admin/LeadDLRegister/Index'
 import DealerLayout from '../DealerLayout/Index'
 import DealerDashBoard from '../../Pages/DealerTL/Dashboard/Index'
+import CoordinateDealerBoard from '../../Pages/DealerTL/EmployeeBoard/Index'
 
 const Index = () => {
     // removeCookie('accessToken')
@@ -95,6 +96,7 @@ const Index = () => {
                 {/* dealerTL dashboard */}
                 <Route path='/' element={<DealerLayout />}>
                     <Route path='/dealerTL/dashboard' element={<DealerDashBoard />}></Route>
+                    {/* <Route path='/dealerTL/dealer-dashboard' element={<CoordinateDealerBoard/>} ></Route> */}
                 </Route>
             </Routes>
             {/* </AuthProvider> */}

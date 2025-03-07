@@ -30,6 +30,7 @@ require('./db/conn');
     const accountRouter = require('./routers/account/accountRouter.js');
     const DealerTLRouter= require("../server/routers/TLdealerRoutes.js");
     const Dealeremployee= require("../server/routers/TLemployeeRoutes.js");
+    const DLlead= require("../server/routers/TLclientRoutes.js");
     app.use(cookieParser());
     const allowedOrigins = [
         'http://88.222.214.93:3000',
@@ -54,6 +55,9 @@ require('./db/conn');
     app.use(express.json({limit: '10mb'}));
     app.use(express.urlencoded({ extended: true })); 
     app.use("/uploads", express.static("uploads"));
+
+
+    app.use("/clientDL",DLlead);
 
     app.use("/auth",authRouter);
     app.use("/field",fieldRouter);

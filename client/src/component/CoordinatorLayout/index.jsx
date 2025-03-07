@@ -23,7 +23,7 @@ const Index = () => {
                 <header>
                     <CoordinatorSideNav
                         department='Coordinator'
-                        nameLogo='D'
+                        nameLogo='C'
                     />
                 </header>
                 <main>

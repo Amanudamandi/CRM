@@ -13,7 +13,7 @@ const Index = () => {
                 <header>
                     <SideNav 
                         department='Admin' 
-                        nameLogo='S'    
+                        nameLogo='A'    
                     />
                 </header>
                 <main>

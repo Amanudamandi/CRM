@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import LeadBoardHeader from '../../../component/Common/showLeadsHeader/index';
 import FixedRow from '../../../component/Common/ShowEmployeeCard/FixedRow/index';
@@ -8,6 +8,7 @@ import UpdateLead from '../../../component/Employee/UpdateEmployeeForm/index';
 import Loader from '../../../component/Common/Loader/index';
 import { FiArrowRightCircle } from "react-icons/fi";
 import { FiArrowLeftCircle } from "react-icons/fi";
+import axios from 'axios';
 
 const Index = () => {
 
@@ -77,6 +78,8 @@ const Index = () => {
     //         loadMoreLeads();
     //     }
     // }
+
+     
 
     return (
         <section style={Styles.adminContainer}>
@@ -161,6 +164,7 @@ const Index = () => {
                             </td>
                         </tr> */}
                 </table>
+                
             </section>
 
             {leadClickedInfo.clicked &&
@@ -198,7 +202,10 @@ const Index = () => {
                     <FiArrowRightCircle size={20} onClick={increasePageCount} />
                 </div>
             </div>
+
+            
         </section>
+        
     )
 }
 

@@ -287,6 +287,16 @@ const fetchClients = async(req,res) =>{
         if(empID) filters.empID = new mongoose.Types.ObjectId(empID);
         if(id) filters._id = new mongoose.Types.ObjectId(id);
         if (TLID) filters.TLID = new mongoose.Types.ObjectId(TLID);
+
+
+    
+
+
+
+
+
+
+        
         if(employeeName === "N/A" || employeeName === "n/a") filters.empID = null; // for find not assign clients
         // find employee id according to employee name and apply filter
         if(employeeName && employeeName != 'undefined' && employeeName != "N/A" && employeeName != "n/a"){

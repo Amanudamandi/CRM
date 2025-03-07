@@ -55,7 +55,7 @@ const registeremployeeDL = async (req, res) => {
 
 const fetchAllDealerEmployee=async(req,res)=>{
     try{
-     const reponse=await EmployeeDL.find({}).populate("stateID").populate("teamLeader").populate("department");
+     const reponse=await EmployeeDL.find({}).populate("stateID").populate("department");
      res.status(200).json({
         message:"Fetched succesfully",
         data:reponse
