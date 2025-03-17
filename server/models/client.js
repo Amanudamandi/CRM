@@ -94,6 +94,11 @@ const clientSchema = mongoose.Schema({
     CurrentDate:{
         type: Date,
         default:Date.now
+    },
+    status:{
+        type:String,
+        enum:["Complete","Pending","Reject","Delay"],
+        default:"Pending"
     }
 });
 const client = mongoose.model("Client",clientSchema);

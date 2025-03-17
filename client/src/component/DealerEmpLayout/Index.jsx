@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import DealerSideBar from '../Common/SideNav2/index';
+import DLEmpSideBar from "../Common/DLEmpSidebar/Index";
 
 const Index = () => {
 
@@ -11,9 +11,9 @@ const Index = () => {
         <React.Fragment>
             <article style={Styles.webSiteContainer}>
                 <header>
-                    <DealerSideBar
-                        department='Dealer'
-                        nameLogo='D'
+                    <DLEmpSideBar
+                        department='DLEmployee'
+                        nameLogo='E'
                     />
                 </header>
                 <main>

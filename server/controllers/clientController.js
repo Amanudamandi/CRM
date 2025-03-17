@@ -23,6 +23,8 @@ const mongoose = require('mongoose');
 const employee = require('../models/employee');
 const Department= require("../models/department");
 const Extradetails= require("../models/Extradetails");
+const XLSX = require('xlsx');
+const fs = require('fs');
 
 const clientAdd = async(req,res) =>{
     try {
@@ -279,6 +281,8 @@ const fetchClients = async(req,res) =>{
        
         const id = req.id;
         const {TLID, name, empID, district, state, email, mobile, source, stage, page, limit, date, startDate, endDate, type, kwpInterested, employeeName, teamLeaderName}= req.query;
+        console.log(page);
+        console.log(limit);
         console.log("QUERY",req.query)
         const stateName = await State.find({state: {$regex : `^${state}`, $options:'i'}}).select("_id");
        
@@ -474,6 +478,7 @@ const fetchClients = async(req,res) =>{
                     followUpDate : followData?.followUpDate
                 }
         }));
+      
         // console.log(updatedClients.length)
         return res.status(200).json({
             success:true,
@@ -494,6 +499,8 @@ const updateClient = async(req,res) =>{
         console.log("hgff",req.query || req.body || req.params);
         let newVisit = null;
         const {kwpInterested, type, email, stageID, selectedFieldSales, visitingDate, followUpDate, remark, clientID, empID,address,location,state} = req.body;
+        console.log(visitingDate,"vsuisting date");
+        console.log(address,"adrees")
         const [latitude, longitude] = location.split(", ").map(Number);
        
         if(!req?.body?.clientID){
@@ -543,6 +550,7 @@ const updateClient = async(req,res) =>{
         if(visitingDate){
             console.log("missin Success")
             const newVisitingDate = await equalDateFunction(visitingDate);
+            console.log(newVisitingDate,"DEFEFE")
             const visit = new AssignEmployee({
                 clientID, fieldEmpID:selectedFieldSales, visitingDate:newVisitingDate
             });
@@ -559,6 +567,7 @@ const updateClient = async(req,res) =>{
             address:address,
             latitude:latitude?latitude:null,
             longitude:longitude?longitude:null,
+            status:"Delay",
            
         }
        
@@ -573,6 +582,7 @@ const updateClient = async(req,res) =>{
             const stageUpdateDate = new Date();
             await insertStageActivity(clientID, empID, stageID, stageUpdateDate, remark);
         }
+       
         return res.status(200).json({
             success:true,
             msg:"Update SuccessFully .",
@@ -586,7 +596,6 @@ const updateClient = async(req,res) =>{
         });
     }
 }
-
 
 
 
@@ -629,7 +638,7 @@ const fetchByFile = async(req,res) =>{
                     const postOffice = zipCodeResponse.data[0].PostOffice[0];
                     district = postOffice.District;
                     state = postOffice.State;
-                    console.log("D = ",district, "S = ",state);
+                   
                 }
             }
             if(state){

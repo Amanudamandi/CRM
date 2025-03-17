@@ -12,6 +12,12 @@ const AssignEmployee= require("../models/assignEmployee");
 const Revisit= require("../models/revisit");
 const stageActivity=require("../models/stageActivity")
 const FollowUp= require("../models/followUp");
+const xlsx = require("xlsx");
+const findEmpIDAndTLID= require("../helpers/employee/findDLEmpandTL");
+const CurrentDate = require('../helpers/common/dateConversion/currentDate');
+const  FindEmpIdByDistrict= require("../helpers/common/findDLEmpAndTLByDistrict");
+const ErrorClient=require("../models/errorClient");
+const findEmpIdAndTLIDByState= require("../helpers/common/FinndEmpdIDAndTLIDByState")
 
 
 
@@ -168,16 +174,6 @@ const Fetchclients=async(req,res)=>{
                     {$replaceRoot: { newRoot: "$client" } },// Replace the root with the client document itself
                     // populate empID
                     {
-                        $lookup:{
-                            from:"dealeremployees",
-                            localField:"empID",
-                            foreignField: "_id",
-                            as:"empID"
-                        }
-                    },
-                    { $unwind: { path: "$empID", preserveNullAndEmptyArrays: true } },
-                    // Populate TLID
-                    {
                         $lookup: {
                             from: "dealertls", // Collection name for TeamLeader
                             localField: "TLID",
@@ -186,6 +182,15 @@ const Fetchclients=async(req,res)=>{
                         }
                     },
                     { $unwind: { path: "$TLID", preserveNullAndEmptyArrays: true } },// Unwind TLID array to a single object
+                    {
+                        $lookup:{
+                            from:"dealeremployees",
+                            localField:"empID",
+                            foreignField: "_id",
+                            as:"empID"
+                        }
+                    },
+                    { $unwind: { path: "$empID", preserveNullAndEmptyArrays: true } },
                     // Populate stateID
                     {
                         $lookup: {
@@ -222,15 +227,13 @@ const Fetchclients=async(req,res)=>{
                             type: 1,
                             CurrentDate: 1,
                           
-                            // "AdditonalDetailsID.AadharCard":1,
+                         "TLID.name":1,
                             "empID.name":1,
                             "empID._id":1,
-                            "TLID.name": 1, // Include only the name field of TLID
-                            "TLID._id" :1,
                             "stateID.state":1,
-                            // "AdditonalDetials":1,
-                        }
-                    },
+                           
+                       }
+                     },
                     { $sort: { CurrentDate: -1 } },
                     { $skip: skipValue },       // Skip documents for pagination
                     ...(limitValue !== undefined ? [{ $limit: limitValue }] : [])
@@ -287,9 +290,165 @@ const Fetchclients=async(req,res)=>{
   })
     }
 }
+const bulkExcelLead= async(req,res) =>{
+    let uploadedFreshClient = 0;
+    let notUploadedClient = 0;
+    let totalClient = 0;
+    let clientData;
+    let stageResult = 0;
+    let wlcSuccessMsg = 0;
+    let wlcUnsuccessMsg = 0;
+    let empID = null;
+    let teamLeaderID = null;
+    var state = null;
+    let StateID = null;
+    let district = null;
+    try {
+        if (!req.file) {
+            return res.status(400).json({ success:false, message: 'No file uploaded' });
+        }
+        const workbook = xlsx.read(req.file.buffer, { type: 'buffer' });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const excelData = xlsx.utils.sheet_to_json(worksheet); // it is converted data excel->json
+        // console.log(excelData);
+        let ClientArray = [];
+        for(const row of excelData){
+
+            district = row['city'];
+            state = row['state'];
+          
+            ++totalClient; // count total leads
+            
+            let stateName ;
+          if(state){
+              
+            const cleanedState = state.trim();
+           
+             stateName = await State.findOne({ state: { $regex: new RegExp(`^${cleanedState}$`, 'i') } }).select("state")[0];
+          }
+
+            if (stateName) {
+                state = stateName.state;
+                console.log(state, "states");
+            } else {
+                // console.log("State not found for:", cleanedState);
+                state = null; // Set state to null if not found
+            }
+            
+             let zipCode = row['zip_code'];
+             console.log(zipCode);
+           
+           
+
+            if(zipCode  || zipCode?.length >= 5){
+                console.log("hello");
+                console.log(zipCode,"zip");
+                const zipCodeResponse = await axios.get(`https://api.postalpincode.in/pincode/${zipCode}`); // these api is help to get area location by zip code
+                if(zipCodeResponse.data[0].Status === "Success"){
+                    const postOffice = zipCodeResponse?.data?.[0]?.PostOffice?.[0];
+                    console.log(zipCodeResponse?.data?.[0]?.PostOffice?.[0]);
+                   
+                   
+               
+                    district = postOffice?.District;
+                    state = postOffice?.State;
+                 
+                   
+                }
+            }
+        
+            if(state){
+                const responseStateID = await State.findOne({state},'_id');
+                StateID = responseStateID?._id.toString();
+            }
+            console.log(StateID);
+            
+          
+            const excelEmpID = row['employeeID'];
+          
+            if(excelEmpID){
+                console.log(excelEmpID);
+                const employeeResponseData = await findEmpIDAndTLID(excelEmpID);
+                console.log(employeeResponseData);
+                empID = employeeResponseData.empID;
+                teamLeaderID = employeeResponseData.TLID;
+            }else{
+                console.log("hello");
+                const Stateresponse=await findEmpIdAndTLIDByState(StateID);
+               
+                console.log(Stateresponse,"hello")
+                empID=Stateresponse?.empID,
+                teamLeaderID=Stateresponse?.TLID; 
+            }
+            const currentDate = await CurrentDate();
+            // if(typeof zipCode === "string") zipCode = 0;
+            
+            clientData = {
+                name: row['full_name'],
+                mobile: row['mobile'],
+                source: row['platform'],
+                stateID: StateID,
+                district: district,
+                city: row['city'],
+                zipCode:zipCode?zipCode:null,
+                empID:empID,
+                TLID: teamLeaderID,
+                CurrentDate :currentDate
+            };
+            console.log("Client data ",clientData);
+            // ExcelData.push(clientData);
+            try{
+                const newClient = await DLclient.create(clientData);
+                console.log(newClient);
+                if(newClient && newClient._id){
+                    const newClientID = newClient._id.toString();
+                    const stageUpdateDate = new Date();
+                    const stageID = "66e15ed1774c6b5fb4ab626b";
+                    const stageResponse =await insertStageActivity(newClientID, empID, stageID, stageUpdateDate);
+                    if(stageResponse) stageResult++;
+                }
+                uploadedFreshClient++;
+                // const whatsAppResponse = await welcomeTemplate(clientData.mobile); 
+                // (whatsAppResponse) ? ++wlcSuccessMsg : --wlcUnsuccessMsg;
+            }catch(error){
+                const newClientData = {...clientData, errors:error.message};
+                const errorClient = await ErrorClient.create(newClientData);
+                notUploadedClient++;
+                if(!errorClient){
+                    ClientArray.push(clientData);
+                }
+            }
+        }
+        return res.status(200).json({
+            success:true,
+            msg:'Successfully added client in server',
+            stage:stageResult,
+            totalClient:totalClient,
+            uploadedClient:uploadedFreshClient,
+            notUploadClient:notUploadedClient,
+            // welcomeSuccessMsg:wlcSuccessMsg,
+            // welcomeUnsuccessfullyMsg: wlcUnsuccessMsg,
+            // list:ExcelData
+        })
+    } catch (error) {
+        const newClientData = {...clientData, errors:error.message};
+            const errorClient = await ErrorClient.create(newClientData);
+            notUploadedClient++;
+            if(!errorClient){
+                ClientArray.push(clientData);
+            }
+        return res.status(400).json({
+            success:false,
+            message:"error",
+            msg:error.message
+        });
+    }
+}
 
 module.exports={
     Fetchclients,
     addClient,
+    bulkExcelLead,
 
 }

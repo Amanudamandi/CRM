@@ -17,7 +17,8 @@ const DealerEmployeeSchema=new mongoose.Schema({
     },
     teamLeader:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'DealerTL'
+        ref:'DealerTL',
+        default:"N/A"
     },
     mobile:{
         type:Number,

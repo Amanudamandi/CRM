@@ -90,6 +90,9 @@ const Index = () => {
         }
     }, []);
 
+    // console.log("show all stage : ",showAllStages);
+    console.log("LocalStorage employeeId:", isAuthenticated.employeeId);
+    // console.log("Cookie employeeId:", employeeId);
     return (
         <section style={Styles.adminContainer}>
             <style>

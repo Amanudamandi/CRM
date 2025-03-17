@@ -90,6 +90,8 @@ const Index = () => {
         }
     }, []);
 
+    // console.log("show all stage : ",showAllStages);
+
     return (
         <section style={Styles.adminContainer}>
             <style>

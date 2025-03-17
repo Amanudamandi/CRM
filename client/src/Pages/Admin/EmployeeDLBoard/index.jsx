@@ -111,12 +111,16 @@ const Index = () => {
           />
 
           {
+            console.log("data : ", employeeData)
+          }
+
+          {
             employeeData.length !== 0 && employeeData.map(({ _id, empID, name, mobile, department, teamLeader, stateID }) => (
               <tr key={_id} style={{ borderBottom: '2px solid black' }}>
                 <td style={Styles.employeeValue}>{empID ? empID : 'N/A'}</td>
                 <td style={Styles.employeeValue}>{name ? name : 'N/A'}</td>
                 <td style={Styles.employeeValue}>{department ? department.department : 'N/A'}</td>
-                <td style={Styles.employeeValue}>{teamLeader ? teamLeader.name : 'N/A'}</td>
+                <td style={Styles.employeeValue}>{teamLeader ? teamLeader.name: 'N/A'}</td>
                 <td style={Styles.employeeValue}>{mobile ? mobile : 'N/A'}</td>
                 <td style={Styles.employeeValue}>{stateID.length !== 0 ? stateID.map(eachState => (
                   <span>{`${eachState.state},`}</span>

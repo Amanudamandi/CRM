@@ -10,7 +10,14 @@ import { FiArrowRightCircle } from "react-icons/fi";
 import { FiArrowLeftCircle } from "react-icons/fi";
 import axios from 'axios';
 
-const Index = () => {
+
+import DLUpdateLead from '../../../component/DLEmployee/DlUpdateForm/FormUpdate';
+
+import { useNavigate } from 'react-router-dom';
+import { tr } from 'date-fns/locale';
+
+const Index = ({data}) => {
+   
 
     const [leadClickedInfo, setLeadClickedInfo] = useState({ clicked: false });
     const [limit, setLimit] = useState(35);
@@ -39,11 +46,13 @@ const Index = () => {
         reAssignBtnContainer: { position: 'absolute', bottom: 50, right: 25, backgroundColor: 'rgba(170, 11, 43, 0.85)', padding: '8px', borderRadius: '5px', cursor: 'pointer' },
     }
 
+    const Navigate = useNavigate();
+
 
 
     const headingList =
         [
-            'Stage', 'Coordinator', 'Lead Handler', 'Name', 'Mobile', 'Email', 'Type', 'State', 'District', 'Source', 'Date', 
+            'Stage', 'Coordinator', 'Lead Handler', 'Name', 'Mobile', 'Email', 'Type', 'State', 'District', 'Source', 'Date',
         ];
 
 
@@ -53,6 +62,7 @@ const Index = () => {
     const [isResetFilterBtnClicked, setIsResetFilterBtnClicked] = useState(false);
 
     const [pageCount, setPageCount] = useState(1);
+
 
     const increasePageCount = () => {
         setPageCount((pre) => pre + 1);
@@ -66,10 +76,10 @@ const Index = () => {
     const [loading, isLoading] = useState(false);
     const [updateLeadBtnClicked, setUpdateLeadBtnClicked] = useState(false);
 
-     const [leadStatusList, setLeadStatusList] = useState(new Array(limit).fill(false));
-        const convertTimeIntoDate = (dateString) => {
-            return new Date(dateString);
-        }
+    const [leadStatusList, setLeadStatusList] = useState(new Array(limit).fill(false));
+    const convertTimeIntoDate = (dateString) => {
+        return new Date(dateString);
+    }
     // const [ hasMore, setHasMore ] = useState(true); 
 
     // const loadMoreLeads = () => {
@@ -100,12 +110,26 @@ const Index = () => {
             console.log(error)
         }
     }
-    console.log("dealer data : ", dealerData);
+    // console.log("dealer data : ", dealerData);
 
 
     useEffect(() => {
         fetchDealer();
     }, []);
+
+
+    
+    const [selectedLead, setSelectedLead] = useState(null);
+    const [showUpdateForm, setShowUpdateForm] = useState(false);
+
+    const updateDLLead = (leadData) => {
+        setSelectedLead(leadData);
+        setShowUpdateForm(true);
+        // console.log(leadData);
+    }
+
+    console.log("data clicked : ", selectedLead )
+
 
 
 
@@ -192,43 +216,47 @@ const Index = () => {
                             </td>
                         </tr> */}
 
-                    {
-                        dealerData.length !== 0 && dealerData.map(({ _id, TLID, empID, city, district, email, mobile, name, source, stageID, stateID, type, vistingDate,CurrentDate }, index) => (
-
-                            <tr>
-                                <td style={{ ...Styles.employeeValue }} onClick={(event) => event.stopPropagation()}>
-                                    <input type="checkbox" name={_id + index} id={_id + index} />
-                                </td>
-                                <td style={{ ...Styles.employeeValue, }}>{stageID ? stageID.stage : 'N/A'}</td>
-                                <td style={Styles.employeeValue}>{TLID ? TLID.name : 'N/A'}</td>
-                                <td style={Styles.employeeValue}>{empID ? empID.name : 'N/A'}</td>
-                                <td style={Styles.employeeValue}>{name ? name : 'N/A'}</td>
-                                <td style={Styles.employeeValue}>{mobile ? mobile : 'N/A'}</td>
-                                <td style={Styles.employeeValue}>{email ? email : 'N/A'}</td>
-                                <td style={Styles.employeeValue}>{type ? type === 1 ? 'Hot' : type === 2 ? 'Warm' : 'Cold' : 'N/A'}</td>
-                                <td style={Styles.employeeValue}>{stateID ? stateID.state : 'N/A'}</td>
-                                <td style={Styles.employeeValue}>{district ? district : 'N/A'}</td>
-                                <td style={Styles.employeeValue}>{source ? source : 'N/A'}</td>
-                                <td style={Styles.employeeValue}>{CurrentDate ? `${convertTimeIntoDate(CurrentDate).getDate()}/${convertTimeIntoDate(CurrentDate).getMonth() + 1}/${convertTimeIntoDate(CurrentDate).getFullYear()}` : '-'}</td>
-
-                                {/* <td style={Styles.employeeValue}>{AdditonalDetailsID?.ProposalPdf !== null ? (<a href={AdditonalDetailsID?.ProposalPdf} download target='_blank' onClick={(event) => event.stopPropagation()} >Proposal</a>) : "N/A"}</td> */}
-                            </tr>
-                        ))
-                    } 
                     
+                      {/* {console.log("data",dealerData)} */}
+
+                    { dealerData.length !== 0 && dealerData?.map((lead, index) => (
+                        
+                        <tr key={lead._id} onClick={() => updateDLLead(lead)}>
+                            <td style={{ ...Styles.employeeValue }}>
+                                <input type="checkbox" name={lead?._id + index} id={lead?._id + index} />
+                            </td>
+                            <td style={Styles.employeeValue}>{lead?.stageID ? lead?.stageID?.stage : 'N/A'}</td>
+                            <td style={Styles.employeeValue}>{lead?.TLID ? lead?.TLID?.name : 'N/A'}</td>
+                            <td style={Styles.employeeValue}>{lead?.empID ? lead?.empID?.name : 'N/A'}</td>
+                            <td style={Styles.employeeValue}>{lead?.name ? lead?.name : 'N/A'}</td>
+                            <td style={Styles.employeeValue}>{lead?.mobile ? lead?.mobile : 'N/A'}</td>
+                            <td style={Styles.employeeValue}>{lead?.email ? lead?.email : 'N/A'}</td>
+                            <td style={Styles.employeeValue}>{lead?.type ? (lead?.type === 1 ? 'Hot' : lead.type === 2 ? 'Warm' : 'Cold') : 'N/A'}</td>
+                            <td style={Styles.employeeValue}>{lead?.stateID ? lead?.stateID.state : 'N/A'}</td>
+                            <td style={Styles.employeeValue}>{lead?.district ? lead?.district : 'N/A'}</td>
+                            <td style={Styles.employeeValue}>{lead?.source ? lead?.source : 'N/A'}</td>
+                            <td style={Styles.employeeValue}>
+                                {lead.CurrentDate ?
+                                    `${convertTimeIntoDate(lead?.CurrentDate).getDate()}/${convertTimeIntoDate(lead?.CurrentDate).getMonth() + 1}/${convertTimeIntoDate(lead?.CurrentDate).getFullYear()}`
+                                    : '-'}
+                            </td>
+                        </tr>
+                    ))}
                 </table>
             </section>
 
-            {leadClickedInfo.clicked &&
-                <UpdateLead
-                    showForm={leadClickedInfo.clicked}
-                    leadInformation={leadClickedInfo}
-                    closeForm={setLeadClickedInfo}
-                    pageCount={pageCount}
-                    BooleanShowAllStages={true}
-                    setUpdateLeadBtnClicked={setUpdateLeadBtnClicked}
-                />
+           
+            {
+                showUpdateForm && selectedLead && (
+                    <DLUpdateLead
+                        leadData={selectedLead}
+                        onClose={() => setShowUpdateForm(false)}
+                    />
+                    // <DLUpdateLead/>
+                )
             }
+
+
             {loading &&
                 <div style={{ ...Styles.loaderContainer, ...Styles.loaderMainContainer }}>
                     <div style={Styles.loaderContainer}>

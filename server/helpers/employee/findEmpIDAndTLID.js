@@ -1,4 +1,5 @@
 const Employee = require("../../models/employee");
+
 const findEmpIDAndTLID = async(empID) =>{
     try {
         const empData = await Employee.findOne({empID:{$regex : empID, $options:"i"} }).select("_id teamLeader");
@@ -18,4 +19,10 @@ const findEmpIDAndTLID = async(empID) =>{
 }
 
 
-module.exports = findEmpIDAndTLID;
+
+module.exports =  findEmpIDAndTLID;
+   
+
+
+
+    

@@ -4,6 +4,8 @@ const DealerEmployee= require("../controllers/DealerEmployee");
 
 router.post("/register",DealerEmployee.registeremployeeDL);
 router.get("/FetchDLemployee",DealerEmployee.fetchAllDealerEmployee);
+router.put("/updateDLemp",DealerEmployee.UpdateDLemplpoyee);
+router.get("/todayLeads",DealerEmployee.todayLeads);
 
 
 

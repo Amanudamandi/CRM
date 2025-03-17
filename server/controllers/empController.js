@@ -158,6 +158,10 @@ res.status(400).json({
 const fetchLeads = async(req,res)=>{
     try{
         const id= req.id;
+        console.log(id);
+        const {status}=req.body;
+        console.log(status)
+
         if(!id){
             return res.status(400).json({
                 success:false,
@@ -165,11 +169,18 @@ const fetchLeads = async(req,res)=>{
             })
         }
         const user = await assignEmp.find({ fieldEmpID: id }).populate({ path: "clientID", populate: [{ path: "AdditionalDetails" }, { path: "stateID" }] });
+        // console.log(user);
+        const filteredData =await user.filter(item => item?.clientID && item?.clientID?.status === status);
+
+console.log(filteredData);
+
+      
+      
         if (user) {
-            console.log(user);
+           
             res.status(200).json({
                 success: true,
-                data: user
+               filteredData
             })
 
         }

@@ -35,6 +35,14 @@ import DealerLayout from '../DealerLayout/Index'
 import DealerDashBoard from '../../Pages/DealerTL/Dashboard/Index'
 import CoordinateDealerBoard from '../../Pages/DealerTL/EmployeeBoard/Index'
 
+import coordinateDealerAdd from '../../Pages/DealerTL/EmployeeBoard/DealerRegister/index'
+
+import DLEmpLead from '../../Pages/Admin/LeadDLBoard/Index';
+import DLEmpDashboard from '../../Pages/DLEmployee/DLDashboard/EmpDashboard';
+
+
+// DealerEmp 
+import DlEmplayout from "../DealerEmpLayout/Index";
 const Index = () => {
     // removeCookie('accessToken')
     // console.log(getCookie('accessToken'));
@@ -93,11 +101,25 @@ const Index = () => {
                     <Route path='employee/show-leads/add' element={<AddClient employeeID={localStorage.getItem('employeeId')} />} />
                 </Route>
 
-                {/* dealerTL dashboard */}
+                {/* dealerTL dashboard not working properly */}
                 <Route path='/' element={<DealerLayout />}>
                     <Route path='/dealerTL/dashboard' element={<DealerDashBoard />}></Route>
-                    {/* <Route path='/dealerTL/dealer-dashboard' element={<CoordinateDealerBoard/>} ></Route> */}
+                    <Route path='/dealerTL/dealer-dashboard' element={<CoordinateDealerBoard />} ></Route>
+                    <Route path='/dealerTL/dealer-dashboard/add' element={<coordinateDealerAdd />} ></Route>
                 </Route>
+
+
+                {/* Dealer employee */}
+
+                <Route path='/' element={<DlEmplayout />} >
+                    <Route path='employeeDL/dashboard' element={<DLEmpDashboard/>} />
+                    <Route path='employeeDL/show-leads' element ={<DLEmpLead/>} />
+                    <Route path='employeeDL/show-leads/add' element={<AddDLClient employeeID={localStorage.getItem('employeeId')} />} />
+
+
+                </Route>
+
+
             </Routes>
             {/* </AuthProvider> */}
 
