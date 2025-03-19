@@ -109,7 +109,7 @@ const Index = () => {
             <div style={Styles.dashboardContainer}>
                 <div style={Styles.headerContainer}>
                     <DashboardHeader
-                        title='OverView'
+                        title='Dealer DashBoard'
                     />
                 </div>
             </div>
@@ -160,12 +160,3 @@ const Index = () => {
 
 export default Index;
 
-// import React from 'react'
-
-// function EmpDashboard() {
-//   return (
-//     <div>EmpDashboard work pending </div>
-//   )
-// }
-
-// export default EmpDashboard

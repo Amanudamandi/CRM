@@ -5,6 +5,10 @@ const insertStageActivity= require("../helpers/common/storeStageActivity")
 const axios = require("axios");
 const State= require("../models/state");
 
+// const incrementDateFunction = require('../helpers/common/dateConversion/incrementDate');
+const equalDateFunction = require('../helpers/common/dateConversion/equalDate');
+
+
 const startDateConvertor= require("../helpers/common/dateConversion/startDate");
 const endDateConvertor = require('../helpers/common/dateConversion/endDate');
 
@@ -18,6 +22,7 @@ const CurrentDate = require('../helpers/common/dateConversion/currentDate');
 const  FindEmpIdByDistrict= require("../helpers/common/findDLEmpAndTLByDistrict");
 const ErrorClient=require("../models/errorClient");
 const findEmpIdAndTLIDByState= require("../helpers/common/FinndEmpdIDAndTLIDByState")
+const assignEmployee=require("../models/assignEmployee");
 
 
 
@@ -226,11 +231,14 @@ const Fetchclients=async(req,res)=>{
                             kwpInterested: 1,
                             type: 1,
                             CurrentDate: 1,
+                            interstedIn:1, 
+                            
                           
                          "TLID.name":1,
                             "empID.name":1,
                             "empID._id":1,
                             "stateID.state":1,
+                            "StateID._id":1
                            
                        }
                      },
@@ -446,9 +454,245 @@ const bulkExcelLead= async(req,res) =>{
     }
 }
 
+
+
+
+// const   updateDLClient = async(req,res) =>{
+//     try {
+//         console.log("hgff",req.query || req.body || req.params);
+//         let newVisit = null;
+//         const {kwpInterested, type, email, stageID, selectedFieldSales, visitingDate, followUpDate, remark, clientID, empID,address,state,interstedIn,other} = req.body;
+//         console.log(visitingDate,"vsuisting date");
+//         console.log(address,"adrees")
+        
+       
+//         if(!req?.body?.clientID){
+//             return res.status(400).json({
+//                 success:false,
+//                 msg:"client Id not Exist!"
+//             });
+//         }
+
+//         // const StateName="Delhi";
+//         const response=await State.find({state:state});
+   
+//         console.log(response,"state response");
+       
+
+       
+//     //     const ElectrcityBill=await req.files["electricitybill"]?`${process.env.SERVER_URL}uploads/ElectricityBill/${req.files["electricitybill"][0].filename}`:null;
+//     //     console.log(ElectrcityBill);
+//     //     const   ProposalPdf=await req.files["proposalpdf"]?`${process.env.SERVER_URL}uploads/proposalpdf/${req.files["proposalpdf"][0].filename}`:null;
+//     //     const additionalsdetails=new Extradetails({
+//     //    ElectrcityBill,ProposalPdf
+//     //     })
+//     //     additionalsdetails.save();
+//     // const Document = await req.files['DLDocument']?`${process.env.SERVER_URL}uploads/DLDocument/${req.files["DLDocument"][0].filename}`:null;
+
+//         if(followUpDate || visitingDate){ // check given date is not less the current date
+//             const queryData = new Date(followUpDate || visitingDate);
+//             const today = new Date();
+//             if(queryData.getDate() < today.getDate() && queryData.getMonth() < today.getMonth() && queryData.getYear() < today.getYear()){
+//                 return res.status(400).json({
+//                     success:false,
+//                     msg:" Please give valid Date."
+//                 })
+//             }  
+//         }
+//         if(followUpDate){
+//             const newFollowUpDate = await equalDateFunction(followUpDate);
+//             console.log(newFollowUpDate);
+//             await FollowUp.findOneAndUpdate({clientID: clientID}, {$set : {followUpDate:newFollowUpDate}},{new: true, upsert:true, runValidators: true });
+//         }
+//         // console.log("RB",req.body);
+//         // if(visitingDate && assignEmp == ''){
+//         //     return res.status(400).json({
+//         //         success:false,
+//         //         msg:"Visiting date not save without assign employee."
+//         //     })
+//         // }
+//         if(visitingDate){
+//             console.log("missin Success")
+//             const newVisitingDate = await equalDateFunction(visitingDate);
+//             console.log(newVisitingDate,"DEFEFE")
+//             const visit = new AssignEmployee({
+//                 clientID, fieldEmpID:selectedFieldSales, visitingDate:newVisitingDate
+//             });
+//             newVisit = await visit.save();
+//             console.log(newVisit)
+//         }
+//         if(interstedIn=="1"){
+//             interstedIn="Channel Partner"
+//         }else if(interstedIn=="2"){
+//             interstedIn="Distributor"
+//         }else if(interstedIn=="3"){
+//             interstedIn="DealerShip"
+//         }else if(interstedIn=="4"){
+//             interstedIn="Franchise"
+//         }else if(interstedIn=="5"){
+//             interstedIn="Agent"
+//         }else if(interstedIn=="6"){
+//             interstedIn=other;
+//         }
+//         const UpdatedData ={
+//              stateID:response[0]._id,
+//             kwpInterested:kwpInterested,
+//             type:type,
+//             email:email,
+//             stageID:stageID, 
+//             address:address,
+//             status:"Pending",
+//             interstedIn:interstedIn,
+//             // Document:Document || null
+           
+//         }
+       
+//         const updateClient = await DLclient.findByIdAndUpdate(clientID, UpdatedData, { new:true, runValidators: true }).populate("AdditionalDetails");
+//         if(!updateClient){
+//             return res.status(404).json({
+//                 success:false,
+//                 msg:'Something is Wrong please try again !'
+//             });
+//         }
+//         if(stageID){
+//             const stageUpdateDate = new Date();
+//             await insertStageActivity(clientID, empID, stageID, stageUpdateDate, remark);
+//         }
+       
+//         return res.status(200).json({
+//             success:true,
+//             msg:"Update SuccessFully .",
+//             data:updateClient,
+//         });
+//     } catch (error) {
+//         console.log(error)
+//         return res.status(400).json({
+//             success:false,
+//             msg:error.message
+//         });
+//     }
+// }
+const updateDLClient = async (req, res) => {
+    try {
+        console.log("Request Data:234345354647546785679868", req.body);
+
+        const { kwpInterested, type, email, stageID, selectedFieldSales, visitingDate, followUpDate, remark, clientID, empID, address, state, interstedIn, other } = req.body;
+
+        if (!clientID) {
+            return res.status(400).json({
+                success: false,
+                msg: "Client ID does not exist!"
+            });
+        }
+        const Document=await req.files["Document"]?`${process.env.SERVER_URL}/uploads/DLproposal/${req.files["Document"][0].filename}`:null;
+        console.log(Document);
+
+        const stateResponse =  await State.find({state});
+        console.log(stateResponse);
+        if (!stateResponse) {
+            return res.status(404).json({
+                success: false,
+                msg: "State not found!"
+            });
+        }
+
+        if (followUpDate || visitingDate) {
+            const queryDate = new Date(followUpDate || visitingDate);
+            const today = new Date();
+
+            if (queryDate < today) {
+                return res.status(400).json({
+                    success: false,
+                    msg: "Please provide a valid future date."
+                });
+            }
+        }
+
+        if (followUpDate) {
+            const newFollowUpDate = await equalDateFunction(followUpDate);
+           const data= await FollowUp.findOneAndUpdate(
+                { clientID },
+                { $set: { followUpDate: newFollowUpDate } },
+                { new: true, upsert: true, runValidators: true }
+            );
+            console.log(data,"respo0nse")
+        }
+
+        let newVisit = null;
+        if (visitingDate) {
+            console.log("Adding visiting date...");
+            const newVisitingDate = await equalDateFunction(visitingDate);
+            const visit = new AssignEmployee({ clientID, fieldEmpID: selectedFieldSales, visitingDate: newVisitingDate });
+            newVisit = await visit.save();
+        }
+
+        const interestMap = {
+            "1": "Channel Partner",
+            "2": "Distributor",
+            "3": "DealerShip",
+            "4": "Franchise",
+            "5": "Agent",
+            "6": other
+        };
+        const interestValue = interestMap[interstedIn] || "Unknown";
+        const updatedData = {
+            stateID: stateResponse?.[0]?._id || null,
+            kwpInterested: kwpInterested || "N/A",
+            type: type || 1,
+            email: email || "",
+            stageID: stageID || "66e15ed1774c6b5fb4ab626b",
+            address: address || null,
+            interstedIn: interestValue || "N/A",
+            Document:Document || null,
+        };
+        console.log(updatedData,"data")
+        console.log("Client ID:", clientID);
+
+
+const data = await DLclient.find({ _id: clientID });
+console.log(data);
+
+
+
+        const updateClient = await DLclient.findByIdAndUpdate(
+            clientID,
+            updatedData,
+            { new: true, runValidators: true }
+        ).exec();
+        
+        if (!updateClient) {
+            return res.status(404).json({
+                success: false,
+                msg: "Something went wrong, please try again!"
+            });
+        }
+
+        if (stageID) {
+            const stageUpdateDate = new Date();
+            await insertStageActivity(clientID, empID, stageID, stageUpdateDate, remark);
+        }
+
+        return res.status(200).json({
+            success: true,
+            msg: "Update successful.",
+            data: updateClient,
+        });
+    } catch (error) {
+        console.error("Error:", error);
+        return res.status(400).json({
+            success: false,
+            msg: error.message
+        });
+    }
+};
+
+
+
+
 module.exports={
     Fetchclients,
     addClient,
     bulkExcelLead,
+    updateDLClient,
 
 }

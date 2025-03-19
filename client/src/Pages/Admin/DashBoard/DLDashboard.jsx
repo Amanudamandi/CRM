@@ -4,7 +4,7 @@ import DashboardHeader from '../../../component/Common/Dashboard_Heading/index';
 import Card from '../../../component/Common/Card/index';
 import { FaArrowTrendUp } from "react-icons/fa6";
 import { showStageApi } from '../../../Utils/showStagesAPI';
-import { stageCountForDashboardApi } from '../../../Utils/stagesValueCountAPI';
+// import { stageCountForDashboardApi } from '../../../Utils/stagesValueCountAPI';
 import Chart from "chart.js/auto";
 import { CategoryScale } from "chart.js";
 import PieChart from '../../../component/Common/PieChart';
@@ -13,6 +13,8 @@ import { BarChart } from '../../../component/Common/BarChart';
 import Loader from '../../../component/Common/Loader/index';
 
 // const BarChart = lazy(() => import('../../../component/Common/BarChart'));
+import { stageCountForDashboardApiDL } from '../../../Utils/stageCountForDashboardApiDL';
+
 
 Chart.register(CategoryScale);
 
@@ -128,10 +130,10 @@ const Index = () => {
             const lastMonth = new Date(today);
             lastMonth.setDate(lastMonth.getDate() - 30);
             lastMonth.toDateString();
-            let leadsValue = await stageCountForDashboardApi('', stageId);
-            let TODAYS = await stageCountForDashboardApi('', stageId, today.toDateString(), today.toDateString(), '', null);
-            let LAST_WEEK = await stageCountForDashboardApi('', stageId, lastSevenDays, today.toDateString(), '', null);
-            let LAST_MONTH = await stageCountForDashboardApi('', stageId, lastMonth, today.toDateString(), '', null);
+            let leadsValue = await stageCountForDashboardApiDL('', stageId);
+            let TODAYS = await stageCountForDashboardApiDL('', stageId, today.toDateString(), today.toDateString(), '', null);
+            let LAST_WEEK = await stageCountForDashboardApiDL('', stageId, lastSevenDays, today.toDateString(), '', null);
+            let LAST_MONTH = await stageCountForDashboardApiDL('', stageId, lastMonth, today.toDateString(), '', null);
             if(leadsValue > 999 && leadsValue <= 99999){
                 leadsValue = `${leadsValue/1000}k`;
             }

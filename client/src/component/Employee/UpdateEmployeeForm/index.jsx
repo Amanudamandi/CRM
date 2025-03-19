@@ -221,7 +221,7 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
                                     >
                                         <option value="">Select a State</option>
                                         {states.map((state) => (
-                                             console.log("state: ",state),
+                                            //  console.log("state: ",state),
                                             <option key={state._id} value={state.state}>{state.state}</option>
                                         ))}
                                     </select>

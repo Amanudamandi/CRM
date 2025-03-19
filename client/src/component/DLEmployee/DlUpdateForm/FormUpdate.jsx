@@ -3,6 +3,12 @@ import { showStageApi } from '../../../Utils/showStagesAPI';
 import { IoClose } from 'react-icons/io5';
 import { DLShowEmployee } from '../../../Utils/DLShowEmployee';
 import axios from 'axios';
+import Hot from '../../../Assest/Images/hot.png';
+import Warm from '../../../Assest/Images/warm.png';
+import Cold from '../../../Assest/Images/cold.png';
+
+import { UpdateDealerEmployeeLeadForm } from '../../../Utils/UpdateDealerEmployeeLeadForm';
+
 
 
 const FormUpdate = ({ showForm, leadData, onClose, pageCount, BooleanShowAllStages = false, setUpdateLeadBtnClicked }) => {
@@ -37,27 +43,76 @@ const FormUpdate = ({ showForm, leadData, onClose, pageCount, BooleanShowAllStag
 
     const [states, setStates] = useState([]);
 
+    const [showOtherInput, setShowOtherInput] = useState(false);
+    const [otherValue, setOtherValue] = useState("");
+    const [file, setFile] = useState(null);
+
+    console.log("lead data",leadData);
+
 
     const [formData, setFormData] = useState({
         clientID: leadData?._id,
         name: leadData?.name || '',
         mobile: leadData?.mobile || '',
         email: leadData?.emial || '',
-        stageID: leadData?.stageID?.stage || '',
-        stateID: leadData?.stateID?.state || '',
+        stageID: leadData?.stageID?._id || '',
+        state: leadData?.stateID?.state || '',
         district: leadData?.district || '',
         type: leadData?.type || '',
-        source: leadData?.source || ''
+        source: leadData?.source || '',
+        interstedIn: '',
+        Document: file || '',
+        other: otherValue,
+        empId: leadData?.empID?._id
 
     })
 
-    // console.log("formData: ", formData);
+    console.log("formData: ", formData);
 
 
     const handleOnInputChange = (event) => {
         const { name, value } = event.target;
         setFormData((previous) => ({ ...previous, [name]: value }));
     }
+
+    const handleFile = (event) => {
+        const selectFile = event.target.files[0];
+        if (selectFile && selectFile.type === "application/pdf") {
+            setFile(selectFile);
+            setFormData((prev) => ({ ...prev, Document: selectFile }));
+        } else {
+            alert("Please Upload a valid PDF file");
+        }
+    }
+
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        let formDataToSend = new FormData();
+        // console.log('Original FormData', formData);
+        for (const key in formData) {
+            if (formData[key]) {
+                // console.log('key by Prince', key, formData[key]);
+                formDataToSend.append(key, formData[key]);
+            }
+        }
+        if (file) {
+            formDataToSend.append("Document", file);
+        }
+
+        // console.log('Update Form Data by Prince', formDataToSend);
+        // console.log([...formDataToSend.entries()]);
+
+        try {
+            const response = await UpdateDealerEmployeeLeadForm({ updateLeadData: formDataToSend, onClose });
+            console.log("data response  ", response)
+            setUpdateLeadBtnClicked(true);
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    console.log("form data ", formData);
 
 
 
@@ -81,12 +136,9 @@ const FormUpdate = ({ showForm, leadData, onClose, pageCount, BooleanShowAllStag
     }, [pageCount, leadData?._id]);
 
 
-
-
-
-
     return (
         <section style={showForm ? { ...Style.updateLeadContainer, animation: 'slideUp 0.5s ease forwards' } : Style.updateLeadContainer}>
+
             <IoClose size={35} color='#AA0B2B' style={{ ...Style.closeFormBtn, transform: isHoveredOnClose ? 'rotate(90deg)' : 'rotate(0deg)' }} onMouseOver={() => setIsHoveredOnClose(true)} onMouseOut={() => setIsHoveredOnClose(false)} onClick={() => onClose({ clicked: false })} />
 
             <div style={Style.updateLeadInfoContainer}>
@@ -109,18 +161,18 @@ const FormUpdate = ({ showForm, leadData, onClose, pageCount, BooleanShowAllStag
                                     <select style={Style.inputField}
                                         name="state"
                                         id="state"
-                                        value={formData.stateID}
+                                        value={formData.state}
                                         onChange={(event) => {
                                             setFormData((prev) => ({
                                                 ...prev,
-                                                stateID: event.target.value
+                                                state: event.target.value
                                             }))
                                         }}
-                                        
+
                                     >
                                         <option value="">Select a State</option>
                                         {states?.map((state) => (
-                                            console.log("state : ",state),
+                                            // console.log("state : ", state),
                                             <option key={state._id} value={state.state}>{state.state}</option>
                                         ))}
                                     </select>
@@ -131,14 +183,150 @@ const FormUpdate = ({ showForm, leadData, onClose, pageCount, BooleanShowAllStag
                                 <span style={Style.leadInfoText}>District: {leadData?.district ? leadData.district : 'N/A'}</span>
                             </div>
                         </div>
-
-
-
-
-
+                        <div style={Style.leadType}>
+                            <img src={leadData.type === 1 ? Hot : leadData.type === 2 ? Warm : Cold} alt={leadData.type === 1 ? 'Hot' : leadData.type === 2 ? 'Warm' : 'Cold'} />
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <div style={Style.formContainer}>
+                <form method='POST' style={Style.updateForm} onSubmit={handleSubmit} >
+
+                    <div style={Style.leftFormFieldContainer}>
+                        <div style={Style.inputFieldContainer}>
+                            <label htmlFor="types" style={Style.inputLabel}>Types</label>
+                            <select
+                                style={Style.inputField}
+                                name="types" id="types"
+                                onChange={(event) => {
+                                    setFormData((previousData) => ({ ...previousData, type: parseInt(event.target.value) }));
+                                }}
+                            >
+                                <option value='1'>High Priority</option>
+                                <option value='2'>Medium</option>
+                                <option value='3'>Low Priority</option>
+                            </select>
+                        </div>
+
+                        <div style={Style.inputFieldContainer}>
+                            <label htmlFor="email" style={Style.inputLabel}>Email ID</label>
+                            <input style={Style.inputField} type="text" name="email" id="email" onChange={handleOnInputChange} autoComplete='off' />
+                        </div>
+
+                        <div>
+                            <label htmlFor="address" style={Style.inputLabel}>Address</label>
+                            <textarea style={Style.inputField} name="address" id="address" cols={45} rows={5} placeholder='Enter Your Address' onChange={handleOnInputChange}></textarea>
+                        </div>
+
+                        <div style={Style.inputFieldContainer}>
+                            <label htmlFor="Document" style={Style.inputLabel}>Proposal</label>
+                            <input type="file" name="Document" id="Document" accept='application/pdf' style={Style.inputField} onChange={handleFile} />
+                        </div>
+
+                        <div>
+                            <button type="submit" style={Style.updateBtn}>Update</button>
+                        </div>
+                    </div>
+
+                    <hr style={{ width: '0.166rem', border: 'none', height: '92%', alignSelf: 'flex-end', backgroundColor: '#AA0B2B' }} />
+
+                    <div style={Style.rightForm}>
+                        <div style={Style.inputFieldContainer}>
+                            <label htmlFor="stage" style={Style.inputLabel}>Stage</label>
+                            <select
+                                style={Style.inputField}
+                                name="stage" id="stage"
+                                onChange={(event) => {
+                                    const store = [...event.target.value].join('').split(',');
+                                    setFormData((previousData) => ({ ...previousData, stageID: store[0] }));
+                                }}
+                            >
+                                {
+                                    !BooleanShowAllStages ? showStages.map(({ _id, stage }, index) => (
+                                        index >= (leadData.stageID.stageValue - 1) && <option key={_id} value={[_id, index]}>{stage}</option>
+                                    )) : showAllStages.map(({ _id, stage }) => (
+                                        <option key={_id} value={_id}>{stage}</option>
+                                    ))
+                                }
+                            </select>
+                        </div>
+
+                        <div style={Style.inputFieldContainer}>
+                            <label htmlFor="date" style={Style.inputLabel}>{(formData.stageID === 7 ? 'Revisit Date' : (formData.stageID === 3 ? 'Follow-Up Date' : 'Visiting Date'))}</label>
+                            <input style={Style.inputField} type="date"
+                                name={(formData.stageID === 7 ? 'revisitDate' : (formData.stageID === 3 ? 'followUpDate' : 'visitingDate'))}
+                                id="date"
+                                onChange={handleOnInputChange}
+                            />
+                        </div>
+
+                        <div style={Style.inputFieldContainer}>
+                            <label htmlFor="interstedIn" style={Style.inputLabel}>Intersted In </label>
+
+                            <select name="interstedIn" id="interstedIn" style={Style.inputField}
+                                onChange={(event) => {
+                                    const selectedValue = parseInt(event.target.value);
+                                    setFormData((previousData) => ({ ...previousData, interstedIn: selectedValue }));
+                                    setShowOtherInput(selectedValue === 6)
+                                }}>
+                                <option >Select Intersted In</option>
+                                <option value="1">Channel Partner</option>
+                                <option value="2"> Distributor</option>
+                                <option value="3">DealerShip</option>
+                                <option value="4">Franchise</option>
+                                <option value="5">Agent</option>
+                                <option value="6">Other</option>
+                            </select>
+                        </div>
+
+                        {/* Show Input Field If "Other" is Selected */}
+                        {showOtherInput && (
+                            <div style={Style.inputFieldContainer}>
+                                <label htmlFor="otherInterest" style={Style.inputLabel}>Specify Other</label>
+                                <input
+                                    type="text"
+                                    name="otherInterest"
+                                    id="otherInterest"
+                                    placeholder="Please specify..."
+                                    value={otherValue}
+                                    onChange={(e) => {
+                                        setOtherValue(e.target.value);
+                                        setFormData((prev) => ({
+                                            ...prev, other: e.target.value
+                                        }))
+                                    }}
+
+                                />
+                            </div>
+                        )}
+
+                        <div style={Style.inputFieldContainer}>
+                            <label htmlFor="remark" style={Style.inputLabel}>Remark</label>
+                            <input style={Style.inputField} type="text" name="remark" id="remark" value={formData.remark} onChange={handleOnInputChange} />
+                        </div>
+
+                    </div>
+                </form>
+
+                <div style={Style.stagesMainContainer}>
+                    <div style={Style.stagesContainer}>
+                        {
+                            showAllStages.map(({ _id, stage }, index) => (
+                                <div key={_id} style={Style.eachStageContainer}>
+                                    <span style={{
+                                        ...Style.eachStageCircle,
+                                        borderColor: formData.stageID === _id ? '#4FE081' : '#AA0B2B'
+                                    }}></span>
+                                    <span>{stage}</span>
+                                </div>
+                            ))
+                        }
+                    </div>
+                </div>
+
+            </div>
+
 
 
 

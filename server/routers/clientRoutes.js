@@ -20,6 +20,7 @@ router.post('/fetchByFile',  upload.single('file'), clientController.fetchByFile
 router.get("/fetchAssignEmployee", clientController.fetchAssignEmployee); //completed 1.5
 router.put("/bulkAssign", clientController.bulkAssign) //completed 2.0
 router.post("/FetchAssignemployee",clientController.Assignfieldemployee);
+router.put("/updateStatus",clientController.updatestatus);
 // router.post()
 module.exports = router;
 

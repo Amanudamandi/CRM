@@ -2,11 +2,13 @@ import axios from "axios"
 
 export const updateLeadApi = async( updateDetails, closeForm ) => {
     try{
-        const sendRequest = await axios.put(`${process.env.REACT_APP_URL}/client/updateClient`, updateDetails,{
+        const sendRequest = await axios.put(`${process.env.REACT_APP_URL}/client/updateClient`, updateDetails,
+            {
             headers:{
                 'Content-Type':'multipart/form-data'
             }
-        });
+        }
+    );
         const response = sendRequest.data;
         const { success } = response;
         console.log('Update Lead Response:', response.data);

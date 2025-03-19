@@ -80,8 +80,6 @@ const DLClientSchema= mongoose.Schema({
  default:null,
    },
      
- 
-     
     kwpInterested:{
         type:String,
         default:'N/A'
@@ -97,6 +95,10 @@ const DLClientSchema= mongoose.Schema({
     Lead:{
         type:String,
         default:"Dealer Lead"
+    },
+    interstedIn:{
+        type:String,
+        default:"N/A"
     }
 })
 

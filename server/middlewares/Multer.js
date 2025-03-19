@@ -12,7 +12,8 @@ const storage = multer.diskStorage({
         if(file.fieldname==='dimensions') folder='uploads/dimensions/';
         if(file.fieldname==='cancelcheack')folder='uploads/cancelcheack/';
         if(file.fieldname==='proposalpdf' ) folder='uploads/proposalpdf/';
-        const uploadDirs = ["uploads/aadhar/", "uploads/pancard/","uploads/ElectricityBill/","uploads/video/","uploads/dimensions/","uploads/cancelcheack/","uploads/proposalpdf/"]
+        if(file.fieldname==='Document') folder='uploads/DLproposal/';
+        const uploadDirs = ["uploads/aadhar/", "uploads/pancard/","uploads/ElectricityBill/","uploads/video/","uploads/dimensions/","uploads/cancelcheack/","uploads/proposalpdf/","uploads/DLproposal/"]
        uploadDirs.forEach(dir => { 
        if (!fs.existsSync(dir)) {
        fs.mkdirSync(dir, { recursive: true });

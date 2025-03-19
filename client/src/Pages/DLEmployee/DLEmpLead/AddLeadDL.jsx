@@ -4,8 +4,8 @@ import DynamicDropDown from '../../../component/DropDown2/index'
 import { useNavigate } from 'react-router-dom';
 import { addDealer } from '../../../Utils/addDealerAPI';
 
-const Index = ({ employeeID }) => {
-  const navigator = useNavigate();
+const Index = ({employeeID}) => {
+  const navigator=useNavigate();
 
   const [newDealerLead, setNewDealerLead] = useState({
     name: '',
@@ -60,13 +60,13 @@ const Index = ({ employeeID }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
+    // const { empName, empEmail, mobile, pincode } = newDealerLead;
     const leadData = { ...newDealerLead, stateID: stateId };
     console.log(leadData);
     addDealer(leadData);
-    navigator("/admin/showDL-leads");
+    navigator("/employeeDL/show-leads");
   }
-
+  
   const Styles = {
     leadFormContainer: { margin: 'auto', display: 'flex', alignItems: 'center', width: '60%', height: '100vh', padding: '0rem 8rem' },
     allInputContainer: { display: 'flex', flexDirection: 'column', gap: '0.4rem', flex: 1, border: '1px solid #ddd', padding: '3rem 2rem', boxShadow: '0px 0px 8px rgb(120, 120, 120)', borderRadius: '5px' },

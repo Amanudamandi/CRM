@@ -31,6 +31,7 @@ import LeadDLBoard from "../../Pages/Admin/LeadDLBoard/Index"
 import TeamLeaderDLRegister from '../../Pages/TeamLeaderDLRegister/Index'
 import ShowTeamDLLLeader from '../../Pages/showTeamDLLeader/updateCoordinatorDLProfile/Index'
 import AddDLClient from '../../Pages/Admin/LeadDLRegister/Index'
+
 import DealerLayout from '../DealerLayout/Index'
 import DealerDashBoard from '../../Pages/DealerTL/Dashboard/Index'
 import CoordinateDealerBoard from '../../Pages/DealerTL/EmployeeBoard/Index'
@@ -39,6 +40,9 @@ import coordinateDealerAdd from '../../Pages/DealerTL/EmployeeBoard/DealerRegist
 
 import DLEmpLead from '../../Pages/Admin/LeadDLBoard/Index';
 import DLEmpDashboard from '../../Pages/DLEmployee/DLDashboard/EmpDashboard';
+import DLLeadAddEmp from '../../Pages/DLEmployee/DLEmpLead/AddLeadDL'
+
+import BothDashBoard from '../../Pages/Admin/PPDLDashBoard/BothDashBoard';
 
 
 // DealerEmp 
@@ -63,7 +67,7 @@ const Index = () => {
                 <Route path='/login' element={<Login />} />
                 {/* Admin Router */}
                 <Route path='/' element={<Layout />} >
-                    <Route path='admin/dashboard' element={<AdminDashboard />} />
+                    <Route path='admin/dashboard' element={<BothDashBoard />} />
                     <Route path='admin/employee-dashboard' element={<AdminEmployeeBoard />} />
                     <Route path='admin/employee-dashboard/add' element={<EmployeeRegistration CoordinatorStartIndexDropDown={2} />} />
                     <Route path='admin/show-leads' element={<LeadBoard />} />
@@ -114,7 +118,7 @@ const Index = () => {
                 <Route path='/' element={<DlEmplayout />} >
                     <Route path='employeeDL/dashboard' element={<DLEmpDashboard/>} />
                     <Route path='employeeDL/show-leads' element ={<DLEmpLead/>} />
-                    <Route path='employeeDL/show-leads/add' element={<AddDLClient employeeID={localStorage.getItem('employeeId')} />} />
+                    <Route path='employeeDL/show-leads/add' element={<DLLeadAddEmp employeeID={localStorage.getItem('employeeId')} />} />
 
 
                 </Route>

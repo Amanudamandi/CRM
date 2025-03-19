@@ -418,6 +418,7 @@ const fetchClients = async(req,res) =>{
                     email: 1,
                     assignEmp:1,
                     mobile: 1,
+                   
                     source: 1,
                     stageID: 1,
                     district: 1,
@@ -426,7 +427,8 @@ const fetchClients = async(req,res) =>{
                     kwpInterested: 1,
                     type: 1,
                     CurrentDate: 1,
-                    AdditonalDetailsID:1,
+                  
+                 
                     // "AdditonalDetailsID.AadharCard":1,
                     "empID.name":1,
                     "empID._id":1,
@@ -567,7 +569,7 @@ const updateClient = async(req,res) =>{
             address:address,
             latitude:latitude?latitude:null,
             longitude:longitude?longitude:null,
-            status:"Delay",
+            status:"Pending",
            
         }
        
@@ -898,6 +900,57 @@ const  Assignfieldemployee=async(req,res)=>{
  })
     }
  }
+
+
+ const updatestatus=async(req,res)=>{
+     try{
+         const{status,clientId,VisitingDate}=req.body;
+         
+         console.log(status);
+         console.log(clientId);
+         console.log(VisitingDate);
+
+         if(VisitingDate){
+            const newVisitingDate = await equalDateFunction(VisitingDate);
+            console.log(newVisitingDate);
+            const response = await AssignEmployee.findOneAndUpdate(
+                { clientID: clientId },  // Search by clientID
+                { $set: { visitingDate: newVisitingDate } },
+                { new: true }  // Return updated document
+            );
+            console.log(response);
+            
+   
+         }
+         const data= await Client.findById({_id:clientId});
+         console.log(data);
+         const response1 = await  Client.findByIdAndUpdate(
+             { _id: clientId }, 
+             { $set: { status: status } },
+             { new: true } // This option returns the updated document
+           );
+           console.log(response1);
+           if(!response1){
+           res.status(400).json({
+            message:"failed to fetch"
+           })
+           }
+
+           
+            
+           res.status(200).json({
+             data:response1,
+             message:"Succesfullly updated"
+           })
+           
+ 
+     }catch(error){
+         console.log(error);
+         res.status(400).json({
+             message:"Cannot update status"
+         })
+     }
+ }
 module.exports = {
     clientAdd,
     fetchClients,
@@ -905,5 +958,6 @@ module.exports = {
     fetchByFile,
     fetchAssignEmployee,
     bulkAssign,
-   Assignfieldemployee
+   Assignfieldemployee,
+   updatestatus,
 }

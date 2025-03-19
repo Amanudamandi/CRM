@@ -158,6 +158,7 @@ res.status(400).json({
 const fetchLeads = async(req,res)=>{
     try{
         const id= req.id;
+        
         console.log(id);
         const {status}=req.body;
         console.log(status)
@@ -180,7 +181,7 @@ console.log(filteredData);
            
             res.status(200).json({
                 success: true,
-               filteredData
+              data:!!status?filteredData:user
             })
 
         }
