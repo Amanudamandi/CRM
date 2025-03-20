@@ -198,7 +198,7 @@ const Index = () => {
             <div style={Styles.dashboardContainer}>
                 <div style={Styles.headerContainer}>
                     <DashboardHeader
-                        title='PowerPlant DashBoard'
+                        title='Dealer DashBoard'
                     />
                 </div>
             </div>

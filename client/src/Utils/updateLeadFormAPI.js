@@ -1,6 +1,8 @@
 import axios from "axios"
 
 export const updateLeadApi = async( updateDetails, closeForm ) => {
+
+    console.log("update Data : ",updateDetails)
     try{
         const sendRequest = await axios.put(`${process.env.REACT_APP_URL}/client/updateClient`, updateDetails,
             {

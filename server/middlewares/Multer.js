@@ -13,18 +13,20 @@ const storage = multer.diskStorage({
         if(file.fieldname==='cancelcheack')folder='uploads/cancelcheack/';
         if(file.fieldname==='proposalpdf' ) folder='uploads/proposalpdf/';
         if(file.fieldname==='Document') folder='uploads/DLproposal/';
+        console.log(file);
         const uploadDirs = ["uploads/aadhar/", "uploads/pancard/","uploads/ElectricityBill/","uploads/video/","uploads/dimensions/","uploads/cancelcheack/","uploads/proposalpdf/","uploads/DLproposal/"]
-       uploadDirs.forEach(dir => { 
+       uploadDirs.forEach(dir => {
        if (!fs.existsSync(dir)) {
        fs.mkdirSync(dir, { recursive: true });
      }
      });
         cb(null,folder)
-        
+       
 
 
     },
     filename:(req,file,cb)=>{
+        console.log(file,"hello");
         cb(null,`${Date.now()}-${file.originalname}`);
     }
 })
@@ -42,5 +44,3 @@ const storage = multer.diskStorage({
 const upload=multer({storage:storage});
 
 module.exports=upload;
-
-

@@ -191,7 +191,10 @@ const Index = ({ data }) => {
                                     : '-'}
                             </td>
                             <td style={Styles.employeeValue}>{lead?.interstedIn ? lead?.interstedIn : 'N/A'}</td>
-                            <td style={Styles.employeeValue}>{lead?.proposal ? lead?.proposal : 'N/A'}</td>
+                            {/* <td style={Styles.employeeValue}>{lead?.Document ? lead?.Document : 'N/A'}</td> */}
+                            <td style={Styles.employeeValue}>{lead?.Document!==null ?(
+                                <a href={lead?.Document} download  target='_blank' rel='noopener noreferrer ' onClick={(event)=>(event.stopPropagation())}>Proposal</a>
+                            ):'N/A'}</td>
                         </tr>
                     ))}
                 </table>

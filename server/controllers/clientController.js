@@ -427,6 +427,7 @@ const fetchClients = async(req,res) =>{
                     kwpInterested: 1,
                     type: 1,
                     CurrentDate: 1,
+                    AdditonalDetailsID:1,
                   
                  
                     // "AdditonalDetailsID.AadharCard":1,
@@ -519,9 +520,9 @@ const updateClient = async(req,res) =>{
        
 
        
-        const ElectrcityBill=await req.files["electricitybill"]?`${process.env.SERVER_URL}uploads/ElectricityBill/${req.files["electricitybill"][0].filename}`:null;
+        const ElectrcityBill=await req.files["electricitybill"]?`${process.env.SERVER_URL}/uploads/ElectricityBill/${req.files["electricitybill"][0].filename}`:null;
         console.log(ElectrcityBill);
-        const   ProposalPdf=await req.files["proposalpdf"]?`${process.env.SERVER_URL}uploads/proposalpdf/${req.files["proposalpdf"][0].filename}`:null;
+        const   ProposalPdf=await req.files["proposalpdf"]?`${process.env.SERVER_URL}/uploads/proposalpdf/${req.files["proposalpdf"][0].filename}`:null;
         const additionalsdetails=new Extradetails({
        ElectrcityBill,ProposalPdf
         })

@@ -12,6 +12,7 @@ router.post("/addDealerLead",DLclient.addClient);
 router.get("/fetchAllLeads",DLclient.Fetchclients);
 router.post("/dLBulkLead", upload.single('file'),DLclient.bulkExcelLead);
 router.put("/updateDLClient",uploadd.fields([  {name:'Document',maxCount:1},]),DLclient.updateDLClient);
+// router.put("/updateDLClient",uploadd.single('Document'),DLclient.updateDLClient);
 
 
 

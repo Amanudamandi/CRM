@@ -13,6 +13,7 @@ import { GiPathDistance } from "react-icons/gi";
 import { BsFillPeopleFill } from "react-icons/bs";
 import { IoIosArrowDown } from "react-icons/io";
 import { handleOnFileChange } from '../../../Utils/excelUpload';
+import { handleOnFileChangeDL } from '../../../Utils/dlExcelUpload';
 import Loader from '../Loader/index';
 import { getCookie } from '../../cookieUtils';
 import './index.css';
@@ -63,7 +64,10 @@ const Index = ({ department, nameLogo }) => {
         const event = e;
         console.log(event);
         handleOnFileChange(event, setIsExcelLoading);
+        handleOnFileChangeDL(event,setIsExcelLoading);
     }
+
+
 
     // const handleOnFileChange = (event) => {
     //     const file = event.target.files[0];

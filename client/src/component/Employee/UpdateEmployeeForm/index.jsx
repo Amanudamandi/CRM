@@ -170,13 +170,19 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
             formDataToSend.append('proposalpdf', file);
         }
 
+        console.log("formDataToSend ",formDataToSend);
+
         try {
-            await updateLeadApi(formDataToSend, closeForm);
+            console.log("form data : ", formData);
+
+            const response = await updateLeadApi(formDataToSend, closeForm);
+            console.log("response data : ", response);
             setUpdateLeadBtnClicked(true);
         } catch (error) {
             console.error("Error updating lead:", error);
         }
     }
+
 
     useEffect(() => {
         showStageApi(true, setShowStages);
@@ -184,7 +190,7 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
         showEmployeeApi(setShowFieldSalesMan, pageCount, leadInformation._id, '');
     }, [pageCount, leadInformation._id]);
 
-    
+
 
 
     return (
@@ -208,7 +214,7 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
                                 {/* Show dropdown only if state is "N/A" */}
                                 {leadInformation.state === "N/A" ? (
                                     <select
-                                        style={Style.inputField}    
+                                        style={Style.inputField}
                                         name="state"
                                         id="state"
                                         value={formData.state}
@@ -299,7 +305,7 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
                                 }
                             </select>
                         </div>
-                        {(formData.stageID.toString() == "66e15efc774c6b5fb4ab6277" || formData?.stageID?.toString() ==  "66e1622c774c6b5fb4ab6285")  && <div style={Style.inputFieldContainer}>
+                        {(formData.stageID.toString() == "66e15efc774c6b5fb4ab6277" || formData?.stageID?.toString() == "66e1622c774c6b5fb4ab6285") && <div style={Style.inputFieldContainer}>
                             <label htmlFor="assign" style={Style.inputLabel}>Assign Employee</label>
                             <select
                                 style={Style.inputField}
@@ -307,8 +313,8 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
                                 onChange={(event) => {
                                     setFormData((previousData) => ({ ...previousData, selectedFieldSales: event.target.value }));
                                 }}
-                            >  
-                            {/* {console.log("dksgjhk",showStages[3].stage)}
+                            >
+                                {/* {console.log("dksgjhk",showStages[3].stage)}
                             {console.log("dksgjhk",showStages[6].stage)} */}
                                 <option value="">Select an Employee</option>
                                 {

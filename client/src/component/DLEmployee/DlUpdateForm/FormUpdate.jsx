@@ -79,7 +79,7 @@ const FormUpdate = ({ showForm, leadData, onClose, pageCount, BooleanShowAllStag
         const selectFile = event.target.files[0];
         if (selectFile && selectFile.type === "application/pdf") {
             setFile(selectFile);
-            setFormData((prev) => ({ ...prev, Document: selectFile }));
+            // setFormData((prev) => ({ ...prev, Document: selectFile }));
         } else {
             alert("Please Upload a valid PDF file");
         }
