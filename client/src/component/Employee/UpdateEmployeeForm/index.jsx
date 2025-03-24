@@ -46,7 +46,7 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
 
     const [states, setStates] = useState([]);
 
-
+console.log("my leadinormation is ", leadInformation)
     const [formData, setFormData] = useState({
         clientID: leadInformation?._id,
         revisitDate: leadInformation?.revisitDate || '',

@@ -11,7 +11,7 @@ import { UpdateDealerEmployeeLeadForm } from '../../../Utils/UpdateDealerEmploye
 
 
 
-const FormUpdate = ({ showForm, leadData, onClose, pageCount, BooleanShowAllStages = false, setUpdateLeadBtnClicked }) => {
+const FormUpdate = ({ showForm, leadData, closeForm, pageCount, BooleanShowAllStages = false, setUpdateLeadBtnClicked }) => {
 
     const Style = {
         updateLeadContainer: { position: 'fixed', width: '75%', height: '92vh', margin: '0rem 1rem 0rem 8.2rem', padding: '3.5rem 1rem', backgroundColor: '#fff', top: '50%', left: '50%', zIndex: '9999', boxShadow: '0px 0px 2px black', borderRadius: '8px', overflow: 'auto', transform: 'translate(-50%, -50%)' },
@@ -47,23 +47,27 @@ const FormUpdate = ({ showForm, leadData, onClose, pageCount, BooleanShowAllStag
     const [otherValue, setOtherValue] = useState("");
     const [file, setFile] = useState(null);
 
-    console.log("lead data",leadData);
+    console.log("my update form is ")
+    console.log("my lead data is ",leadData);
 
 
     const [formData, setFormData] = useState({
         clientID: leadData?._id,
         name: leadData?.name || '',
         mobile: leadData?.mobile || '',
-        email: leadData?.emial || '',
+        email: leadData?.email || '',
         stageID: leadData?.stageID?._id || '',
-        state: leadData?.stateID?.state || '',
+        state: leadData?.state || '',
         district: leadData?.district || '',
         type: leadData?.type || '',
         source: leadData?.source || '',
         interstedIn: '',
         Document: file || '',
         other: otherValue,
-        empId: leadData?.empID?._id
+        empId: leadData?.empID?._id,
+
+        // changes by shivam  for remark
+        remark:leadData?.remark 
 
     })
 
@@ -72,6 +76,7 @@ const FormUpdate = ({ showForm, leadData, onClose, pageCount, BooleanShowAllStag
 
     const handleOnInputChange = (event) => {
         const { name, value } = event.target;
+        console.log()
         setFormData((previous) => ({ ...previous, [name]: value }));
     }
 
@@ -89,9 +94,9 @@ const FormUpdate = ({ showForm, leadData, onClose, pageCount, BooleanShowAllStag
     const handleSubmit = async (event) => {
         event.preventDefault();
         let formDataToSend = new FormData();
-        // console.log('Original FormData', formData);
+        console.log('Original FormData', formData);
         for (const key in formData) {
-            if (formData[key]) {
+            if (formData[key]!==undefined) {
                 // console.log('key by Prince', key, formData[key]);
                 formDataToSend.append(key, formData[key]);
             }
@@ -104,7 +109,7 @@ const FormUpdate = ({ showForm, leadData, onClose, pageCount, BooleanShowAllStag
         // console.log([...formDataToSend.entries()]);
 
         try {
-            const response = await UpdateDealerEmployeeLeadForm({ updateLeadData: formDataToSend, onClose });
+            const response = await UpdateDealerEmployeeLeadForm({ updateLeadData: formDataToSend, closeForm });
             console.log("data response  ", response)
             setUpdateLeadBtnClicked(true);
 
@@ -122,8 +127,8 @@ const FormUpdate = ({ showForm, leadData, onClose, pageCount, BooleanShowAllStag
         const fetchState = async () => {
             const response = await axios.get(`${process.env.REACT_APP_URL}/field/showState`);
             const responseData = await response.data;
-            //    console.log("state : ",responseData.states);
-            setStates(responseData.states);
+               console.log("state : ",responseData?.states);
+            setStates(responseData?.states);
         }
         fetchState();
     }, [])
@@ -135,11 +140,20 @@ const FormUpdate = ({ showForm, leadData, onClose, pageCount, BooleanShowAllStag
         DLShowEmployee(setShowFieldSalesMan, pageCount, leadData?._id, '');
     }, [pageCount, leadData?._id]);
 
+    // useEffect(()=>{
+    //     console.log("in useEffect",leadData?.state)
+    //     if(leadData?.state !== "N/A" && leadData?.stateID != null ){
+    //         setFormData((prev) => ({
+    //             ...prev,
+    //             state: leadData?.state
+    //         }))
+    //     }
+    // },[leadData])
 
     return (
         <section style={showForm ? { ...Style.updateLeadContainer, animation: 'slideUp 0.5s ease forwards' } : Style.updateLeadContainer}>
 
-            <IoClose size={35} color='#AA0B2B' style={{ ...Style.closeFormBtn, transform: isHoveredOnClose ? 'rotate(90deg)' : 'rotate(0deg)' }} onMouseOver={() => setIsHoveredOnClose(true)} onMouseOut={() => setIsHoveredOnClose(false)} onClick={() => onClose({ clicked: false })} />
+            <IoClose size={35} color='#AA0B2B' style={{ ...Style.closeFormBtn, transform: isHoveredOnClose ? 'rotate(90deg)' : 'rotate(0deg)' }} onMouseOver={() => setIsHoveredOnClose(true)} onMouseOut={() => setIsHoveredOnClose(false)} onClick={() => closeForm({ clicked: false })} />
 
             <div style={Style.updateLeadInfoContainer}>
                 <div style={Style.showOnlyDetailsContainer}>
@@ -150,18 +164,20 @@ const FormUpdate = ({ showForm, leadData, onClose, pageCount, BooleanShowAllStag
                         <div style={Style.leadInfo}>
                             <span style={Style.leadInfoText}>Name: {leadData?.name}</span>
                             <span style={Style.leadInfoText}>Mobile: {leadData?.mobile}</span>
-                            <span style={Style.leadInfoText}>Email: {leadData?.email ? leadData?.email : 'N/A'}</span>
+                            <span style={Style.leadInfoText} onChange={handleOnInputChange}>Email: {leadData?.email ? leadData?.email : 'N/A'}</span>
                         </div>
 
                         <div style={Style.leadInfo}>
                             <div style={Style.inputFieldContainer}>
                                 <label htmlFor="state" style={Style.inputLabel}>State</label>
+                               
+                                {/* {console.log("state :", leadData?.state)} */}
 
-                                {!leadData?.stateID || leadData?.stateID?.state === "N/A" ? (
+                                {!leadData?.stateID && leadData?.state === "N/A" ? (
                                     <select style={Style.inputField}
                                         name="state"
                                         id="state"
-                                        value={formData.state}
+                                        value={formData?.state}
                                         onChange={(event) => {
                                             setFormData((prev) => ({
                                                 ...prev,
@@ -176,15 +192,15 @@ const FormUpdate = ({ showForm, leadData, onClose, pageCount, BooleanShowAllStag
                                             <option key={state._id} value={state.state}>{state.state}</option>
                                         ))}
                                     </select>
-                                ) : (
-                                    <p>{leadData?.stateID?.state}</p>
+                                ) : ( leadData?.state && (<p>{leadData?.state}</p>)
+                                    
                                 )}
 
                                 <span style={Style.leadInfoText}>District: {leadData?.district ? leadData.district : 'N/A'}</span>
                             </div>
                         </div>
                         <div style={Style.leadType}>
-                            <img src={leadData.type === 1 ? Hot : leadData.type === 2 ? Warm : Cold} alt={leadData.type === 1 ? 'Hot' : leadData.type === 2 ? 'Warm' : 'Cold'} />
+                            <img src={leadData?.type === 1 ? Hot : leadData?.type === 2 ? Warm : Cold} alt={leadData?.type === 1 ? 'Hot' : leadData?.type === 2 ? 'Warm' : 'Cold'} />
                         </div>
                     </div>
                 </div>
@@ -211,7 +227,7 @@ const FormUpdate = ({ showForm, leadData, onClose, pageCount, BooleanShowAllStag
 
                         <div style={Style.inputFieldContainer}>
                             <label htmlFor="email" style={Style.inputLabel}>Email ID</label>
-                            <input style={Style.inputField} type="text" name="email" id="email" onChange={handleOnInputChange} autoComplete='off' />
+                            <input style={Style.inputField} type="text" name="email" id="email"  onChange={handleOnInputChange} autoComplete='off' />
                         </div>
 
                         <div>
@@ -244,7 +260,7 @@ const FormUpdate = ({ showForm, leadData, onClose, pageCount, BooleanShowAllStag
                             >
                                 {
                                     !BooleanShowAllStages ? showStages.map(({ _id, stage }, index) => (
-                                        index >= (leadData.stageID.stageValue - 1) && <option key={_id} value={[_id, index]}>{stage}</option>
+                                        index >= (leadData?.stageID?.stageValue - 1) && <option key={_id} value={[_id, index]}>{stage}</option>
                                     )) : showAllStages.map(({ _id, stage }) => (
                                         <option key={_id} value={_id}>{stage}</option>
                                     ))
@@ -255,7 +271,7 @@ const FormUpdate = ({ showForm, leadData, onClose, pageCount, BooleanShowAllStag
                         <div style={Style.inputFieldContainer}>
                             <label htmlFor="date" style={Style.inputLabel}>{(formData.stageID === 7 ? 'Revisit Date' : (formData.stageID === 3 ? 'Follow-Up Date' : 'Visiting Date'))}</label>
                             <input style={Style.inputField} type="date"
-                                name={(formData.stageID === 7 ? 'revisitDate' : (formData.stageID === 3 ? 'followUpDate' : 'visitingDate'))}
+                                name={(formData?.stageID === 7 ? 'revisitDate' : (formData?.stageID === 3 ? 'followUpDate' : 'visitingDate'))}
                                 id="date"
                                 onChange={handleOnInputChange}
                             />

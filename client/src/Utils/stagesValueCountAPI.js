@@ -7,7 +7,7 @@ export const stageCountForDashboardApi = async( empID, stageID, startDate='', en
         const response = await sendRequest.data;
         const { success } = response;
         if(success){
-            console.log(response);
+            // console.log(response);
             return response.todaysLead;
         }
     }catch(error){

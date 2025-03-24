@@ -31,7 +31,7 @@ const crmLoginAPI = async( loginCredentials ) => {
             // updateAccessToken(accessToken);
             setCookie('accessToken', accessToken, { expires: 7, secure: false, sameSite: 'Strict' });
             // setLoginResponse({role: response.data.department.role, success});
-            console.log(msg, accessToken, refreshToken);
+            // console.log(msg, accessToken, refreshToken);
             localStorage.setItem('role', role);
             if(role !== 1){
               localStorage.setItem('employeeId', response.data._id);

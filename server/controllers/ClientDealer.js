@@ -4,6 +4,7 @@ const TLdealer= require("../models/Dealer Models/DealerTL")
 const insertStageActivity= require("../helpers/common/storeStageActivity")
 const axios = require("axios");
 const State= require("../models/state");
+const mongoose= require('mongoose');
 
 // const incrementDateFunction = require('../helpers/common/dateConversion/incrementDate');
 const equalDateFunction = require('../helpers/common/dateConversion/equalDate');
@@ -232,6 +233,7 @@ const Fetchclients=async(req,res)=>{
                             type: 1,
                             CurrentDate: 1,
                             interstedIn:1, 
+                            remark:1,
                             Document:1,
                             
                           
@@ -330,11 +332,14 @@ const bulkExcelLead= async(req,res) =>{
             ++totalClient; // count total leads
             
             let stateName ;
-          if(state){
+
+          if(state==="string"){
               
             const cleanedState = state.trim();
            
              stateName = await State.findOne({ state: { $regex: new RegExp(`^${cleanedState}$`, 'i') } }).select("state")[0];
+          }else{
+            state=null;
           }
 
             if (stateName) {
@@ -347,25 +352,31 @@ const bulkExcelLead= async(req,res) =>{
             
              let zipCode = row['zip_code'];
              console.log(zipCode);
+             
            
            
 
-            if(zipCode  || zipCode?.length >= 5){
+             if (typeof zipCode === "number" && zipCode.toString().length >= 5) {
                 console.log("hello");
-                console.log(zipCode,"zip");
-                const zipCodeResponse = await axios.get(`https://api.postalpincode.in/pincode/${zipCode}`); // these api is help to get area location by zip code
-                if(zipCodeResponse.data[0].Status === "Success"){
-                    const postOffice = zipCodeResponse?.data?.[0]?.PostOffice?.[0];
-                    console.log(zipCodeResponse?.data?.[0]?.PostOffice?.[0]);
-                   
-                   
-               
-                    district = postOffice?.District;
-                    state = postOffice?.State;
-                 
-                   
+                console.log(zipCode, "zip");
+            
+                try {
+                    const zipCodeResponse = await axios.get(`https://api.postalpincode.in/pincode/${zipCode}`);
+            
+                    if (zipCodeResponse.data[0].Status === "Success") {
+                        const postOffice = zipCodeResponse?.data?.[0]?.PostOffice?.[0];
+                        console.log(postOffice);
+            
+                        district = postOffice?.District;
+                        state = postOffice?.State;
+                    }
+                } catch (error) {
+                    console.error("Error fetching zip code data:", error.message);
                 }
+            } else {
+                zipCode = null;
             }
+            
         
             if(state){
                 const responseStateID = await State.findOne({state},'_id');
@@ -383,7 +394,7 @@ const bulkExcelLead= async(req,res) =>{
                 empID = employeeResponseData.empID;
                 teamLeaderID = employeeResponseData.TLID;
             }else{
-                console.log("hello");
+             
                 const Stateresponse=await findEmpIdAndTLIDByState(StateID);
                
                 console.log(Stateresponse,"hello")
@@ -409,21 +420,23 @@ const bulkExcelLead= async(req,res) =>{
             // ExcelData.push(clientData);
             try{
                 const newClient = await DLclient.create(clientData);
-                console.log(newClient);
-                if(newClient && newClient._id){
-                    const newClientID = newClient._id.toString();
-                    const stageUpdateDate = new Date();
-                    const stageID = "66e15ed1774c6b5fb4ab626b";
-                    const stageResponse =await insertStageActivity(newClientID, empID, stageID, stageUpdateDate);
-                    if(stageResponse) stageResult++;
-                }
-                uploadedFreshClient++;
+                               if(newClient && newClient._id){
+                                   const newClientID = newClient._id.toString();
+                                   const stageUpdateDate = new Date();
+                                   const stageID = "66e15ed1774c6b5fb4ab626b";
+                                   const stageResponse =await insertStageActivity(newClientID, empID, stageID, stageUpdateDate);
+                                   if(stageResponse) stageResult++;
+                               }
+                               uploadedFreshClient++;
+                console.log(uploadedFreshClient,"not hwerere")
                 // const whatsAppResponse = await welcomeTemplate(clientData.mobile); 
                 // (whatsAppResponse) ? ++wlcSuccessMsg : --wlcUnsuccessMsg;
             }catch(error){
                 const newClientData = {...clientData, errors:error.message};
                 const errorClient = await ErrorClient.create(newClientData);
                 notUploadedClient++;
+                console.log(notUploadedClient,"not uploADED")
+                console.log(error.message);
                 if(!errorClient){
                     ClientArray.push(clientData);
                 }
@@ -573,135 +586,20 @@ const bulkExcelLead= async(req,res) =>{
 //         });
 //     }
 // }
-// const updateDLClient = async (req, res) => {
-//     try {
-//         console.log("Request Data:234345354647546785679868", req.body);
-
-//         const { kwpInterested, type, email, stageID, selectedFieldSales, visitingDate, followUpDate, remark, clientID, empID, address, state, interstedIn, other } = req.body;
-
-//         if (!clientID) {
-//             return res.status(400).json({
-//                 success: false,
-//                 msg: "Client ID does not exist!"
-//             });
-//         }
-//         const Document=await req.files["Document"]?`${process.env.SERVER_URL}/uploads/DLproposal/${req.files["Document"][0].filename}`:null;
-//         console.log(Document);
-
-//         const stateResponse =  await State.find({state});
-//         console.log(stateResponse);
-//         if (!stateResponse) {
-//             return res.status(404).json({
-//                 success: false,
-//                 msg: "State not found!"
-//             });
-//         }
-
-//         if (followUpDate || visitingDate) {
-//             const queryDate = new Date(followUpDate || visitingDate);
-//             const today = new Date();
-
-//             if (queryDate < today) {
-//                 return res.status(400).json({
-//                     success: false,
-//                     msg: "Please provide a valid future date."
-//                 });
-//             }
-//         }
-
-//         if (followUpDate) {
-//             const newFollowUpDate = await equalDateFunction(followUpDate);
-//            const data= await FollowUp.findOneAndUpdate(
-//                 { clientID },
-//                 { $set: { followUpDate: newFollowUpDate } },
-//                 { new: true, upsert: true, runValidators: true }
-//             );
-//             console.log(data,"respo0nse")
-//         }
-
-//         let newVisit = null;
-//         if (visitingDate) {
-//             console.log("Adding visiting date...");
-//             const newVisitingDate = await equalDateFunction(visitingDate);
-//             const visit = new AssignEmployee({ clientID, fieldEmpID: selectedFieldSales, visitingDate: newVisitingDate });
-//             newVisit = await visit.save();
-//         }
-
-//         const interestMap = {
-//             "1": "Channel Partner",
-//             "2": "Distributor",
-//             "3": "DealerShip",
-//             "4": "Franchise",
-//             "5": "Agent",
-//             "6": other
-//         };
-//         const interestValue = interestMap[interstedIn] || "Unknown";
-//         const updatedData = {
-//             stateID: stateResponse?.[0]?._id || null,
-//             kwpInterested: kwpInterested || "N/A",
-//             type: type || 1,
-//             email: email || "",
-//             stageID: stageID || "66e15ed1774c6b5fb4ab626b",
-//             address: address || null,
-//             interstedIn: interestValue || "N/A",
-//             Document:Document || null,
-//         };
-//         console.log(updatedData,"data")
-//         console.log("Client ID:", clientID);
-
-
-// const data = await DLclient.find({ _id: clientID });
-// console.log(data);
-
-
-
-//         const updateClient = await DLclient.findByIdAndUpdate(
-//             clientID,
-//             updatedData,
-//             { new: true, runValidators: true }
-//         ).exec();
-        
-//         if (!updateClient) {
-//             return res.status(404).json({
-//                 success: false,
-//                 msg: "Something went wrong, please try again!"
-//             });
-//         }
-
-//         if (stageID) {
-//             const stageUpdateDate = new Date();
-//             await insertStageActivity(clientID, empID, stageID, stageUpdateDate, remark);
-//         }
-
-//         return res.status(200).json({
-//             success: true,
-//             msg: "Update successful.",
-//             data: updateClient,
-//         });
-//     } catch (error) {
-//         console.error("Error:", error);
-//         return res.status(400).json({
-//             success: false,
-//             msg: error.message
-//         });
-//     }
-// };
-
 const updateDLClient = async (req, res) => {
     try {
         console.log("Request Data:", req.body);
 
         const { kwpInterested, type, email, stageID, selectedFieldSales, visitingDate, followUpDate, remark, clientID, empID, address, state, interstedIn, other } = req.body;
-        console.log(req.files['Document']);
+
         if (!clientID) {
             return res.status(400).json({
                 success: false,
                 msg: "Client ID does not exist!"
             });
         }
-       
-        const Document=await req.files['Document']?`${process.env.SERVER_URL}/uploads/DLproposal/${req.files['Document'][0].filename}`:null;
-        console.log(Document);
+        const Document=await req.files["Document"]?`${process.env.SERVER_URL}/uploads/DLproposal/${req.files["Document"][0].filename}`:null;
+
         const stateResponse =  await State.find({state});
         console.log(stateResponse);
         if (!stateResponse) {
@@ -759,6 +657,7 @@ const updateDLClient = async (req, res) => {
             address: address || null,
             interstedIn: interestValue || "N/A",
             Document:Document || null,
+            remark:remark || null,
         };
         console.log(updatedData,"data")
         console.log("Client ID:", clientID);
@@ -774,7 +673,7 @@ console.log(data);
             updatedData,
             { new: true, runValidators: true }
         ).exec();
-       
+        
         if (!updateClient) {
             return res.status(404).json({
                 success: false,
@@ -801,9 +700,13 @@ console.log(data);
     }
 };
 
+
+
+
 module.exports={
     Fetchclients,
     addClient,
     bulkExcelLead,
     updateDLClient,
+
 }

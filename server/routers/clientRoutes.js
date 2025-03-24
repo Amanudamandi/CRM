@@ -21,6 +21,7 @@ router.get("/fetchAssignEmployee", clientController.fetchAssignEmployee); //comp
 router.put("/bulkAssign", clientController.bulkAssign) //completed 2.0
 router.post("/FetchAssignemployee",clientController.Assignfieldemployee);
 router.put("/updateStatus",clientController.updatestatus);
+router.delete("/delete-clients", upload.single('file'), clientController.removeClientsFromExcel);
 // router.post()
 module.exports = router;
 

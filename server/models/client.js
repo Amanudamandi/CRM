@@ -97,8 +97,8 @@ const clientSchema = mongoose.Schema({
     },
     status:{
         type:String,
-        enum:["Complete","Pending","Reject","Delay"],
-        default:"Pending"
+        enum:["Visit Complete","Visit Pending","Visit Reject","Visit Delay"],
+        default:"Visit Pending"
     }
 });
 const client = mongoose.model("Client",clientSchema);

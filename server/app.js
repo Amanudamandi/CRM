@@ -31,6 +31,7 @@ require('./db/conn');
     const DealerTLRouter= require("../server/routers/TLdealerRoutes.js");
     const Dealeremployee= require("../server/routers/TLemployeeRoutes.js");
     const DLlead= require("../server/routers/TLclientRoutes.js");
+   
     app.use(cookieParser());
     const allowedOrigins = [
         'http://88.222.214.93:3000',
@@ -50,12 +51,16 @@ require('./db/conn');
         methods: ['GET', 'POST', 'PUT', 'DELETE'] // Allow specific HTTP methods
     };
     app.use(cors(corsOptions));
+//    mailsender("marketingads065@gmail.com","hello from galo","hello"
+
+
+//    )
    
     app.use(cors());
     app.use(express.json({limit: '10mb'}));
     app.use(express.urlencoded({ extended: true })); 
     app.use("/uploads", express.static("uploads"));
-
+ 
 
     app.use("/clientDL",DLlead);
 
@@ -70,8 +75,12 @@ require('./db/conn');
     app.use("/dealerTL",DealerTLRouter);
     app.use("/DLemp",Dealeremployee);
     const port = 8080;
+   
+    
+    
+   
     app.listen(port, ()=>{
         console.log(`server is running ${port}`);
     })
 
-//   }
+

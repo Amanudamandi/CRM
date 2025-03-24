@@ -41,6 +41,7 @@ import coordinateDealerAdd from '../../Pages/DealerTL/EmployeeBoard/DealerRegist
 import DLEmpLead from '../../Pages/Admin/LeadDLBoard/Index';
 import DLEmpDashboard from '../../Pages/DLEmployee/DLDashboard/EmpDashboard';
 import DLLeadAddEmp from '../../Pages/DLEmployee/DLEmpLead/AddLeadDL'
+import DealerLeadShow from "../../Pages/DLEmployee/leadBoardDL/LeadBoardDl"
 
 import BothDashBoard from '../../Pages/Admin/PPDLDashBoard/BothDashBoard';
 
@@ -117,7 +118,7 @@ const Index = () => {
 
                 <Route path='/' element={<DlEmplayout />} >
                     <Route path='employeeDL/dashboard' element={<DLEmpDashboard/>} />
-                    <Route path='employeeDL/show-leads' element ={<DLEmpLead/>} />
+                    <Route path='employeeDL/show-leads' element ={<DealerLeadShow/>} />
                     <Route path='employeeDL/show-leads/add' element={<DLLeadAddEmp employeeID={localStorage.getItem('employeeId')} />} />
 
 
