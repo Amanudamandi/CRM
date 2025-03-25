@@ -5,7 +5,7 @@ export const DLShowEmployee = async( setData, pageCount = 1, departmemtID='', co
         const sendRequest = await axios.get(`${process.env.REACT_APP_URL}/clientDL/fetchAllLeads/?page=${pageCount}&limit=50&department=${departmemtID}&teamLeader=${coordinatorID}&stage=${stage}&state=${state}`);
         
         const response = await sendRequest.data;
-        console.log("response from api ",response);
+        // console.log("response from api ",response);
         const { success } = response;
         if(success){
             setData(response.employees);

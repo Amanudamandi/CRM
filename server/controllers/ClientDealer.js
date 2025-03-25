@@ -700,6 +700,58 @@ console.log(data);
     }
 };
 
+const bulkAssignLead = async (req, res) => {
+    try {
+      const { clientsID, empID } = req.body;
+  
+      if (!clientsID || !empID) {
+        return res.status(400).json({
+          success: false,
+          msg: "clientIDs and empID are required",
+        });
+      }
+  
+      // find employee ID and Team Leader id for update client
+      const empData = await Dlemployee.findOne({
+        empID: { $regex: empID, $options: "i" },
+      }).select("_id teamLeader");
+      //   console.log(empData);
+      const employeeID = empData._id.toString();
+      const teamLeaderID = empData.teamLeader.toString();
+      console.log(employeeID);
+      console.log(teamLeaderID);
+  
+      const updateData = {
+        empID: employeeID,
+        TLID: teamLeaderID,
+      };
+      // Update empID for all clients in clientIDs array
+      const updatedClients = await DLclient.updateMany(
+        { _id: { $in: clientsID } }, // Filter clients by multiple IDs
+        { $set: updateData } // Set new empID for each client
+      );
+      console.log(updateDLClient)
+  
+      // Check if any clients were updated
+      if (updatedClients.nModified === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "No clients found to update",
+        });
+      }
+      res.status(200).json({
+        success: true,
+        data:updateDLClient,
+        // message: ${updatedClients.nModified} clients were updated,
+        msg: "Successfully updated clients",
+      });
+    } catch (error) {
+      return res.status(400).json({
+        success: false,
+        msg: error,
+      });
+    }
+  };
 
 
 
@@ -708,5 +760,6 @@ module.exports={
     addClient,
     bulkExcelLead,
     updateDLClient,
+    bulkAssignLead,
 
 }

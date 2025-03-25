@@ -1,18 +1,19 @@
 import React from 'react';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { showEmployeeApi } from '../../../../Utils/showEmployeeAPI';
 import { IoClose } from "react-icons/io5";
 import axios from 'axios';
-import './index.css';
+// import './index.css';
+import { showDealerEmployeeApi } from '../../../../Utils/showDealerEmpApi';
 
 const Index = ({ reAssignBtnClicked, setReAssignBtnClicked, clientsID, setReAssignSuccess, limit, setLeadStatusList }) => {
 
+    console.log("client id : ",clientsID)
     const [ employeeList, setEmployeeList ] = useState([]);
     const [ selectedEmployee, setSelectedEmployee ] = useState('');
 
     useEffect(() => {
-        showEmployeeApi(setEmployeeList);
+        showDealerEmployeeApi(setEmployeeList);
     }, []);
 
     const Styles = {
@@ -26,9 +27,9 @@ const Index = ({ reAssignBtnClicked, setReAssignBtnClicked, clientsID, setReAssi
 
     const handleAssignLeadsToEmployee = async() => {
         try{
-            const sendRequest = await axios.put(`${process.env.REACT_APP_URL}/client/bulkAssign`, { clientsID , empID: selectedEmployee })
+            const sendRequest = await axios.put(`${process.env.REACT_APP_URL}/clientDL/bulkAssignLead`, { clientsID , empID: selectedEmployee })
             const response = await sendRequest.data;
-            console.log("response data : ",response);
+            console.log("response when we reassign lead",response);
             // alert(response)
             if(response.success){
                 alert(response.msg);
@@ -70,6 +71,7 @@ const Index = ({ reAssignBtnClicked, setReAssignBtnClicked, clientsID, setReAssi
                         }}
                     >
                         <option value="">Select the Employee</option>
+                        {console.log("employeeList: ",employeeList)}
                         {
                             employeeList.map(({empID, name}) => (
                                 <option value={empID}>{name}</option>

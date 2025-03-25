@@ -7,6 +7,8 @@ export const showEmployeeApi = async( setData, pageCount = 1, departmemtID='', c
         const response = await sendRequest.data;
         console.log("response from api ",response);
         const { success } = response;
+        console.log("final data ",response.employees)
+
         if(success){
             setData(response.employees);
             return response.employees;

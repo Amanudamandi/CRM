@@ -47,8 +47,7 @@ const FormUpdate = ({ showForm, leadData, closeForm, pageCount, BooleanShowAllSt
     const [otherValue, setOtherValue] = useState("");
     const [file, setFile] = useState(null);
 
-    console.log("my update form is ")
-    console.log("my lead data is ",leadData);
+    // console.log("my lead data is ",leadData);
 
 
     const [formData, setFormData] = useState({
@@ -71,12 +70,11 @@ const FormUpdate = ({ showForm, leadData, closeForm, pageCount, BooleanShowAllSt
 
     })
 
-    console.log("formData: ", formData);
+    // console.log("formData: ", formData);
 
 
     const handleOnInputChange = (event) => {
         const { name, value } = event.target;
-        console.log()
         setFormData((previous) => ({ ...previous, [name]: value }));
     }
 
@@ -94,7 +92,7 @@ const FormUpdate = ({ showForm, leadData, closeForm, pageCount, BooleanShowAllSt
     const handleSubmit = async (event) => {
         event.preventDefault();
         let formDataToSend = new FormData();
-        console.log('Original FormData', formData);
+        // console.log('Original FormData', formData);
         for (const key in formData) {
             if (formData[key]!==undefined) {
                 // console.log('key by Prince', key, formData[key]);
@@ -110,14 +108,14 @@ const FormUpdate = ({ showForm, leadData, closeForm, pageCount, BooleanShowAllSt
 
         try {
             const response = await UpdateDealerEmployeeLeadForm({ updateLeadData: formDataToSend, closeForm });
-            console.log("data response  ", response)
+            // console.log("data response  ", response)
             setUpdateLeadBtnClicked(true);
 
         } catch (error) {
             console.log(error);
         }
     }
-    console.log("form data ", formData);
+    // console.log("form data ", formData);
 
 
 
@@ -127,7 +125,7 @@ const FormUpdate = ({ showForm, leadData, closeForm, pageCount, BooleanShowAllSt
         const fetchState = async () => {
             const response = await axios.get(`${process.env.REACT_APP_URL}/field/showState`);
             const responseData = await response.data;
-               console.log("state : ",responseData?.states);
+            //    console.log("state : ",responseData?.states);
             setStates(responseData?.states);
         }
         fetchState();
