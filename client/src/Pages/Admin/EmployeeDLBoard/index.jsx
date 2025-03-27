@@ -8,6 +8,10 @@ import '../../../index.css';
 import axios from 'axios';
 import { tr } from 'date-fns/locale';
 
+import UpdateEmployeeForm from '../../../component/Employee/UpdateEmployeeForm';
+import UpdateDealer from '../../../component/Common/UpdateDealerForm/UpdateDealer';
+import { useNavigate } from 'react-router-dom';
+
 const Index = () => {
 
   const Styles = {
@@ -17,7 +21,7 @@ const Index = () => {
     headerContainer: { padding: '0.5rem 1rem', position: 'sticky', left: 0, top: 0 },
     employeeContainer: { gridColumns: '2', gridRow: '2', backgroundColor: '#fff', margin: '0.5rem 1rem', borderRadius: '5px', overflow: 'auto' },
     employeeTable: { width: '100%', backgroundColor: '#fff', borderRadius: '5px' },
-    tableBody: { height: '100%', overflow: 'scroll'},
+    tableBody: { height: '100%', overflow: 'scroll' },
     employeeValue: { padding: '0.3rem', fontSize: '1rem', textAlign: 'center', fontWeight: '500', whiteSpace: 'nowrap' }
 
   }
@@ -61,13 +65,25 @@ const Index = () => {
     }
   }
 
-  console.log("employee data", employeeData);
+  // console.log("employee data", employeeData);
 
   useEffect(() => {
     fetchEmployee();
   }, []);
 
+  // update Dealer Employee
+  const [updateDl, setUpdateDl] = useState(false);
+  const navigate = useNavigate();
+  const [selectedDLEmp, setSelectedDLEmp] = useState({});
 
+  const updateDealer = (employee) => {
+    console.log("employee clicked to update ",employee);
+    try {
+      navigate(`/admin/employeeDL/update/${employee.empID}`, {state: employee })
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   return (
     <section style={Styles.adminContainer}>
@@ -110,17 +126,18 @@ const Index = () => {
             setAppliedFilterClicked={setAppliedFilterClicked}
           />
 
+          {/* 
           {
             console.log("data : ", employeeData)
-          }
+          } */}
 
           {
             employeeData.length !== 0 && employeeData.map(({ _id, empID, name, mobile, department, teamLeader, stateID }) => (
-              <tr key={_id} style={{ borderBottom: '2px solid black' }}>
+              <tr key={_id} onClick={() => updateDealer({ _id, empID, name, mobile, department, teamLeader, stateID})} style={{ borderBottom: '2px solid black' }}>
                 <td style={Styles.employeeValue}>{empID ? empID : 'N/A'}</td>
                 <td style={Styles.employeeValue}>{name ? name : 'N/A'}</td>
                 <td style={Styles.employeeValue}>{department ? department.department : 'N/A'}</td>
-                <td style={Styles.employeeValue}>{teamLeader ? teamLeader.name: 'N/A'}</td>
+                <td style={Styles.employeeValue}>{teamLeader ? teamLeader.name : 'N/A'}</td>
                 <td style={Styles.employeeValue}>{mobile ? mobile : 'N/A'}</td>
                 <td style={Styles.employeeValue}>{stateID.length !== 0 ? stateID.map(eachState => (
                   <span>{`${eachState.state},`}</span>
@@ -131,6 +148,12 @@ const Index = () => {
           }
 
         </table>
+
+        {
+          updateDl &&
+          <UpdateDealer />
+        }
+
       </section>
 
       <div style={{ width: 'fit-content', margin: 'auto' }}>

@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import LeadBoardHeader from '../../../component/Common/showLeadsHeader/index';
 import axios from 'axios';
-import ShowDealerEmpProfile from '../../showTeamDLLeader/ShowEmployeeDealerProfile/Index'
 import { FiArrowRightCircle } from "react-icons/fi";
 import { FiArrowLeftCircle } from "react-icons/fi";
 import CoordinatorCard from '../../../component/Common/Card2/index'
-import UpdateLeadForm from '../../../component/Employee/UpdateEmployeeForm/index'
+import UpdateLeadForm from '../../../component/DLEmployee/DlUpdateForm/FormUpdate'
 
+// import ShowEmployeeProfile from './showEmployeeProfile/index';
+
+import ShowDealerEmployeeProfile from "../ShowDealerEmployeeProfile/DealerEmployeeProfile"
 
 const Index = () => {
 
@@ -22,11 +24,9 @@ const Index = () => {
       mobile: ''
     }
   );
-
-  const [updateCoordinatorDealerProfile, setNewCoordinatorDealerProfile] = useState({ clicked: false });
-
-  const [showDealerEmployeeProfile, setShowDealerEmployeeProfile] = useState(false);
-  const [individualDealerEmployeeInfo, setIndividualDealerEmplyeeInfo] = useState(null);
+  const [updateCoordinatorProfile, setNewCoordinatorProfile] = useState({ clicked: false });
+  const [showEmployeeProfile, setShowEmployeeProfile] = useState(false);
+  const [individualEmployeeInfo, setIndividualEmplyeeInfo] = useState(null);
 
   const [leadClickedInfo, setLeadClickedInfo] = useState({ clicked: false });
   const [updateLeadBtnClicked, setUpdateLeadBtnClicked] = useState(false);
@@ -38,6 +38,12 @@ const Index = () => {
   const decreasePageCount = () => {
     setPageCount(pageCount - 1);
   }
+
+  //   useEffect(() => {
+  //     if (!showLeadList) {
+  //         console.log("Closing the form...");
+  //     }
+  // }, [showLeadList]);
 
 
   const showTeamLeaderDLAPI = async (isMounted) => {
@@ -64,6 +70,7 @@ const Index = () => {
 
 
 
+
   const Styles = {
     adminContainer: { position: 'relative', display: 'grid', height: '100vh', gridTemplateColumns: '1fr', gridTemplateRows: '3.5rem 1fr', backgroundColor: '#E8EFF9', overflow: 'hidden' },
     navBar: { gridRow: '1 / span 2' },
@@ -83,8 +90,35 @@ const Index = () => {
         </div>
       </div>
 
-       {/* showing all data  */}
-       {
+      {
+        showEmployeeProfile &&
+        <ShowDealerEmployeeProfile
+        individualEmployeeInfo={individualEmployeeInfo}
+        setShowLeadsList={setShowEmployeeProfile}
+        showLeadList={showEmployeeProfile}
+        setShowLeadUpdateForm={setLeadClickedInfo}
+        updateLeadBtnClicked={updateLeadBtnClicked}
+        setUpdateLeadBtnClicked={setUpdateLeadBtnClicked}
+        />
+      }
+
+      {/* {
+        leadClickedInfo.clicked &&
+        <UpdateLeadForm
+          showForm={leadClickedInfo.clicked}
+          leadInformation={leadClickedInfo}
+          closeForm={setLeadClickedInfo}
+          pageCount={pageCount}
+          BooleanShowAllStages={true}
+          setUpdateLeadBtnClicked={setUpdateLeadBtnClicked}
+        />
+      } */}
+
+
+
+
+      {/* showing all coordinator in card form   */}
+      {
         showCoordinatorDealerProfile !== true ? <section style={Styles.employeeContainer}>
           {
             teamLeaderList && teamLeaderList.map(({ _id, empID, name, mobile, stateID }) => (
@@ -109,7 +143,7 @@ const Index = () => {
                       return state
                     }) : 'N/A'
                   }
-                  setCoordinatorProfile={setNewCoordinatorDealerProfile}
+                  setCoordinatorProfile={setNewCoordinatorProfile}
 
                 />
               </div>
@@ -121,40 +155,11 @@ const Index = () => {
             <span>{pageCount}</span>
             <FiArrowRightCircle size={20} onChange={decreasePageCount} />
           </div>
-        </section> : <showCoordinatorDealerProfile coordinatorInfo={storeInfoOfCurrentTL} setShowEmployeeList={setShowCoordinatorDealerProfile} showEmployeeList={setShowCoordinatorDealerProfile} setIndividualEmplyeeInfo={setIndividualDealerEmplyeeInfo} setShowLeadList={setShowDealerEmployeeProfile} />
+        </section> : <showCoordinatorDealerProfile coordinatorInfo={storeInfoOfCurrentTL} setShowEmployeeList={setShowCoordinatorDealerProfile} showEmployeeList={setShowCoordinatorDealerProfile} setIndividualEmplyeeInfo={setIndividualEmplyeeInfo} setShowLeadList={setShowEmployeeProfile} />
       }
 
 
 
-
-
-      {/* {
-        showDealerEmployeeProfile &&
-        <ShowDealerEmpProfile
-          individualEmployeeInfo={individualDealerEmployeeInfo}
-          setShowLeadsList={setShowDealerEmployeeProfile}
-          showLeadList={showDealerEmployeeProfile}
-          setShowLeadUpdateForm={setLeadClickedInfo}
-          updateLeadBtnClicked={updateLeadBtnClicked}
-          setUpdateLeadBtnClicked={setUpdateLeadBtnClicked}
-        />
-      } */}
-
-
-      {/* update pending */}z
-      {/* {
-        leadClickedInfo.clicked &&
-        <UpdateLeadForm
-          showForm={leadClickedInfo.clicked}
-          leadInformation={leadClickedInfo}
-          closeForm={setLeadClickedInfo}
-          pageCount={pageCount}
-          BooleanShowAllStages={true}
-          setUpdateLeadBtnClicked={setUpdateLeadBtnClicked}
-        />
-      } */}
-
-    
 
     </article>
   )

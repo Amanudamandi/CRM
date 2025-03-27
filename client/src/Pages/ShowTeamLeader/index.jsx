@@ -106,25 +106,25 @@ const Index = () => {
                     setUpdateLeadBtnClicked={setUpdateLeadBtnClicked}
                 />
             }
-            {
+            {/* {
                 leadClickedInfo.clicked &&
                 <UpdateLeadForm
                     showForm={leadClickedInfo.clicked}
                     leadInformation={leadClickedInfo}
-                    closeForm={setLeadClickedInfo}
+                    closeForm={setLeadClickedInfo} 
                     pageCount={pageCount}
                     BooleanShowAllStages={true}
                     setUpdateLeadBtnClicked={setUpdateLeadBtnClicked}
                 />
-            }
+            } */}
 
-            {
+            {/* {
                 updateCoordinatorProfile.clicked &&
                 <UpdateCoordinatorProfile
                     coordinatorProfileClickedInfo={updateCoordinatorProfile}
                     setCoordinatorProfile={setNewCoordinatorProfile}
                 />
-            }
+            } */}
 
             {
                 showCoordinatorProfile !== true ? <section style={Styles.employeeContainer}>

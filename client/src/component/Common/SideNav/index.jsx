@@ -12,8 +12,10 @@ import { MdLocationOn } from "react-icons/md";
 import { GiPathDistance } from "react-icons/gi";
 import { BsFillPeopleFill } from "react-icons/bs";
 import { IoIosArrowDown } from "react-icons/io";
+
 import { handleOnFileChange } from '../../../Utils/excelUpload';
 import { handleOnFileChangeDL } from '../../../Utils/dlExcelUpload';
+
 import Loader from '../Loader/index';
 import { getCookie } from '../../cookieUtils';
 import './index.css';
@@ -49,6 +51,7 @@ const Index = ({ department, nameLogo }) => {
     const [showEmployeeDLOptions,setShowEmployeeDLOptions]=useState(false)
     const [showCoordinatorDLOptions, setShowCoordinatorDLOptions] = useState(false);
     const [showLeadsDLOptions, setShowLeadsDLOptions] = useState(false);
+    const [isExcelLoadingDL, setIsExcelLoadingDL] = useState(false);
 
 
     const showOptions = (setShowOption) => {
@@ -64,7 +67,12 @@ const Index = ({ department, nameLogo }) => {
         const event = e;
         console.log(event);
         handleOnFileChange(event, setIsExcelLoading);
-        handleOnFileChangeDL(event,setIsExcelLoading);
+    }
+
+    const handleOnExcelUploadDL=(e)=>{
+        const event =e;
+        console.log(event);
+        handleOnFileChangeDL(event,setIsExcelLoadingDL);
     }
 
 
@@ -118,7 +126,7 @@ const Index = ({ department, nameLogo }) => {
                         {
                             showEmployeeOptions && <div style={Styles.employeeOptionsContainer}>
                                 <Link to='admin/employee-dashboard/add' className="employee-option" style={Styles.employeeOption}>Add</Link>
-                                <Link to='admin/employee-dashboard/update' className="employee-option" style={Styles.employeeOption}>Update</Link>
+                                {/* <Link to='admin/employee-dashboard/update' className="employee-option" style={Styles.employeeOption}>Update</Link> */}
                                 <Link to='admin/employee-dashboard/delete' className="employee-option" style={Styles.employeeOption}>Remove</Link>
                             </div>
                         }
@@ -141,7 +149,7 @@ const Index = ({ department, nameLogo }) => {
                         {
                             showCoordinatorOptions && <div style={Styles.employeeOptionsContainer}>
                                 <Link to='/admin/show-coordinator/add' className="employee-option" style={Styles.employeeOption}>Add</Link>
-                                <Link to='/admin/show-coordinator/update' className="employee-option" style={Styles.employeeOption}>Update</Link>
+                                {/* <Link to='/admin/show-coordinator/update' className="employee-option" style={Styles.employeeOption}>Update</Link> */}
                                 <Link to='/admin/show-coordinator/delete' className="employee-option" style={Styles.employeeOption}>Remove</Link>
                             </div>
                         }
@@ -205,7 +213,7 @@ const Index = ({ department, nameLogo }) => {
                         {
                             showEmployeeDLOptions && <div style={Styles.employeeOptionsContainer}>
                                 <Link to='admin/employeeDL-dashboard/add' className="employee-option" style={Styles.employeeOption}>Add</Link>
-                                <Link to='admin/employeeDL-dashboard/update' className="employee-option" style={Styles.employeeOption}>Update</Link>
+                                {/* <Link to='admin/employeeDL-dashboard/update' className="employee-option" style={Styles.employeeOption}>Update</Link> */}
                                 <Link to='admin/employeeDL-dashboard/delete' className="employee-option" style={Styles.employeeOption}>Remove</Link>
                             </div>
                         }
@@ -226,7 +234,7 @@ const Index = ({ department, nameLogo }) => {
                         {
                             showCoordinatorDLOptions && <div style={Styles.employeeOptionsContainer}>
                                 <Link to='/admin/showDL-coordinator/add' className="employee-option" style={Styles.employeeOption}>Add</Link>
-                                <Link to='/admin/showDL-coordinator/update' className="employee-option" style={Styles.employeeOption}>Update</Link>
+                                {/* <Link to='/admin/showDL-coordinator/update' className="employee-option" style={Styles.employeeOption}>Update</Link> */}
                                 <Link to='/admin/showDL-coordinator/delete' className="employee-option" style={Styles.employeeOption}>Remove</Link>
                             </div>
                         }
@@ -249,7 +257,7 @@ const Index = ({ department, nameLogo }) => {
                             showLeadsDLOptions && <div style={Styles.employeeOptionsContainer}>
                                 <div className="employee-option" style={{ ...Styles.employeeOption }} onClick={handleLeadUploadBtnClicked}>
                                     <input type="file" name="leadexcelsheet" id="leadexcelsheet"
-                                        onChange={handleOnExcelUpload}
+                                        onChange={handleOnExcelUploadDL}
                                         ref={fileInputRef}
                                         style={{ opacity: 0, position: 'absolute', appearance: 'auto' }}
                                         accept=".xlsx, .xls, .csv"
@@ -262,7 +270,7 @@ const Index = ({ department, nameLogo }) => {
                             </div>
                         }
                         {
-                            isExcelLoading &&
+                            isExcelLoadingDL &&
                             <div style={{ ...Styles.loaderContainer, ...Styles.loaderMainContainer }}>
                                 <div style={Styles.loaderContainer}>
                                     <Loader />

@@ -45,6 +45,8 @@ import DealerLeadShow from "../../Pages/DLEmployee/leadBoardDL/LeadBoardDl"
 
 import BothDashBoard from '../../Pages/Admin/PPDLDashBoard/BothDashBoard';
 
+import UpdateDealer from '../Common/UpdateDealerForm/UpdateDealer';
+
 
 // DealerEmp 
 import DlEmplayout from "../DealerEmpLayout/Index";
@@ -86,6 +88,7 @@ const Index = () => {
                     <Route path='/admin/showDL-coordinator/add' element={<TeamLeaderDLRegister />}></Route>
                     <Route path='/admin/showDL-leads' element={<LeadDLBoard />} ></Route>
                     <Route path='/admin/showDL-leads/add' element={<AddDLClient />} ></Route>
+                    <Route path='/admin/employeeDL/update/:id' element={<UpdateDealer/>}></Route>
                 </Route>
 
                 {/* Coordinator Router */}

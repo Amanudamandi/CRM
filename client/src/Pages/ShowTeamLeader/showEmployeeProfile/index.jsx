@@ -10,6 +10,7 @@ import { IoClose } from "react-icons/io5";
 // import './index.css';
 
 const Index = ({ individualEmployeeInfo, setShowLeadsList, showLeadList, setShowLeadUpdateForm, updateLeadBtnClicked, setUpdateLeadBtnClicked }) => {
+    console.log("information : ", individualEmployeeInfo);
 
     console.log(showLeadList);
     const Styles = {

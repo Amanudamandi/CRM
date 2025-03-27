@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import DynamicDropDown from '../../DropDown2/index';
 import './../../../Pages/employeeRegister/index.css'
 import { useNavigate } from 'react-router-dom';
+
 const Update = ({ data2, setdata }) => {
   console.log("DATA2", data2);
   const navigate = useNavigate();
@@ -62,8 +63,6 @@ const Update = ({ data2, setdata }) => {
 
   console.log("all team leader", teamLeaderList);
   console.log("selectes Team leader : ", selectedTeamLeader);
-
-
 
   useEffect(() => {
     showTeamLeader();
@@ -351,7 +350,7 @@ const Update = ({ data2, setdata }) => {
         // addedDistricts: addedDistricts,  // Send added separately
         // removedDistricts: removedDistricts // Send removed separately
       });
-      alert("Employee added Successfully");
+      alert("Employee Updated Successfully");
 
       if (updateData.data.success) {
         setformdata({});
@@ -384,13 +383,13 @@ const Update = ({ data2, setdata }) => {
         </div>
 
 
-        <div className="bottom">
-          <div className="bottomLeft ">
-            <label htmlFor='empName'>Name</label>
-            <input type="text" name="emp" value={form?.emp} onChange={changehandler}></input>
+          <div className="bottom">
+            <div className="bottomLeft ">
+              <label htmlFor='empName'>Name</label>
+              <input type="text" name="emp" value={form?.emp} onChange={changehandler}></input>
 
-            <label htmlFor='empMobile'>Mobile</label>
-            <input type="number" id="phone" name="phone" placeholder="9999XXXXXX" value={form?.phone} onChange={changehandler} pattern="[0-9]{10} " required />
+              <label htmlFor='empMobile'>Mobile</label>
+              <input type="number" id="phone" name="phone" placeholder="9999XXXXXX" value={form?.phone} onChange={changehandler} pattern="[0-9]{10} " required />
 
 
             <div>

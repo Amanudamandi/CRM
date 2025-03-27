@@ -187,8 +187,8 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
     useEffect(() => {
         showStageApi(true, setShowStages);
         showStageApi(true, setShowAllStages);
-        showEmployeeApi(setShowFieldSalesMan, pageCount, leadInformation._id, '');
-    }, [pageCount, leadInformation._id]);
+        showEmployeeApi(setShowFieldSalesMan, pageCount, leadInformation?._id, '');
+    }, [pageCount, leadInformation?._id]);
 
 
 
@@ -203,21 +203,21 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
                     </div>
                     <div style={Style.leadInfoContainer}>
                         <div style={Style.leadInfo}>
-                            <span style={Style.leadInfoText}>Name: {leadInformation.name}</span>
-                            <span style={Style.leadInfoText}>Mobile: {leadInformation.mobile}</span>
-                            <span style={Style.leadInfoText}>Email: {leadInformation.email ? leadInformation.email : 'N/A'}</span>
+                            <span style={Style.leadInfoText}>Name: {leadInformation?.name}</span>
+                            <span style={Style.leadInfoText}>Mobile: {leadInformation?.mobile}</span>
+                            <span style={Style.leadInfoText}>Email: {leadInformation?.email ? leadInformation?.email : 'N/A'}</span>
                         </div>
                         <div style={Style.leadInfo}>
                             <div style={Style.inputFieldContainer}>
                                 <label htmlFor="state" style={Style.inputLabel}>State</label>
 
                                 {/* Show dropdown only if state is "N/A" */}
-                                {leadInformation.state === "N/A" ? (
+                                {leadInformation?.state === "N/A" ? (
                                     <select
                                         style={Style.inputField}
                                         name="state"
                                         id="state"
-                                        value={formData.state}
+                                        value={formData?.state}
                                         onChange={(event) => {
                                             setFormData((prev) => ({
                                                 ...prev,
@@ -228,20 +228,20 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
                                         <option value="">Select a State</option>
                                         {states.map((state) => (
                                             //  console.log("state: ",state),
-                                            <option key={state._id} value={state.state}>{state.state}</option>
+                                            <option key={state._id} value={state?.state}>{state?.state}</option>
                                         ))}
                                     </select>
                                 ) : (
                                     // If state exists, display it as non-editable text
-                                    <p>{leadInformation.state}</p>
+                                    <p>{leadInformation?.state}</p>
                                 )}
                             </div>
 
-                            <span style={Style.leadInfoText}>District: {leadInformation.district ? leadInformation.district : 'N/A'}</span>
-                            <span style={Style.leadInfoText}>City: {leadInformation.city ? leadInformation.city : 'N/A'}</span>
+                            <span style={Style.leadInfoText}>District: {leadInformation?.district ? leadInformation?.district : 'N/A'}</span>
+                            <span style={Style.leadInfoText}>City: {leadInformation?.city ? leadInformation?.city : 'N/A'}</span>
                         </div>
                         <div style={Style.leadType}>
-                            <img src={leadInformation.type === 1 ? Hot : leadInformation.type === 2 ? Warm : Cold} alt={leadInformation.type === 1 ? 'Hot' : leadInformation.type === 2 ? 'Warm' : 'Cold'} />
+                            <img src={leadInformation?.type === 1 ? Hot : leadInformation?.type === 2 ? Warm : Cold} alt={leadInformation?.type === 1 ? 'Hot' : leadInformation?.type === 2 ? 'Warm' : 'Cold'} />
                         </div>
                     </div>
                 </div>
@@ -298,7 +298,7 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
                             >
                                 {
                                     !BooleanShowAllStages ? showStages.map(({ _id, stage }, index) => (
-                                        index >= (leadInformation.stageID.stageValue - 1) && <option key={_id} value={[_id, index]}>{stage}</option>
+                                        index >= (leadInformation?.stageID?.stageValue - 1) && <option key={_id} value={[_id, index]}>{stage}</option>
                                     )) : showAllStages.map(({ _id, stage }) => (
                                         <option key={_id} value={_id}>{stage}</option>
                                     ))
