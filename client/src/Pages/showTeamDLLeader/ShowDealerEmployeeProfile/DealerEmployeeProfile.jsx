@@ -4,10 +4,13 @@ import { IoClose } from 'react-icons/io5';
 import { FaUserTie } from 'react-icons/fa6';
 import Loader from '../../../component/Common/Loader/index';
 import { FiArrowLeftCircle, FiArrowRightCircle } from 'react-icons/fi';
+import FixedRow from '../../../component/Common/ShowEmployeeCard/FixedRow/index';
+
 
 
 const DealerEmployeeProfile = ({ individualEmployeeInfo, setShowLeadsList, showLeadList, setShowLeadUpdateForm, updateLeadBtnClicked, setUpdateLeadBtnClicked }) => {
-    // console.log("show lead list", showLeadList)
+    console.log("show lead list", showLeadList)
+    console.log("information : ", individualEmployeeInfo)
 
     const Styles = {
         coordinatorProfileContainer: { margin: '0rem 1rem 0rem 8.2rem', padding: '1.5rem 1rem', width: '75%', height: '92vh', backgroundColor: 'rgb(234, 238, 245)', position: 'fixed', top: '50%', left: '50%', zIndex: '9999', boxShadow: '0px 0px 2px black', borderRadius: '8px', transform: 'translate(-50%, -50%)' },
@@ -27,7 +30,7 @@ const DealerEmployeeProfile = ({ individualEmployeeInfo, setShowLeadsList, showL
             zIndex: 999,
         }
     }
-    const headingList = ['Stage', 'Name', 'Mobile', 'Email', 'KWP Interested', 'Type', 'District', 'Date'];
+    const headingList = ['Stage', 'Name', 'Mobile', 'Email', 'Type', 'Date'];
     const showDropDownList = new Array(headingList.length).fill(true);
     const [storeFilterData, setStoreFilterData] = useState({});
     const [isApplyFilterClicked, setAppliedFilterClicked] = useState(false);
@@ -64,13 +67,33 @@ const DealerEmployeeProfile = ({ individualEmployeeInfo, setShowLeadsList, showL
                     </div>
                     <div>
                         <div>
-                            {
-                                console.log("information", individualEmployeeInfo)
-                            }
                             <span style={{ fontWeight: '600' }}>{individualEmployeeInfo?.empID || 'Employee Id'}</span>
+                        </div>
+                        <div>
+                            <span>{individualEmployeeInfo.name || 'Name'}</span>
+                        </div>
+                        <div>
+                            <span>{individualEmployeeInfo.mobile || 'Mobile'}</span>
+                        </div>
+                        <div>
+                            <span>{(individualEmployeeInfo.district).join(', ') || 'State'}</span>
                         </div>
                     </div>
                 </div>
+
+                <section style={{ overflow: 'auto', height: '70vh', margin: '1rem 0rem', backgroundColor: '#fff' }}>
+                    <table style={Styles.employeeTable} rules='row'>
+                        <FixedRow
+                            headingList={headingList}
+                            dropDownList={showDropDownList}
+                            showDeleteButton={false}
+                            storeFilterData={storeFilterData}
+                            setStoreFilterData={setStoreFilterData}
+                            setAppliedFilterClicked={setAppliedFilterClicked}
+                            setIsResetFilterBtnClicked={setIsResetFilterBtnClicked}
+                        />
+                    </table>
+                </section>
 
                 {
                     loading &&

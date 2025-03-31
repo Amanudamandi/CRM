@@ -50,19 +50,42 @@ const clientAdd = async (req, res) => {
       source,
       stageID,
       stateID,
-      district,
-      city,
+     
+   
       kwpInterested,
       remark,
+      pincode
     } = req.body;
 
     //find TLID for store data
     console.log(empID);
+    console.log(req.body);
     let empData;
     if (empID != null) {
       empData = await Employee.findById(empID).select("teamLeader").exec();
     }
-    console.log();
+
+     if (pincode && pincode.length >= 5) {
+          
+               zipCode=Number(pincode);
+                try {
+                    const zipCodeResponse = await axios.get(`https://api.postalpincode.in/pincode/${pincode}`);
+                    console.log(zipCodeResponse.data[0])
+                    
+                    if (zipCodeResponse.data && zipCodeResponse.data.length > 0 && zipCodeResponse.data[0].Status === "Success") {
+                        const postOffice = zipCodeResponse.data[0].PostOffice[0];
+                       console.log(postOffice);
+                      
+                        if (postOffice) {
+                          var  district = postOffice.District;
+                          var  city = postOffice.District;
+                        }
+                    }
+                } catch (error) {
+                    console.error("Error fetching zip code data:", error.message);
+                }
+            }
+  
     const addClient = new Client({
       name,
       email,
@@ -80,6 +103,7 @@ const clientAdd = async (req, res) => {
     });
 
     const newClient = await addClient.save();
+    console.log(newClient,"new one");
     if (newClient && newClient._id) {
       const newClientID = newClient._id.toString();
       const stageUpdateDate = new Date();
@@ -549,7 +573,53 @@ const fetchClients = async (req, res) => {
     });
   }
 };
+const bulkAssign = async(req,res) =>{
+  try {
+      const {clientsID, empID} = req.body;
 
+      if (!clientsID || !empID) {
+          return res.status(400).json({
+            success: false,
+            msg: "clientIDs and empID are required",
+          });
+        }
+
+        // find employee ID and Team Leader id for update client
+        const empData = await Employee.findOne({empID:{$regex : empID, $options:"i"} }).select("_id teamLeader");
+      //   console.log(empData);
+        const employeeID = empData._id.toString();
+        const teamLeaderID = empData.teamLeader.toString();
+
+        const updateData = {
+          empID:employeeID,
+          TLID:teamLeaderID
+        }
+        // Update empID for all clients in clientIDs array
+        const updatedClients = await Client.updateMany(
+          { _id: { $in: clientsID } }, // Filter clients by multiple IDs
+          { $set: updateData }   // Set new empID for each client
+        );
+
+        // Check if any clients were updated
+        if (updatedClients.nModified === 0) {
+          return res.status(404).json({
+            success: false,
+            message: "No clients found to update",
+          });
+        }
+        res.status(200).json({
+          success: true,
+          // message: `${updatedClients.nModified} clients were updated`,
+          msg :"Successfully updated clients"
+        });
+
+  } catch (error) {
+      return res.status(400).json({
+          success:false,
+          msg:error
+      })
+  }
+}
 const updateClient = async (req, res) => {
   try {
     console.log("hgff", req.query || req.body || req.params);
@@ -675,26 +745,26 @@ const updateClient = async (req, res) => {
         remark
       );
     }
-    // console.log(updateClient.mobile);
-    // console.log(`+91${updateClient?.mobile}`)
-    // if (ProposalPdf) {
-    //   const emailBody = `<p>Hello,</p><p>Your proposal document is attached.</p>`;
+    console.log(updateClient.mobile);
+    console.log(`+91${updateClient?.mobile}`)
+    if (ProposalPdf) {
+      const emailBody = `<p>Hello,</p><p>Your proposal document is attached.</p>`;
       
     
-    //   await mailsender(email, "Proposal Document", emailBody, ProposalPdf);
-    //   console.log(ProposalPdf);
-    //  await   sendwhatapp( `+91${updateClient?.mobile}`,
-    //           'crm_3',
-    //           { link: 'https://pdfobject.com/pdf/sample.pdf', filename: 'Galo Solar' },
-    //           ['Galo Energy Pvt. Ltd.', 'Best solar energy goods'])
+      await mailsender(email, "Proposal Document", emailBody, ProposalPdf);
+      console.log(ProposalPdf);
+     await   sendwhatapp( `+91${updateClient?.mobile}`,
+              'crm_3',
+              { link: 'https://pdfobject.com/pdf/sample.pdf', filename: 'Galo Solar' },
+              ['Galo Energy Pvt. Ltd.', 'Best solar energy goods'])
 
 
-    //          await   bulkmessage( `+91${updateClient?.mobile}`,
-    //                   "crm_4",
-    //                   "https://www.galosolar.com/galo.png",
-    //                   ["Galo Energy Pvt. Ltd.", "API is Working", "+91 8287701077"])
+             await   bulkmessage( `+91${updateClient?.mobile}`,
+                      "crm_4",
+                      "https://www.galosolar.com/galo.png",
+                      ["Galo Energy Pvt. Ltd.", "API is Working", "+91 8287701077"])
    
-    // }
+    }
 
     
  
@@ -867,54 +937,7 @@ const fetchAssignEmployee = async (req, res) => {
     });
   }
 };
-const bulkAssign = async (req, res) => {
-  try {
-    const { clientsID, empID } = req.body;
-
-    if (!clientsID || !empID) {
-      return res.status(400).json({
-        success: false,
-        msg: "clientIDs and empID are required",
-      });
-    }
-
-    // find employee ID and Team Leader id for update client
-    const empData = await Employee.findOne({
-      empID: { $regex: empID, $options: "i" },
-    }).select("_id teamLeader");
-    //   console.log(empData);
-    const employeeID = empData._id.toString();
-    const teamLeaderID = empData.teamLeader.toString();
-
-    const updateData = {
-      empID: employeeID,
-      TLID: teamLeaderID,
-    };
-    // Update empID for all clients in clientIDs array
-    const updatedClients = await Client.updateMany(
-      { _id: { $in: clientsID } }, // Filter clients by multiple IDs
-      { $set: updateData } // Set new empID for each client
-    );
-
-    // Check if any clients were updated
-    if (updatedClients.nModified === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "No clients found to update",
-      });
-    }
-    res.status(200).json({
-      success: true,
-      // message: `${updatedClients.nModified} clients were updated`,
-      msg: "Successfully updated clients",
-    });
-  } catch (error) {
-    return res.status(400).json({
-      success: false,
-      msg: error,
-    });
-  }
-};
+             
 
 // const Fetchemployee=async(req,res)=>{
 //     try{

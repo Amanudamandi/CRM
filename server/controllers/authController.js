@@ -448,6 +448,67 @@ const empLogin = async(req,res) =>{
                 });
             }
             
+        }else if(department == 7){
+            try {
+                const TLemployeeData = await TLemployee.findOne({empID:email}).populate('department').populate('stateID').populate('teamLeader');
+                console.log(TLemployeeData);
+                if(!TLemployeeData){
+                    return res.status(500).json({
+                        success:false,
+                        msg:'Employee ID not exist!'
+                    })
+                }
+              
+                // if(!errors.isEmpty()){
+                //     return res.status(500).json({
+                //     success:false,
+                //     errors:errors.array()
+                //     }) 
+                // }
+                if(TLemployeeData.mobile != password){
+                    return res.status(401).json({ 
+                        success:false,
+                        msg: 'Employee ID and password is Incorrect!'
+                    });
+                }
+                const accessToken = await generateAccessToken({ TLemployee:TLemployeeData });
+                console.log(accessToken);
+                const refreshToken = await generateRefreshToken({ TLemployee:TLemployeeData._id});
+                console.log(refreshToken);
+                // console.log(teamLeaderData);    
+                const TLEoggedData = await TLemployee.findOne({empID:email})
+                .populate('department')
+                .populate('stateID')
+                .select("-mobile -empID");
+                await TLemployee.findByIdAndUpdate(
+                    TLEoggedData._id,
+                    {$set:{ refreshToken: refreshToken }},
+                    {new:true}
+                )
+                console.log(TLEoggedData?.name,"name");
+                return res.status(200)
+                .cookie("accessToken", accessToken, options)
+                .cookie("refreshToken", refreshToken, options)
+                .json({
+                    success:true,
+                    msg:'Login Successfully',
+                    data:TLEoggedData,
+                    prefixName:TLEoggedData?.name,
+                    accessToken:accessToken,
+                    refreshToken:refreshToken,
+                    tokenType:'Bearer'
+                  });
+
+            } catch (error) {
+                console.log(error)
+                return res.status(400).json({
+                   message:"Error ",
+                    success:false,
+                    msg:error.message,
+                    
+                });
+            }
+            
         }
         else {
             const employeeData = await employee.findOne({empID:email}).populate('department').populate('teamLeader');
@@ -500,6 +561,7 @@ const teamLeaderProfileUpdate = async(req,res) =>{
     try {
         const teamLeaderId = req.query.TLID;
         const updates = req.body;
+        console.log(updates,"updatres")
 
     // Validate input
         const isExist = await teamLeader.findOne({_id:teamLeaderId});

@@ -48,3 +48,8 @@ const sendWhatsAppMessage2 = async (to, templateName, headerImage, bodyTexts) =>
 module.exports=sendWhatsAppMessage2;
 
 
+
+
+
+
+

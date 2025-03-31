@@ -29,7 +29,7 @@ import AdminEmployeeDLBoard from '../../Pages/Admin/EmployeeDLBoard/index';
 import EmployeeDLRegister from '../../Pages/employeeDLRegister/index';
 import LeadDLBoard from "../../Pages/Admin/LeadDLBoard/Index"
 import TeamLeaderDLRegister from '../../Pages/TeamLeaderDLRegister/Index'
-import ShowTeamDLLLeader from '../../Pages/showTeamDLLeader/updateCoordinatorDLProfile/Index'
+import ShowTeamDLLLeader from '../../Pages/showTeamDLLeader/Index'
 import AddDLClient from '../../Pages/Admin/LeadDLRegister/Index'
 
 import DealerLayout from '../DealerLayout/Index'

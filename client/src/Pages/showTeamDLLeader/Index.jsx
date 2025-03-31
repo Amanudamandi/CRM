@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import LeadBoardHeader from '../../../component/Common/showLeadsHeader/index';
+import LeadBoardHeader from '../../component/Common/showLeadsHeader/index';
 import axios from 'axios';
 import { FiArrowRightCircle } from "react-icons/fi";
 import { FiArrowLeftCircle } from "react-icons/fi";
-import CoordinatorCard from '../../../component/Common/Card2/index'
-import UpdateLeadForm from '../../../component/DLEmployee/DlUpdateForm/FormUpdate'
+import CoordinatorCard from '../../component/Common/Card2/index'
+import UpdateDealerLeadForm from '../../component/DLEmployee/DlUpdateForm/FormUpdate'
+
 
 // import ShowEmployeeProfile from './showEmployeeProfile/index';
 
-import ShowDealerEmployeeProfile from "../ShowDealerEmployeeProfile/DealerEmployeeProfile"
+import ShowDealerEmployeeProfile from "./ShowDealerEmployeeProfile/DealerEmployeeProfile"
+import CooridinatorDLProfile from './ShowCooridinatorDLProfile/CooridinatorDLProfile';
+
+import UpdateCoordinatorProfile from './updateCoordinatorDLProfile/UpdateCooridanate';
 
 const Index = () => {
 
@@ -90,7 +94,9 @@ const Index = () => {
         </div>
       </div>
 
-      {
+      {/*
+      //not working 
+       {
         showEmployeeProfile &&
         <ShowDealerEmployeeProfile
         individualEmployeeInfo={individualEmployeeInfo}
@@ -100,11 +106,11 @@ const Index = () => {
         updateLeadBtnClicked={updateLeadBtnClicked}
         setUpdateLeadBtnClicked={setUpdateLeadBtnClicked}
         />
-      }
+      } */}
 
       {/* {
         leadClickedInfo.clicked &&
-        <UpdateLeadForm
+        <UpdateDealerLeadForm
           showForm={leadClickedInfo.clicked}
           leadInformation={leadClickedInfo}
           closeForm={setLeadClickedInfo}
@@ -113,6 +119,14 @@ const Index = () => {
           setUpdateLeadBtnClicked={setUpdateLeadBtnClicked}
         />
       } */}
+
+      {
+        updateCoordinatorProfile.clicked &&
+        <UpdateCoordinatorProfile
+          coordinatorProfileClickedInfo={updateCoordinatorProfile}
+          setCoordinatorProfile={setNewCoordinatorProfile}
+        />
+      }
 
 
 
@@ -155,7 +169,7 @@ const Index = () => {
             <span>{pageCount}</span>
             <FiArrowRightCircle size={20} onChange={decreasePageCount} />
           </div>
-        </section> : <showCoordinatorDealerProfile coordinatorInfo={storeInfoOfCurrentTL} setShowEmployeeList={setShowCoordinatorDealerProfile} showEmployeeList={setShowCoordinatorDealerProfile} setIndividualEmplyeeInfo={setIndividualEmplyeeInfo} setShowLeadList={setShowEmployeeProfile} />
+        </section> : <CooridinatorDLProfile coordinatorInfo={storeInfoOfCurrentTL} setShowEmployeeList={setShowCoordinatorDealerProfile} showEmployeeList={setShowCoordinatorDealerProfile} setIndividualEmplyeeInfo={setIndividualEmplyeeInfo} setShowLeadList={setShowEmployeeProfile} />
       }
 
 

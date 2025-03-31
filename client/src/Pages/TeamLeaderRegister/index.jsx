@@ -19,6 +19,8 @@ const Index = ({ updateCoordinatorProfile = '', setCoordinatorProfile }) => {
     }
   );
 
+  //  console.log("data of coordinator : ",coordinatorRegistrationData);
+
   // const setDefaultState = (value, id) => {
   //   setSelectedState(value);
   //   setStateId(id);
@@ -42,6 +44,7 @@ const Index = ({ updateCoordinatorProfile = '', setCoordinatorProfile }) => {
   // console.log("coordinateRegisterData ",coordinatorRegistrationData);
 
   const [currentStateStatus, setCurrentStateStatus] = useState(new Array(36).fill(0));
+  console.log("currStateStatus :", currentStateStatus);
 
 
   const handleChangeCheckBoxes = (e, pos) => {
@@ -213,6 +216,7 @@ const Index = ({ updateCoordinatorProfile = '', setCoordinatorProfile }) => {
                       overflow='scroll'
                     />
                   </div> */}
+                  
               <fieldset style={{ marginTop: '1rem' }}>
                 <legend style={{ fontWeight: '700', margin: '1rem', padding: '0px 5px', color: '#880104' }}>State</legend>
                 <section style={{ overflowY: 'auto', height: '130px', width: '95%', margin: 'auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start', alignItems: 'flex-start', gap: '10px' }}>
@@ -221,6 +225,8 @@ const Index = ({ updateCoordinatorProfile = '', setCoordinatorProfile }) => {
                       <div key={eachState._id} style={{ display: 'flex', width: 'min-content', gap: '4.5px' }}>
                         <input type="checkbox" name="district" id={eachState._id} value={eachState._id} style={{ width: 'min-content' }} onChange={(event) => handleChangeCheckBoxes(event, index)} checked={currentStateStatus[index] ? true : false} />
                         <label htmlFor={eachState._id} style={{ padding: '0px', fontSize: '12px', width: 'max-content', color: 'black' }}>{eachState.state}</label>
+
+                        
                       </div>
                     ))
                   }

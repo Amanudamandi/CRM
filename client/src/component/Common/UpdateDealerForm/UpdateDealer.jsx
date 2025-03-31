@@ -114,7 +114,7 @@ const UpdateDealer = () => {
                 return;
             }
 
-            let UpdateDealerEmployee = await axios.put(`${process.env.REACT_APP_URL}/`, {
+            let UpdateDealerEmployee = await axios.put(`${process.env.REACT_APP_URL}/DLemp/updateDLemp`, {
                 empID: oldData?.empID,
                 name: formData?.name,
                 mobile: formData?.mobile,
@@ -128,7 +128,7 @@ const UpdateDealer = () => {
                 setDefaultTeamLeader("Assign a TL", null);
                 setStateNames([]);
 
-                navigate("/admin/employee-dashboard");
+                navigate("/admin/employeeDL-dashboard");
             }
 
             console.log("updated data: ", UpdateDealerEmployee);

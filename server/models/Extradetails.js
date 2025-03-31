@@ -29,6 +29,10 @@ const Details= new mongoose.Schema({
             type:Number,
             default:null
         },
+        ELCB:{
+            type:String,
+            default:"No"
+        },
         IFSC:{
             type:String,
             default:null
@@ -44,7 +48,48 @@ const Details= new mongoose.Schema({
         Remainder:{
             type:String,
             default:null,
+        },
+        Sanctioned_Load:{
+            type:String,
+            default:null,
+        },
+        Proposed_Capacity_Kw:{
+            type:String,
+            default:null,
+        },
+        Dc_Wire_Length:{
+            type:String,
+            default:null,
+        },
+        Ac_wire_Length:{
+            type:String,
+            default:null,
+        },
+        Type_Of_Roof:{
+            type:String,
+            default:null,
+        },
+        Earthing_Wire_Length:{
+            type:String,
+            default:null,
+        },//photo
+        No_of_Floor:{
+            type:String,
+            default:null,
+        },
+        Roof_Picture:{
+            type:String,
+            default:null,
+        },Type_of_Meter:{
+            type:String,
+            default:null,
+
+
+
         }
+
+
+
 })
 const Extradetail=mongoose.model("ExtraDetail",Details);
 module.exports=Extradetail;

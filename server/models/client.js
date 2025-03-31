@@ -99,7 +99,24 @@ const clientSchema = mongoose.Schema({
         type:String,
         enum:["Visit Complete","Visit Pending","Visit Reject","Visit Delay"],
         default:"Visit Pending"
-    }
+    },
+    isInstalled:{ 
+        type:String,
+        enum:["Install Pending","Install Completed"],
+        default:"Install Pending"                                                                                                                                                                                                             
+    },
+    panel_serial_no:{
+        type:String,
+    },
+    invertor_serial_no:{
+         type:String,
+    },
+    photos:[{
+        url: { type: String, required: true }, // URL of the photo
+        filename: { type: String, required: true }, // Original file name
+        uploadedAt: { type: Date, default: Date.now } // Upload timestamp
+    }]
+
 });
 const client = mongoose.model("Client",clientSchema);
 

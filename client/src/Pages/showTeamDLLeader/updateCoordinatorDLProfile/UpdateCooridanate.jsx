@@ -1,11 +1,11 @@
 import React from 'react';
-import UpdateCoordinatorProfileForm from '../../TeamLeaderRegister/index';
+import UpdateCoordinatorProfileForm from '../../TeamLeaderDLRegister/Index';
 import { IoClose } from "react-icons/io5";
 // import './index.css';
 
-const Index = ({ coordinatorProfileClickedInfo, setCoordinatorProfile }) => {
+const UpdateCooridanate = ({ coordinatorProfileClickedInfo, setCoordinatorProfile }) => {
 
-    console.log("profile clicked data :",coordinatorProfileClickedInfo);
+    console.log("profile data that is clicked ... ",coordinatorProfileClickedInfo);
     const Styles = {
         coordinatorProfileContainer: { margin: '0rem 1rem 0rem 8.2rem', padding: '1.5rem 1rem', width: '75%', height: '92vh', backgroundColor: 'rgb(234, 238, 245)', position: 'fixed', top: '50%', left: '50%', zIndex: '9999', boxShadow: '0px 0px 2px black', borderRadius: '8px', overflow: 'auto', transform: 'translate(-50%, -50%)' },
         closeIconButton: { cursor: 'pointer', position: 'absolute', top: '0.7rem', right: '0.8rem', transition: 'transform 0.4s ease', transformOrigin: 'center' },
@@ -28,4 +28,5 @@ const Index = ({ coordinatorProfileClickedInfo, setCoordinatorProfile }) => {
     )
 }
 
-export default Index;
+export default UpdateCooridanate;
+

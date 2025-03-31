@@ -99,10 +99,6 @@ const DLClientSchema= mongoose.Schema({
     interstedIn:{
         type:String,
         default:"N/A"
-    },
-    remark:{
-        type:String,
-        default:"N/A"
     }
 })
 

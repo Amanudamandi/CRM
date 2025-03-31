@@ -57,8 +57,8 @@ const Index = () => {
             const sendRequest = await axios.get(`${process.env.REACT_APP_URL}/auth/showTeamLeader`);
             if (isMounted) {
                 const response = await sendRequest.data;
-               
-                console.log("Team leader ",response);
+
+                console.log("Team leader ", response);
                 const success = response.success;
                 if (success) {
                     console.log(response.data, success);
@@ -95,7 +95,7 @@ const Index = () => {
                     />
                 </div>
             </div>
-            {
+            {/* {
                 showEmployeeProfile &&
                 <ShowEmployeeProfile
                     individualEmployeeInfo={individualEmployeeInfo}
@@ -103,9 +103,8 @@ const Index = () => {
                     showLeadList={showEmployeeProfile}
                     setShowLeadUpdateForm={setLeadClickedInfo}
                     updateLeadBtnClicked={updateLeadBtnClicked}
-                    setUpdateLeadBtnClicked={setUpdateLeadBtnClicked}
                 />
-            }
+            } */}
             {/* {
                 leadClickedInfo.clicked &&
                 <UpdateLeadForm
@@ -118,13 +117,13 @@ const Index = () => {
                 />
             } */}
 
-            {/* {
+            {
                 updateCoordinatorProfile.clicked &&
                 <UpdateCoordinatorProfile
                     coordinatorProfileClickedInfo={updateCoordinatorProfile}
                     setCoordinatorProfile={setNewCoordinatorProfile}
                 />
-            } */}
+            }
 
             {
                 showCoordinatorProfile !== true ? <section style={Styles.employeeContainer}>

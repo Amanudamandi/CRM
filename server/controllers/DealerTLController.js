@@ -1,4 +1,6 @@
 const DealerTl= require("../models/Dealer Models/DealerTL");
+const mongoose= require("mongoose");
+const DLemplopyee=require("../models/Dealer Models/DealerEmployee")
 
 
 const addDealerTL = async (req, res) => {
@@ -59,14 +61,17 @@ const fetchAllTL=async(req,res)=>{
   })
     }
 }
+ // Adjust path as needed
 
-const updateEmployeeDL = async (req, res) => {
+const updateDlTl = async (req, res) => {
     try {
-        const { name, mobile, stateID, empID } = req.body;
+        const TLid = req.query.TLid;
+        console.log(TLid)
+        const { name, mobile, stateID } = req.body;
 
-        if (!empID) {
+        if (!TLid) {
             return res.status(400).json({
-                message: "empID is required",
+                message: "TLid is required",
                 success: false,
             });
         }
@@ -74,17 +79,22 @@ const updateEmployeeDL = async (req, res) => {
         const data = {};
         if (name) data.name = name;
         if (mobile) data.mobile = mobile;
-        if (stateID) data.stateID = Array.isArray(stateID) ? stateID : [stateID];
+          if(stateID) data.stateID=stateID
+
+          console.log(typeof stateID, stateID);
+   
+        console.log(data, "data is here");
 
         const response = await DealerTl.findOneAndUpdate(
-            { empID: empID },
-            { $set: data },  // Use `$set` to ensure partial updates
-            { new: true }    // Returns the updated document
+            { _id: TLid },
+            { $set: data },  
+            { new: true }
         );
+        console.log(response)
 
         if (!response) {
             return res.status(404).json({
-                message: "Employee not found",
+                message: "TL not found",
                 success: false,
             });
         }
@@ -99,14 +109,85 @@ const updateEmployeeDL = async (req, res) => {
         res.status(500).json({
             message: "Error in Updating TL",
             success: false,
-            error: error.message, // Provide error details
+            error: error.message,
         });
     }
 };
 
+const teamLeaderDLprofile=async(req,res)=>{
+    try{
+        const id = req.query.id || req.param.id || req.body.id;
+        if(!id){
+            return res.status(401).json({
+                success:false,
+                msg:"Enter the Team Leader Id"
+            })
+        }
+        console.log(id);
+
+        const teamleader=await DealerTl.find({_id:id});
+        console.log(teamleader);
+
+        const response= await DLemplopyee.find({teamLeader:id}).populate("department").populate("stateID").select({empID:true,name:true,department:true,mobile:true,stateID:true});
+        console.log(response);
+        return res.status(200).json({
+            success:true,
+            data:response
+        })
+
+
+    }catch(error){
+        return res.status(400).json({
+            success:false,
+            msg:error.message
+        });
+    }
+}
+
+// const teamLeaderProfile = async(req,res) =>{
+//     try {
+//         const id = req.query.id || req.param.id || req.body.id;
+//         if(!id){
+//             return res.status(401).json({
+//                 success:false,
+//                 msg:"Enter the Team Leader Id"
+//             })
+//         }
+//         const empData = await teamLeader.exists({_id:id});
+//         // .populate('stateID','state')
+//         // .select({
+//         //     empID: 1,  // Include empID
+//         //     name: 1,   // Include name
+        
+//         //     mobile: 1, // Include mobile
+//         //     state: 1 // Include stateID (populated field)
+//         //   });
+//         const employeeList = await employee.find({teamLeader:empData._id})
+//         .populate("department","department")
+//         .select({
+//             empID:1,
+//             name:1,
+//             department:1,
+//             mobile:1,
+//             district:1
+//         });
+//         return res.status(200).json({
+//             success:true,
+//             id:empData._id,
+//             employeeList: employeeList
+//         })
+//     } catch (error) {
+//         return res.status(400).json({
+//             success:false,
+//             msg:error.message
+//         });
+//     }
+// }
+
 module.exports={
     addDealerTL,
     fetchAllTL,
-    updateEmployeeDL,
+    updateDlTl,
+    teamLeaderDLprofile,
 
 }

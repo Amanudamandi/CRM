@@ -77,32 +77,19 @@ const fetchAllDealerEmployee=async(req,res)=>{
 
 const UpdateDLemplpoyee=async(req,res)=>{
     try{
-        const {id}=req.params;
-        const{name,stateID,mobile,teamLeader}=req.body;
-        if (!id) {
-            return res.status(400).json({
-                success: false,
-                message: "Employee ID is required",
-            });
-        }
+    
+      
+        const{name,stateID,mobile,teamLeader,empID}=req.body;
+        console.log(req.body);
 
-        // Find the existing employee
-        const existingEmployee = await EmployeeDL.findById(id);
-        if (!existingEmployee) {
-            return res.status(404).json({
-                success: false,
-                message: "Employee not found",
-            });
-        }
-
+     
         const updatedData = {
-            name: name || existingEmployee.name,
-            stateID: stateID || existingEmployee.stateID,
-            mobile: mobile || existingEmployee.mobile,
-            teamLeader: teamLeader || existingEmployee.teamLeader,
-        };
-
-        const updatedEmployee = await EmployeeDL.findByIdAndUpdate(id, updatedData, {
+            name: name ,
+            stateID: stateID ,
+            mobile: mobile ,
+            teamLeader: teamLeader ,
+        }
+        const updatedEmployee = await EmployeeDL.findOneAndUpdate({empID:empID}, {$set:updatedData}, {
             new: true,
             runValidators: true,
         });
@@ -120,7 +107,7 @@ const UpdateDLemplpoyee=async(req,res)=>{
         res.status(500).json({
             success: false,
             message: "Server error while registering employee",
-            error: err.message
+           
         });
     }
 }

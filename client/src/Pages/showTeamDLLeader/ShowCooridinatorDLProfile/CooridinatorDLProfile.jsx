@@ -1,14 +1,18 @@
+
+
 import React from 'react';
 import { useState } from 'react';
 import FixedRow from '../../../component/Common/ShowEmployeeCard/FixedRow/index';
-import CoordinatorEmployeeList from '../showEmployeeListOfTL/index';
+// import CoordinatorEmployeeList from '../showEmployeeListOfTL/index';
+
 import { FaUserTie } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
-import './index.css';
+import '../../../index.css';
+import EmployeeList from '../ShowEmployeeListOFDealerCooridinator/EmployeeList';
 
-const Index = ({ coordinatorInfo, setShowEmployeeList, showEmployeeList, setIndividualEmplyeeInfo, setShowLeadList }) => {
+const CooridinatorDLProfile = ({ coordinatorInfo, setShowEmployeeList, showEmployeeList, setIndividualEmplyeeInfo, setShowLeadList }) => {
 
-    console.log("showing employee list : ",showEmployeeList);
+    // console.log("showing employee list : ",showEmployeeList);
     const Styles = {
         coordinatorProfileContainer: { margin: '0rem 1rem 0rem 8.2rem', padding: '1.5rem 1rem', width: '75%', height: '92vh', backgroundColor: 'rgb(234, 238, 245)', position: 'fixed', top: '50%', left: '50%', zIndex: '9995', boxShadow: '0px 0px 2px black', borderRadius: '8px', overflow: 'hidden', transform: 'translate(-50%, -50%)' },
         employeeTable: { width: '100%', backgroundColor: '#fff', borderRadius: '5px', borderColor: '#ddd', overflow: 'auto' },
@@ -17,7 +21,7 @@ const Index = ({ coordinatorInfo, setShowEmployeeList, showEmployeeList, setIndi
         closeIconButton: { cursor: 'pointer', position: 'absolute', top: '0.7rem', right: '0.8rem', transition: 'transform 0.4s ease', transformOrigin: 'center' }
     }
 
-    const headingList = ['Name', 'Department', 'Mobile', 'Districts'];
+    const headingList = ['Name', 'Department', 'Mobile', 'State'];
 
     const showDropDownList = new Array(headingList.length).fill(true);
     const [storeFilterData, setStoreFilterData] = useState({});
@@ -104,7 +108,7 @@ const Index = ({ coordinatorInfo, setShowEmployeeList, showEmployeeList, setIndi
                             setStoreFilterData={setStoreFilterData}
                             setAppliedFilterClicked={setAppliedFilterClicked}
                         />
-                        <CoordinatorEmployeeList
+                        <EmployeeList
                             // data={coordinatorInfo} 
                             coordinatorId={coordinatorInfo.coordinatorId}
                             setEmployeeInfo={setIndividualEmplyeeInfo}
@@ -117,4 +121,4 @@ const Index = ({ coordinatorInfo, setShowEmployeeList, showEmployeeList, setIndi
     )
 }
 
-export default Index;
+export default CooridinatorDLProfile;

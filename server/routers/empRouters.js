@@ -16,15 +16,18 @@ router.post("/updateClientByFieldEmp", verifyToken , empC.updateClientByFieldEmp
 router.get("/remark", verifyToken, empC.remark?empC.remark:tempFun);
 router.get("/Employee",empC.empdetail ?empC.empdetail:tempFun);
 router.get("/fetchLeads",verifyToken, empC.fetchLeads)
-router.post("/addtionalclientDetails",upload.fields([
-    {name:'aadhaarPhotos', maxCount:1},
-   {name:'pancard',maxCount:1},
-   {name:'electricitybill',maxCount:1},
-   {name:'Video',maxCount:1},
-   {name:'dimensions',maxCount:1},
-   {name:'cancelcheack',maxCount:1},
-   {name:'proposalpdf',maxCount:1},
-]),empC.updateclient);
+router.post("/addtionalclientDetails", upload.fields([
+    { name: 'aadhaarPhotos', maxCount: 1 },
+    { name: 'pancard', maxCount: 1 },
+    { name: 'electricitybill', maxCount: 1 },
+    { name: 'Video', maxCount: 1 },
+    { name: 'dimensions', maxCount: 1 },
+    { name: 'cancelcheack', maxCount: 1 },
+    { name: 'proposalpdf', maxCount: 1 },
+    { name: 'ELCB', maxCount: 1 },  
+    { name: 'Roof-Picture', maxCount: 1 }
+]), empC.updateclient);
+
 router.put("/UpdateEmployee",empC.updateEmployee?empC.updateEmployee:tempFun);
 
 // empController.emp();

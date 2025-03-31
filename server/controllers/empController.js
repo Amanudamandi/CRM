@@ -234,11 +234,11 @@ console.log(filteredData);
 
 const updateclient = async (req, res) => {
     try {
-        const { AccountNo, IFSC, BankAddress, additonalDetailsID, Remainder } = req.body;
+        const { AccountNo, IFSC, BankAddress, additonalDetailsID, Remainder ,No_of_Floor,Earthing_Wire_Length,
+            Type_Of_Roof,    Ac_wire_Length, Dc_Wire_Length,  Proposed_Capacity_Kw,name,stateID,mobile,ClientID,address,Sanctioned_Load,Type_of_Meter,email
+        } = req.body;
 
-        console.log(additonalDetailsID);
-        console.log(AccountNo);
-        console.log(Remainder);
+console.log("request data",req.body)
 
         // Ensure that additonalDetailsID is provided
         if (!additonalDetailsID) {
@@ -247,7 +247,7 @@ const updateclient = async (req, res) => {
 
         // Create an update object dynamically
         let updateFields = {
-            Remainder, AccountNo, IFSC, BankAddress
+            Remainder, AccountNo, IFSC, BankAddress,No_of_Floor,Earthing_Wire_Length, Type_Of_Roof, Ac_wire_Length, Dc_Wire_Length,  Proposed_Capacity_Kw,Sanctioned_Load,Type_of_Meter
         };
 
         // Handle file updates only if they exist
@@ -273,6 +273,12 @@ const updateclient = async (req, res) => {
             if (req.files["proposalpdf"]) {
                 updateFields.ProposalPdf = `${process.env.SERVER_URL}uploads/proposalpdf/${req.files["proposalpdf"][0].filename}`;
             }
+            if(req.files['ELCB']){
+                updateFields.ELCB=`${process.env.SERVER_URL}uploads/ELCB/${req.files["ELCB"][0].filename}`;
+            }
+            if(req.files['Roof-Picture']){
+                updateFields.Roof_Picture=`${process.env.SERVER_URL}uploads/Roof-Picture/${req.files["Roof-Picture"][0].filename}`;
+            }
         }
 
         // Update only provided fields
@@ -281,17 +287,39 @@ const updateclient = async (req, res) => {
             { $set: updateFields },
             { new: true } // Return the updated document
         );
+        console.log(updatedData)
 
         if (!updatedData) {
             return res.status(404).json({ message: "Document not found", success: false });
         }
-
+        let filter = {};
+      if(name){
+        filter.name=name;
+      }
+      if(email){
+        filter.email=email;
+      }
+      if(mobile){
+        filter.mobile=mobile;
+      }
+      if(stateID){
+        filter.stateID=stateID
+      }
+      if(address){
+        filter.address=address;
+      }
+      console.log(filter,"filter data");
+      const result= await client.find({_id:ClientID});
+      console.log(result,"find")
+           const updateclient=await client.findOneAndUpdate({_id:ClientID},{$set:filter},{ new: true })
+           console.log(updateclient);
         res.status(200).json({
             message: "Save successfully",
             data: updatedData,
+            clinetData:updateclient,
             success: true,
         });
-
+        console.log(updateclient);
     } catch (err) {
         console.log(err);
         res.status(500).json({

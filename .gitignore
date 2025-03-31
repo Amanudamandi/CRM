@@ -129,13 +129,14 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-upload/aadhar/
-upload/pancard/
-upload/proposalpdf/
-upload/Electricitybill
-upload/dimensions
-upload/cancelcheack
-upload/video
+uploads/
+uploads/aadhar/
+uploads/pancard/
+uploads/proposalpdf/
+uploads/Electricitybill
+uploads/dimensions
+uploads/cancelcheack
+uploads/video
 
 
 

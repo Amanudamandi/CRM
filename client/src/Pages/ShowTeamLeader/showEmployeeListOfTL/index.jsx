@@ -15,6 +15,11 @@ const Index = ({ coordinatorId, setEmployeeInfo, setShowLeadList }) => {
         }
     }, []);
 
+    
+        // console.log("coordinatorProfileList : ",coordinatorProfileList);
+        
+    
+
     const Styles = {
         tableBody: { height: '100%', overflow: 'scroll'},
         employeeValue: { padding: '0.3rem', fontSize: '1rem', textAlign: 'center', fontWeight: '500', whiteSpace: 'nowrap' }

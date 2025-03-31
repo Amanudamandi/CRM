@@ -178,7 +178,7 @@ const Index = ({ department, nameLogo }) => {
                                     <div onClick={(event) => event.stopPropagation()}>Lead Bulk Upload</div>
                                 </div>
                                 <Link to='/admin/show-leads/add' className="employee-option" style={Styles.employeeOption}>Add</Link>
-                                <Link to='/admin/show-leads/update' className="employee-option" style={Styles.employeeOption}>Update</Link>
+                                {/* <Link to='/admin/show-leads/update' className="employee-option" style={Styles.employeeOption}>Update</Link> */}
                                 <Link to='/admin/show-leads/delete' className="employee-option" style={Styles.employeeOption}>Remove</Link>
                             </div>
                         }
@@ -265,7 +265,7 @@ const Index = ({ department, nameLogo }) => {
                                     <div onClick={(event) => event.stopPropagation()}>Lead Bulk Upload</div>
                                 </div>
                                 <Link to='/admin/showDL-leads/add' className="employee-option" style={Styles.employeeOption}>Add</Link>
-                                <Link to='/admin/showDL-leads/update' className="employee-option" style={Styles.employeeOption}>Update</Link>
+                                {/* <Link to='/admin/showDL-leads/update' className="employee-option" style={Styles.employeeOption}>Update</Link> */}
                                 <Link to='/admin/showDL-leads/delete' className="employee-option" style={Styles.employeeOption}>Remove</Link>
                             </div>
                         }

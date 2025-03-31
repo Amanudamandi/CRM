@@ -12,7 +12,7 @@ import { IoClose } from "react-icons/io5";
 const Index = ({ individualEmployeeInfo, setShowLeadsList, showLeadList, setShowLeadUpdateForm, updateLeadBtnClicked, setUpdateLeadBtnClicked }) => {
     console.log("information : ", individualEmployeeInfo);
 
-    console.log(showLeadList);
+    console.log(" showing lead list data ",showLeadList);
     const Styles = {
         coordinatorProfileContainer: { margin: '0rem 1rem 0rem 8.2rem', padding: '1.5rem 1rem', width: '75%', height: '92vh', backgroundColor: 'rgb(234, 238, 245)', position: 'fixed', top: '50%', left: '50%', zIndex: '9999', boxShadow: '0px 0px 2px black', borderRadius: '8px', transform: 'translate(-50%, -50%)' },
         employeeTable: { width: '100%', borderRadius: '5px', borderColor: '#ddd', overflow: 'auto' },

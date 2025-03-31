@@ -8,10 +8,11 @@ import { showStageApi } from '../../../Utils/showStagesAPI';
 import { showEmployeeApi } from '../../../Utils/showEmployeeAPI';
 import { updateLeadApi } from '../../../Utils/updateLeadFormAPI';
 import axios, { all } from 'axios';
+import Whatsapp from '../../WhatsAppHandling/Whatsapp';
 
 const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAllStages = false, setUpdateLeadBtnClicked }) => {
     const Style = {
-        updateLeadContainer: { position: 'fixed', width: '75%', height: '92vh', margin: '0rem 1rem 0rem 8.2rem', padding: '3.5rem 1rem', backgroundColor: '#fff', top: '50%', left: '50%', zIndex: '9999', boxShadow: '0px 0px 2px black', borderRadius: '8px', overflow: 'auto', transform: 'translate(-50%, -50%)' },
+        updateLeadContainer: { position: 'fixed', width: '75%', height: '92vh', margin: '0rem 1rem 0rem 8.2rem', padding: '3.5rem 1rem', backgroundColor: '#fff', top: '50%', left: '50%', zIndex: '5555', boxShadow: '0px 0px 2px black', borderRadius: '8px', transform: 'translate(-50%, -50%)' },
         closeFormBtn: { position: 'absolute', top: '1rem', right: '1rem', cursor: 'pointer', transition: 'transform 0.4s ease' },
         updateLeadInfoContainer: { margin: 'auto', width: '85%', borderBottom: '3px solid #AA0B2B' },
         showOnlyDetailsContainer: { display: 'flex', backgroundColor: 'rgba(217, 217, 217, 0.35)', gap: '8px', borderRadius: '5px' },
@@ -31,7 +32,8 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
         stagesMainContainer: { backgroundColor: 'rgba(217, 217, 217, 35%)', padding: '2.5rem 1.8rem' },
         stagesContainer: { height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-around', borderLeft: '2px solid #AA0B2B' },
         eachStageContainer: { display: 'flex', alignItems: 'center', gap: '8px' },
-        eachStageCircle: { width: '0.75rem', border: '2px solid #AA0B2B' }
+        eachStageCircle: { width: '0.75rem', border: '2px solid #AA0B2B' },
+        whatsappBtn:{fontSize:"15px",padding:"7px",borderRadius:"10px",backgroundColor: '#AA0B2B',border:"none", color:"white", cursor:"pointer", margin:"5px"}
     };
 
     const [isHoveredOnClose, setIsHoveredOnClose] = useState(false);
@@ -191,11 +193,17 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
     }, [pageCount, leadInformation?._id]);
 
 
+    const[isOpenWhatsapp,setIsOpenWhatsapp]=useState(false);
+    const handleWhatsApp=()=>{
+    setIsOpenWhatsapp(true);
+    }
+
+
 
 
     return (
         <section style={showForm ? { ...Style.updateLeadContainer, animation: 'slideUp 0.5s ease forwards' } : Style.updateLeadContainer}>
-            <IoClose size={35} color='#AA0B2B' style={{ ...Style.closeFormBtn, transform: isHoveredOnClose ? 'rotate(90deg)' : 'rotate(0deg)' }} onMouseOver={() => setIsHoveredOnClose(true)} onMouseOut={() => setIsHoveredOnClose(false)} onClick={() => closeForm({ clicked: false })} />
+            <IoClose size={35}  color='#AA0B2B' style={{ ...Style.closeFormBtn, transform: isHoveredOnClose ? 'rotate(90deg)' : 'rotate(0deg)' }} onMouseOver={() => setIsHoveredOnClose(true)} onMouseOut={() => setIsHoveredOnClose(false)} onClick={() => closeForm({ clicked: false })} />
             <div style={Style.updateLeadInfoContainer}>
                 <div style={Style.showOnlyDetailsContainer}>
                     <div style={Style.leadLogoContainer}>
@@ -243,6 +251,19 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
                         <div style={Style.leadType}>
                             <img src={leadInformation?.type === 1 ? Hot : leadInformation?.type === 2 ? Warm : Cold} alt={leadInformation?.type === 1 ? 'Hot' : leadInformation?.type === 2 ? 'Warm' : 'Cold'} />
                         </div>
+                        <div>
+                            <button style={Style.whatsappBtn} onClick={handleWhatsApp} >WhatsApp</button>
+                            {
+                                isOpenWhatsapp &&(
+                                    <Whatsapp
+                                    data={leadInformation}
+                                    showWhatsappForm={isOpenWhatsapp}
+                                    closeForm={setIsOpenWhatsapp}
+                                    />
+                                )
+                            }
+                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -285,6 +306,7 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
                         </div>
                     </div>
                     <hr style={{ width: '0.166rem', border: 'none', height: '92%', alignSelf: 'flex-end', backgroundColor: '#AA0B2B' }} />
+                    
                     <div style={Style.rightForm}>
                         <div style={Style.inputFieldContainer}>
                             <label htmlFor="stage" style={Style.inputLabel}>Stage</label>
