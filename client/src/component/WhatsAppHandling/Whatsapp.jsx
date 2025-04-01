@@ -2,6 +2,9 @@ import React, { useState } from 'react'
 import { IoClose } from 'react-icons/io5';
 import { Remainder } from './remainder/Remainder';
 import Offer from './offer/Offer';
+import QuotationSend from './quotation/QuotationSend';
+
+
 
 const Whatsapp = ({ showWhatsappForm, closeForm, data }) => {
     const Style = {
@@ -43,7 +46,7 @@ const Whatsapp = ({ showWhatsappForm, closeForm, data }) => {
     const handleRemember = () => {
         setRemainder(true);
         setOffer(false);
-        setQuotation(false)
+        setQuotation(false);
     }
 
     const handleOffer = () => {
@@ -51,7 +54,7 @@ const Whatsapp = ({ showWhatsappForm, closeForm, data }) => {
         setOffer(true);
         setQuotation(false)
     }
-    
+
     const handleQuotation = () => {
         setRemainder(false);
         setOffer(false);
@@ -76,7 +79,7 @@ const Whatsapp = ({ showWhatsappForm, closeForm, data }) => {
                     <Remainder
                         showRemainder={remainder}
                         data={data}
-                        closeForm={setRemainder}
+                        closeForm={closeForm}
                     />
                 )}
 
@@ -88,7 +91,7 @@ const Whatsapp = ({ showWhatsappForm, closeForm, data }) => {
                     offer && (
                         <Offer
                             data={data}
-                            closeForm={setOffer}
+                            closeForm={closeForm}
                             showOffer={offer}
                         />
                     )
@@ -97,10 +100,18 @@ const Whatsapp = ({ showWhatsappForm, closeForm, data }) => {
                 <div>
                     <button style={Style.updateBtn} onClick={handleQuotation}>Send Quotation </button>
                 </div>
+                {
+                    quotation && (
+                        <QuotationSend
+                            data={data}
+                            closeForm={closeForm}
+                            showQuotation={quotation}
+                        />
+                    )
+                }
+
             </div>
-
-
-
+        
         </section>
 
 

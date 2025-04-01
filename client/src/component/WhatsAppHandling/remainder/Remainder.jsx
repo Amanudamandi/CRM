@@ -100,17 +100,19 @@ export const Remainder = ({ showRemainder, closeForm, data, }) => {
             console.log("Server Response:", response.data);
             alert("Reminder sent successfully!");
 
-            navigate('/admin/show-leads');
             
         } catch (error) {
             console.log("Error sending data:", error);
             alert("Failed to send reminder. Check console for details.");
         }
+
+        closeForm(false);
+        // navigate('/admin/show-leads');
     }
 
     return (
-        <section style={showRemainder ? { ...Style.updateLeadContainer, animation: 'slideUp 0.5s ease forwards' } : Style.updateLeadContainer}>
-            <IoClose size={35} color='#AA0B2B' style={{ ...Style.closeFormBtn, transform: isHoveredOnClose ? 'rotate(90deg)' : 'rotate(0deg)' }} onMouseOver={() => setIsHoveredOnClose(true)} onMouseOut={() => setIsHoveredOnClose(false)} onClick={() => closeForm(false)} />
+       <section style={showRemainder ? { ...Style.updateLeadContainer, animation: 'slideUp 0.5s ease forwards' } : Style.updateLeadContainer}>
+            <IoClose size={35} color='#AA0B2B' style={{ ... Style.closeFormBtn, transform: isHoveredOnClose ? 'rotate(90deg)' : 'rotate(0deg)' }} onMouseOver={() => setIsHoveredOnClose(true)} onMouseOut={() => setIsHoveredOnClose(false)} onClick={() => closeForm(false)} />
             <div style={Style.updateLeadInfoContainer}>
                 <div style={Style.showOnlyDetailsContainer}>
                     {/* <div style={Style.leadLogoContainer}>

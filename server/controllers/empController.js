@@ -160,7 +160,7 @@ const fetchLeads = async(req,res)=>{
         const id= req.id;
         
         console.log(id);
-        const {status}=req.body;
+        const {status}=req.query;
         console.log(status)
 
         if(!id){

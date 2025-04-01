@@ -113,10 +113,50 @@ const updateDlTl = async (req, res) => {
         });
     }
 };
+const teamLeaderProfile = async(req,res) =>{
+    try {
+        const id = req.query.id || req.param.id || req.body.id;
+        if(!id){
+            return res.status(401).json({
+                success:false,
+                msg:"Enter the Team Leader Id"
+            })
+        }
+        const empData = await teamLeader.exists({_id:id});
+        // .populate('stateID','state')
+        // .select({
+        //     empID: 1,  // Include empID
+        //     name: 1,   // Include name
+        
+        //     mobile: 1, // Include mobile
+        //     state: 1 // Include stateID (populated field)
+        //   });
+        const employeeList = await employee.find({teamLeader:empData._id})
+        .populate("department","department")
+        .select({
+            empID:1,
+            name:1,
+            department:1,
+            mobile:1,
+            district:1
+        });
+        return res.status(200).json({
+            success:true,
+            id:empData._id,
+            employeeList: employeeList
+        })
+    } catch (error) {
+        return res.status(400).json({
+            success:false,
+            msg:error.message
+        });
+    }
+}
 
 const teamLeaderDLprofile=async(req,res)=>{
     try{
         const id = req.query.id || req.param.id || req.body.id;
+
         if(!id){
             return res.status(401).json({
                 success:false,

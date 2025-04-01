@@ -86,6 +86,10 @@ const Details= new mongoose.Schema({
 
 
 
+        },
+        Photos: {
+            type: [String], 
+            default: [],
         }
 
 

@@ -9,6 +9,7 @@ import { showEmployeeApi } from '../../../Utils/showEmployeeAPI';
 import { updateLeadApi } from '../../../Utils/updateLeadFormAPI';
 import axios, { all } from 'axios';
 import Whatsapp from '../../WhatsAppHandling/Whatsapp';
+import { useNavigate } from 'react-router-dom';
 
 const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAllStages = false, setUpdateLeadBtnClicked }) => {
     const Style = {
@@ -33,8 +34,10 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
         stagesContainer: { height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-around', borderLeft: '2px solid #AA0B2B' },
         eachStageContainer: { display: 'flex', alignItems: 'center', gap: '8px' },
         eachStageCircle: { width: '0.75rem', border: '2px solid #AA0B2B' },
-        whatsappBtn:{fontSize:"15px",padding:"7px",borderRadius:"10px",backgroundColor: '#AA0B2B',border:"none", color:"white", cursor:"pointer", margin:"5px"}
+        whatsappBtn: { fontSize: "15px", padding: "7px", borderRadius: "10px", backgroundColor: '#AA0B2B', border: "none", color: "white", cursor: "pointer", margin: "5px" }
     };
+
+    const navigate = useNavigate();
 
     const [isHoveredOnClose, setIsHoveredOnClose] = useState(false);
     const [showAllStages, setShowAllStages] = useState([]);
@@ -48,7 +51,7 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
 
     const [states, setStates] = useState([]);
 
-// console.log("my leadinormation is ", leadInformation)
+    // console.log("my leadinormation is ", leadInformation)
     const [formData, setFormData] = useState({
         clientID: leadInformation?._id,
         revisitDate: leadInformation?.revisitDate || '',
@@ -172,7 +175,7 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
             formDataToSend.append('proposalpdf', file);
         }
 
-        console.log("formDataToSend ",formDataToSend);
+        console.log("formDataToSend ", formDataToSend);
 
         try {
             console.log("form data : ", formData);
@@ -193,17 +196,28 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
     }, [pageCount, leadInformation?._id]);
 
 
-    const[isOpenWhatsapp,setIsOpenWhatsapp]=useState(false);
-    const handleWhatsApp=()=>{
-    setIsOpenWhatsapp(true);
+    const [isOpenWhatsapp, setIsOpenWhatsapp] = useState(false);
+    const handleWhatsApp = () => {
+        setIsOpenWhatsapp(true);
     }
 
+    const stopRemaindering = async (event) => {
+        const clientID =  leadInformation?._id;
+        console.log("clientID: ", clientID);
+        try {
+             await axios.post(`${process.env.REACT_APP_URL}/client/stopWhatapp`, { clientID:leadInformation?._id});
+            alert("Reminder stop successfully!");
+        } catch (error) {
+            console.log("Error sending data:", error);
+            alert("Failed to stop reminder. Check console for details.");
+        }
+    }
 
 
 
     return (
         <section style={showForm ? { ...Style.updateLeadContainer, animation: 'slideUp 0.5s ease forwards' } : Style.updateLeadContainer}>
-            <IoClose size={35}  color='#AA0B2B' style={{ ...Style.closeFormBtn, transform: isHoveredOnClose ? 'rotate(90deg)' : 'rotate(0deg)' }} onMouseOver={() => setIsHoveredOnClose(true)} onMouseOut={() => setIsHoveredOnClose(false)} onClick={() => closeForm({ clicked: false })} />
+            <IoClose size={35} color='#AA0B2B' style={{ ...Style.closeFormBtn, transform: isHoveredOnClose ? 'rotate(90deg)' : 'rotate(0deg)' }} onMouseOver={() => setIsHoveredOnClose(true)} onMouseOut={() => setIsHoveredOnClose(false)} onClick={() => closeForm({ clicked: false })} />
             <div style={Style.updateLeadInfoContainer}>
                 <div style={Style.showOnlyDetailsContainer}>
                     <div style={Style.leadLogoContainer}>
@@ -254,16 +268,19 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
                         <div>
                             <button style={Style.whatsappBtn} onClick={handleWhatsApp} >WhatsApp</button>
                             {
-                                isOpenWhatsapp &&(
+                                isOpenWhatsapp && (
                                     <Whatsapp
-                                    data={leadInformation}
-                                    showWhatsappForm={isOpenWhatsapp}
-                                    closeForm={setIsOpenWhatsapp}
+                                        data={leadInformation}
+                                        showWhatsappForm={isOpenWhatsapp}
+                                        closeForm={setIsOpenWhatsapp}
                                     />
                                 )
                             }
                         </div>
-                        
+                        <div>
+                            <button style={Style.whatsappBtn} onClick={stopRemaindering} >Stop Remainder</button>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -306,7 +323,7 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
                         </div>
                     </div>
                     <hr style={{ width: '0.166rem', border: 'none', height: '92%', alignSelf: 'flex-end', backgroundColor: '#AA0B2B' }} />
-                    
+
                     <div style={Style.rightForm}>
                         <div style={Style.inputFieldContainer}>
                             <label htmlFor="stage" style={Style.inputLabel}>Stage</label>

@@ -31,6 +31,7 @@ require('./db/conn');
     const DealerTLRouter= require("../server/routers/TLdealerRoutes.js");
     const Dealeremployee= require("../server/routers/TLemployeeRoutes.js");
     const DLlead= require("../server/routers/TLclientRoutes.js");
+    const Schdule=require("../server/Scheduler/Remainder.js")
    
     app.use(cookieParser());
     const allowedOrigins = [

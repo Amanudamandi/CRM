@@ -415,8 +415,7 @@ const bulkExcelLead= async(req,res) =>{
                 zipCode:zipCode?zipCode:null,
                 empID:empID,
                 TLID: teamLeaderID,
-                CurrentDate :currentDate,
-                source:row['source']
+                CurrentDate :currentDate
             };
             console.log("Client data ",clientData);
             // ExcelData.push(clientData);

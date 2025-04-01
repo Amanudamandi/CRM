@@ -22,6 +22,23 @@ router.put("/bulkAssign", clientController.bulkAssign) //completed 2.0
 router.post("/FetchAssignemployee",clientController.Assignfieldemployee);
 router.put("/updateStatus",clientController.updatestatus);
 router.delete("/delete-clients", upload.single('file'), clientController.removeClientsFromExcel);
+router.delete("/deleteemp",clientController.deleteassignemployee);
+router.post("/whatappSchdule",uploadd.fields([
+   {name:'Whatapp',maxCount:1},
+   
+]),clientController.SchduleMessage);
+router.post("/stopWhatapp",clientController.stopMessage);
+router.post("/greetWhatapp",uploadd.fields([
+   {name:'Whatapp',maxCount:1},
+   
+]),clientController.greatingWhatapp);
+router.post(
+   "/bulkWhatapp",
+   uploadd.fields([{ name: "Whatapp", maxCount: 1 }]), // Correctly closing the bracket here
+   clientController.bulkwhatapp
+ );
+ router.post("/quatationWhatapp",clientController.quotation);
+ 
 // router.post()
 module.exports = router;
 

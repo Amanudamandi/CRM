@@ -11,7 +11,7 @@ const clientSchema = mongoose.Schema({
     }, 
     empID:{ // its hold employee id
         type:mongoose.Schema.Types.ObjectId,
-        ref:'Employee',
+        ref:'Employee',               
         default:null
     },
     TLID:{
@@ -97,7 +97,7 @@ const clientSchema = mongoose.Schema({
     },
     status:{
         type:String,
-        enum:["Visit Complete","Visit Pending","Visit Reject","Visit Delay"],
+        enum:["Visit Complete","Visit Pending","Visit Reject","Visit Delay","Payment Receive"],
         default:"Visit Pending"
     },
     isInstalled:{ 
@@ -115,9 +115,42 @@ const clientSchema = mongoose.Schema({
         url: { type: String, required: true }, // URL of the photo
         filename: { type: String, required: true }, // Original file name
         uploadedAt: { type: Date, default: Date.now } // Upload timestamp
-    }]
+    }],
+    Message:{
+        type:String,
+        default:null,
+    },
+    WhatappImage:{
+        type:String,
+        default:null,
+    },
+    WhatappPdf:{
+        type:String,
+        default:null,
+
+    },
+    messageStatus:{
+        type:Boolean,
+        default:false,
+    },
+    reminderDate: { 
+        type: Date,
+         default: null 
+        },
+    reminderDays:{
+        type:Number,
+    },
+    companymobile:{
+        type:String,
+        default:null,
+    }
+
+
+
+    
 
 });
+clientSchema.index({ reminderDate: 1, messageStatus: 1 });
 const client = mongoose.model("Client",clientSchema);
 
 module.exports = client;

@@ -83,7 +83,7 @@ const Offer = ({ data, closeForm, showOffer }) => {
 
     try {
 
-      const response = await axios.post(`${process.env.REACT_APP_URL}//client/greetWhatapp`, formData,
+      const response = await axios.post(`${process.env.REACT_APP_URL}/client/greetWhatapp`, formData,
         {
           headers: {
             "Content-Type": 'multipart/form-data'
@@ -93,13 +93,13 @@ const Offer = ({ data, closeForm, showOffer }) => {
       console.log("Server Response:", response.data);
       alert("Offer sent successfully!");
 
-      navigate('/admin/show-leads');
-
 
     } catch (error) {
       console.log("Error sending data:", error);
       alert("Failed to send offer .Check console for details.");
     }
+     closeForm(false);
+    // navigate('/admin/show-leads');
   }
 
 

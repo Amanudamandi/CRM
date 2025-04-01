@@ -28,7 +28,10 @@ const fs = require("fs");
 const mailsender = require("../Mail/MailSender");
 const sendwhatapp=require("../Whatapp/SendWhatapp")
 const 
-bulkmessage= require("../Whatapp/BulkMesage.js")
+bulkmessage= require("../Whatapp/BulkMesage.js");
+const client = require("../models/client");
+const moment = require('moment-timezone');
+
 
 const clientAdd = async (req, res) => {
   try {
@@ -1125,6 +1128,423 @@ const removeClientsFromExcel = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error", error });
   }
 };
+const stopMessage=async(req,res)=>{
+  try{
+
+    const { clientID} = req.body;
+    console.log(clientID);
+    if(!clientID){
+      res.status(400).json({
+        message:"Id not coming",
+        status:false,
+      })
+    }
+
+    const response= await Client.find({_id:clientID});
+
+    const data=await Client.updateOne({ _id: clientID }, { messageStatus: false ,reminderDays:0},{new:true});
+  
+    res.json({ message: "Messages stopped for this client" ,data:response});  }catch(error){
+
+      console.log(error);
+      res.status(400).json({
+        message:"Cron not stop "
+      })
+    }
+
+}
+const deleteassignemployee=async(req,res)=>{
+  try{
+    const id="67bc0a92b18888057188ecbe"
+    console.log(req.body);
+    const deletedData = await AssignEmployee.deleteMany({ fieldEmpID: id });
+
+    if (deletedData.deletedCount === 0) {
+        return res.status(404).json({ message: "No employees found", success: false });
+    }
+    
+    res.status(200).json({ 
+        message: "Deleted successfully", 
+        success: true, 
+        deletedCount: deletedData.deletedCount 
+    });
+    
+
+    return res.status(200).json({
+message:"deleted",
+status:true,
+    })
+
+  }catch(error){
+    console.log(error);
+
+  }
+}
+
+// const SchduleMessage=async(req,res)=>{
+//   try {
+//     const { clientId, message, WhatappImage, WhatappPdf, reminderDays } = req.body;
+//     console.log(req.body);
+//     let reminderDate = new Date();
+    
+//     // Convert to IST (India Standard Time)
+//     reminderDate = new Date(reminderDate.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
+    
+//     // Ensure `reminderDays` is defined before using it
+//     reminderDate.setDate(reminderDate.getDate() + reminderDays); 
+    
+//     console.log("Updated Reminder Date (IST):", reminderDate);
+    
+  
+//     // Update client with new reminder date
+//    const messagee= await Client.findOneAndUpdate(
+//       { _id: clientId },
+//       {
+//         Message: message,
+//         WhatappImage,
+//         WhatappPdf,
+//         reminderDate,
+//         reminderDays,
+//         messageStatus: true, // Enable scheduling
+//       },
+//       { new: true }
+//     );
+//     if(!messagee){
+//       res.status(401).json({
+//         message:"error"
+//       })
+//     }
+
+//     res.status(200).json({ message: "Message reminders scheduled successfully",data:messagee });
+// } catch (error) {
+//     console.error("Error scheduling message:", error);
+//     res.status(500).json({ error: "Server error" });
+// }
+
+
+// }
+const SchduleMessage = async (req, res) => {
+  try {
+    const { clientId, message,  reminderDays ,companymobile} = req.body;
+    console.log(req.body,"req.body is here");
+
+
+    
+    const Whatapp = (await req.files["Whatapp"])
+      ? `${process.env.SERVER_URL}/uploads/Whatapp/${req.files["Whatapp"][0].filename}`
+      : null;
+      console.log(Whatapp,"whatapp");
+    
+    // let reminderDate = new Date();
+    // console.log(reminderDate,"dartatete")
+    
+    // // Convert to IST (India Standard Time)
+    // reminderDate = new Date(reminderDate.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
+    // console.log(reminderDate,"indian format");
+    // // Ensure `reminderDays` is defined before using it
+    // reminderDate.setDate(reminderDate.getDate() + (reminderDays || 0)); // Avoid NaN error
+    
+    // console.log("Updated Reminder Date (IST):", reminderDate);
+    let reminderDate = moment().tz("Asia/Kolkata").toDate();
+    console.log("Original Reminder Date (IST):", reminderDate);
+    
+    // Ensure `reminderDays` is defined before using it
+    const daysToAdd = reminderDays || 0; // Default to 0 if undefined
+    
+    // ✅ Correct way to add days
+    reminderDate = new Date(reminderDate.getTime() + daysToAdd * 24 * 60 * 60 * 1000);
+    
+    console.log("Updated Reminder Date (IST):", reminderDate);
+
+    // Update client with new reminder date
+    const messagee = await Client.findOneAndUpdate(
+      { _id: clientId },
+      {
+        Message: message,
+        WhatappImage:Whatapp,
+        companymobile:companymobile,
+      
+        reminderDate:reminderDate,
+        reminderDays:reminderDays,
+        messageStatus: true, // Enable scheduling
+      },
+      { new: true }
+    );
+
+    console.log(messagee,"mesagae");
+
+    if (!messagee) {
+      return res.status(401).json({ message: "Error: Client not found" }); // ✅ RETURN here
+    }
+
+    return res.status(200).json({
+      message: "Message reminders scheduled successfully",
+      data: messagee,
+    });
+
+  } catch (error) {
+    console.error("Error scheduling message:", error);
+
+    if (!res.headersSent) { // ✅ Ensure response is only sent once
+      return res.status(500).json({ error: "Server error" });
+    }
+  }
+};
+
+const greatingWhatapp=async(req,res)=>{
+  try{
+    const {clientId,message,companymobile}=req.body;
+    console.log(req.body);
+
+    const client= await Client.find({_id:clientId});
+    console.log(client);
+    const Whatapp = (await req.files["Whatapp"])
+    ? `${process.env.SERVER_URL}/uploads/Whatapp/${req.files["Whatapp"][0].filename}`
+    : null;
+    console.log(Whatapp,"whatapp");
+   
+ 
+    console.log(client[0]?.mobile,"mobile");
+
+    const mobileNumber = client[0].mobile.replace(/^\+91/, "");
+    console.log(mobileNumber)
+
+    const status=await bulkmessage(
+      `+91${mobileNumber}`,
+      "crm_4",
+      Whatapp,
+      ["Galo Energy Pvt. Ltd.", `${message}`, companymobile]
+  );
+  console.log(status);
+  res.status(200).json({
+    MESSAGE:"SUCCESSFULLY DONE",
+    status:true,
+    data:client,
+  })
+
+  }catch(error){
+    console.log(error);
+    res.status(400).json({
+     message:"Fialed to send whatapp",
+     status:false,
+    })
+  }
+}
+
+const bulkwhatapp = async (req, res) => {
+  try {
+    let successcount = 0;
+    let unsuccesscount = 0;
+    let deliveredClients = [];
+    let undeliveredClients = [];
+
+    let { clientId, message, companymobile } = req.body; // clientId is an array
+    console.log(req.body);
+
+    clientId=["67dc08856b20a6262cbe93d4","67e637daf7d97591758bbd9d","67ca86fc4bbd7c5caa7fb233","67e63a985bedff3a0624a7ef"]
+
+    if (!Array.isArray(clientId) || clientId.length === 0) {
+      return res.status(400).json({
+        message: "clientId must be a non-empty array",
+        status: false,
+      });
+    }
+
+    const clients = await Client.find({ _id: { $in: clientId } }); // Fetch multiple clients
+    console.log(clients);
+
+    const Whatapp = req.files?.["Whatapp"]
+      ? `${process.env.SERVER_URL}/uploads/Whatapp/${req.files["Whatapp"][0].filename}`
+      : null;
+    console.log(Whatapp, "WhatsApp Image");
+
+    // Loop through each client and send WhatsApp message
+    for (const client of clients) {
+      if (!client?.mobile){
+        unsuccesscount++
+        continue;
+      } // Skip if no mobile number
+
+    
+
+      const mobileNumber = client.mobile.replace(/^\+91/, "");
+      console.log(`Sending message to: +91${mobileNumber}`);
+      if (!/^[6789]\d{9}$/.test(mobileNumber)) {
+     
+        unsuccesscount++;
+        undeliveredClients.push(client._id);
+        continue; // Skip this client
+      }
+
+      try {
+        const status = await bulkmessage(
+          `+91${mobileNumber}`,
+          "crm_4",
+          Whatapp,
+          ["Galo Energy Pvt. Ltd.", `${message}`, companymobile]
+        );
+
+        console.log(`Status for ${mobileNumber}:`, status);
+
+        // Assuming `status` is an object with a `success` key (Modify as per your API response)
+        if (status?.success) {
+          successcount++;
+          deliveredClients.push(client._id);
+        } else {
+          unsuccesscount++;
+          undeliveredClients.push(client._id);
+        }
+      } catch (err) {
+        console.log(`Failed to send message to ${mobileNumber}:`, err);
+        unsuccesscount++;
+        undeliveredClients.push(client._id);
+      }
+    }
+
+    res.status(200).json({
+      MESSAGE: "WhatsApp messages processed",
+      status: true,
+      successcount,
+      unsuccesscount,
+      deliveredClients,
+      undeliveredClients,
+    });
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Failed to send WhatsApp messages",
+      status: false,
+    });
+  }
+};
+
+
+  const  quotation=async(req,res)=>{
+  try{
+    const{state,Kw,clientId,message}=req.body;
+    console.log(Kw);
+    console.log(req.body);
+    console.log("Kw Type:", typeof Kw);
+
+    const client= await Client.find({_id:clientId});
+    console.log(client)
+  
+    const mobileNumber = client[0].mobile.replace(/^\+91/, "");
+    console.log(mobileNumber);
+
+    if(state==='Uttar Pradesh'){
+     
+      const pdfMapping = {
+       
+        "2kw": `${process.env.SERVER_URL}uploads/quotation/UttarPradesh/2kw/dummy.pdf`,
+        "3kw-1phase": `${process.env.SERVER_URL}uploads/quotation/UttarPradesh/3kw-phase-1/dummy.pdf`,
+        "3kw-3phase": `${process.env.SERVER_URL}uploads/quotation/UttarPradesh/3kw-phase-3/dummy.pdf`,
+        "4kw-1phase": `${process.env.SERVER_URL}uploads/quotation/UttarPradesh/4kw-phase-1/dummy.pdf`,
+        "4kw-3phase": `${process.env.SERVER_URL}uploads/quotation/UttarPradesh/4kw-phase-3/dummy.pdf`,
+        "5kw-1phase": `${process.env.SERVER_URL}uploads/quotation/UttarPradesh/5kw-phase-1/dummy.pdf`,
+        "5kw-3phase": `${process.env.SERVER_URL}uploads/quotation/UttarPradesh/5kw-phase-3/dummy.pdf`,
+        "6kw": `${process.env.SERVER_URL}uploads/quotation/UttarPradesh/6kw/dummy.pdf`,
+        "7kw": `${process.env.SERVER_URL}uploads/quotation/UttarPradesh/7kw/dummy.pdf`,
+        "8kw": `${process.env.SERVER_URL}uploads/quotation/UttarPradesh/8kw/dummy.pdf`,
+        "9kw": `${process.env.SERVER_URL}uploads/quotation/UttarPradesh/9kw/dummy.pdf`,
+        "10kw": `${process.env.SERVER_URL}uploads/quotation/UttarPradesh/10kw/dummy.pdf`,
+      
+      };
+      console.log(pdfMapping["2kw"]);
+      
+   
+   
+      // const key = `${String(Kw)}kw`;
+   
+ 
+      pdfFilePath = pdfMapping[Kw];
+      console.log(pdfFilePath)
+    
+      if (!pdfFilePath) {
+        return res.status(400).json({
+          message: "Invalid Kw value",
+          status: false,
+        });
+      }
+      sendwhatapp( `+91${mobileNumber}`,
+        'crm_3',
+        { link: pdfFilePath, filename: "GautamSolar.pdf" },
+        ["Galo Energy Pvt. Ltd.", message]);
+    } 
+    // else if(state==='Delhi'){
+    //   const pdfMapping = {
+       
+    //     "2kw": `${process.env.SERVER_URL}/uploads/quotation/Delhi/2kw/Delhi.pdf`,
+    //     "3kw": `${process.env.SERVER_URL}/uploads/quotation/Delhi/2kw/Delhi.pdf`,
+    //     "4kw": `${process.env.SERVER_URL}/uploads/quotation/Delhi/2kw/Delhi.pdf`,
+    //     "5kw": `${process.env.SERVER_URL}/uploads/quotation/Delhi/2kw/Delhi.pdf`,
+    //     "6kw": `${process.env.SERVER_URL}/uploads/quotation/Delhi/2kw/Delhi.pdf`,
+    //     "7kw": `${process.env.SERVER_URL}/uploads/quotation/Delhi/2kw/Delhi.pdf`,
+    //     "8kw": `${process.env.SERVER_URL}/uploads/quotation/Delhi/2kw/Delhi.pdf`,
+    //     "9kw": `${process.env.SERVER_URL}/uploads/quotation/Delhi/2kw/Delhi.pdf`,
+    //     "10kw": `${process.env.SERVER_URL}/uploads/quotation/Delhi/2kw/Delhi.pdf`,
+      
+    //   };;
+    //   pdfFilePath = pdfMapping[`${Kw}kw`];
+    //   if (!pdfFilePath) {
+    //     return res.status(400).json({
+    //       message: "Invalid Kw value",
+    //       status: false,
+    //     });
+    //   }
+    //   sendwhatapp( `+91${mobileNumber}`,
+    //     'crm_3',
+    //     { link: pdfFilePath, filename: "Quotation.pdf" },
+    //     ["Galo Energy Pvt. Ltd.", "Your quotation is attached."])
+    // }
+    
+    else{
+      const pdfMapping = {
+       
+        "2kw": `${process.env.SERVER_URL}/uploads/quotation/Others/2kw/dummy.pdf`,
+        "3kw-1phase": `${process.env.SERVER_URL}/uploads/quotation/Others/3kw-phase-1/dummy.pdf`,
+        "3kw-3phase": `${process.env.SERVER_URL}/uploads/quotation/Others/3kw-phase-3/dummy.pdf`,
+        "4kw-1phase": `${process.env.SERVER_URL}/uploads/quotation/Others/4kw-phase-1/dummy.pdf`,
+        "4kw-3phase": `${process.env.SERVER_URL}/uploads/quotation/Others/4kw-phase-3/dummy.pdf`,
+        "5kw-1phase": `${process.env.SERVER_URL}/uploads/quotation/Others/5kw-phase-1/dummy.pdf`,
+        "5kw-3phase": `https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf`,
+        "6kw": `${process.env.SERVER_URL}/uploads/quotation/Others/6kw/dummy.pdf`,
+        "7kw": `${process.env.SERVER_URL}/uploads/quotation/Others/7kw/dummy.pdf`,
+        "8kw": `${process.env.SERVER_URL}/uploads/quotation/Others/8kw/dummy.pdf`,
+        "9kw": `${process.env.SERVER_URL}/uploads/quotation/Others/9kw/dummy.pdf`,
+        "10kw": `${process.env.SERVER_URL}/uploads/quotation/Others/10kw/dummy.pdf`
+      };
+      pdfFilePath = pdfMapping[Kw];
+      if (!pdfFilePath) {
+        return res.status(400).json({
+          message: "Invalid Kw value",
+          status: false,
+        });
+      }
+      sendwhatapp( `+91${mobileNumber}`,
+        'crm_3',
+        { link: pdfFilePath, filename: "Quotation.pdf" },
+        ["Galo Energy Pvt. Ltd.", message])
+    }
+
+
+    res.status(200).json({
+      MESSAGE: "Successfully sent WhatsApp pdf messages",
+      status: true,
+     
+    });
+
+  }catch(error){
+    console.log(error);
+    res.status(400).json({
+      message: "Failed to send Pdf ",
+      status: false,
+    });
+  }
+}
+
+
 
 module.exports = {
   clientAdd,
@@ -1135,5 +1555,11 @@ module.exports = {
   bulkAssign,
   Assignfieldemployee,
   updatestatus,
-  removeClientsFromExcel
+  removeClientsFromExcel,
+  deleteassignemployee,
+  SchduleMessage,
+  stopMessage,
+  greatingWhatapp,
+  bulkwhatapp,
+  quotation,
 };

@@ -16,8 +16,9 @@ const storage = multer.diskStorage({
         if(file.fieldname==='Photos') folder='uploads/Photos/';
         if(file.fieldname==='ELCB') folder='uploads/ELCB/';
         if(file.fieldname==='Roof-Picture') folder='uploads/Roof-Picture';
+        if(file.fieldname==='Whatapp') folder='uploads/whatapp';
         console.log(file);
-        const uploadDirs = ["uploads/aadhar/", "uploads/pancard/","uploads/ElectricityBill/","uploads/video/","uploads/dimensions/","uploads/cancelcheack/","uploads/proposalpdf/","uploads/DLproposal/","uploads/Photos/","uploads/ELCB/","uploads/Roof-Picture"]
+        const uploadDirs = ["uploads/aadhar/", "uploads/pancard/","uploads/ElectricityBill/","uploads/video/","uploads/dimensions/","uploads/cancelcheack/","uploads/proposalpdf/","uploads/DLproposal/","uploads/Photos/","uploads/ELCB/","uploads/Roof-Picture","uploads/whatapp"]
        uploadDirs.forEach(dir => { 
        if (!fs.existsSync(dir)) {
        fs.mkdirSync(dir, { recursive: true });
