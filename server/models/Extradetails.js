@@ -88,8 +88,22 @@ const Details= new mongoose.Schema({
 
         },
         Photos: {
-            type: [String], 
+            type: [String], // Array of photos
             default: [],
+        },
+        inverterSerialNo: {
+            type: [String], // Array of strings for inverter serial numbers
+            default: []
+        },
+        panelSerialNo: {
+            type: [String], // Array of strings for panel serial numbers
+            default: []
+        },
+        InstallStatus: {
+            type: String,
+            enum:["Pending","Complete"],// Indicates if the process is completed
+            default:"Pending",
+             
         }
 
 

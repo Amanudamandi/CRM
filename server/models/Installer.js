@@ -9,9 +9,29 @@ const InstallerSchema=mongoose.Schema({
         type:String,
 
     },
-    INSID:{
+    InsID:{
         type:String,
         required:true
     },
+    mobile:{
+        type:String,
+        required:true,
+    },
+     department:{ 
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'Department'
+        },
+
+           stateID:{
+                type:[mongoose.Schema.Types.ObjectId],
+                ref:'State'
+      
+            },
+            date:{
+                type:Date,
+                default:Date.now
+            },
     
 })
+const Installer=mongoose.model("Installer",InstallerSchema);
+module.exports=Installer;

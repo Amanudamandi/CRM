@@ -24,13 +24,22 @@ const ReMarketing = ({ reMarketingBtnClicked, setReMarketingBtnClicked, clientsI
     const [compNumber, setCompNumber] = useState('');
 
     const [data, setData] = useState({
-        clientId: Array.isArray(clientsID) ? clientsID.filter(id => id !== undefined) : [],
+        clientId: clientsID,
+        
         message: message,
         Whatapp: image,
         companymobile: compNumber
     })
 
     console.log("data is : ", data);
+
+    useEffect(() => {
+        setData(prevData => ({
+            ...prevData,
+            clientId: Array.isArray(clientsID) ? clientsID.filter(id => id !== undefined) : []
+        }));
+    }, [clientsID]);
+    console.log("Received clientsID:", clientsID);
 
     const handleOnInputChange = (event) => {
         const { name, value } = event.target;
@@ -54,7 +63,9 @@ const ReMarketing = ({ reMarketingBtnClicked, setReMarketingBtnClicked, clientsI
         event.preventDefault();
         let formData = new FormData();
 
-        formData.append("clientId", data?.clientId);
+        data.clientId.forEach(id => {
+            formData.append("clientId[]", id);  // Use array notation
+        });
         formData.append("message", data?.message);
         formData.append("companymobile", data?.companymobile);
         formData.append("Whatapp", data?.Whatapp);
@@ -73,7 +84,7 @@ const ReMarketing = ({ reMarketingBtnClicked, setReMarketingBtnClicked, clientsI
             console.log("Server Response:", response.data);
             alert(`Offer sent successfully! and successfully lead ${response?.data?.successcount} & unSuccessfully lead ${response?.data?.unsuccesscount}`);
 
-            
+
             setReMarketingBtnClicked(false);
 
         } catch (error) {

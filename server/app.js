@@ -20,6 +20,8 @@ require('./db/conn');
 //     });
 //   } else {
     const app = express();
+    const InstallerRouter= require("../server/routers/installerRoutes.js");
+
     const authRouter = require('./routers/authRoutes.js');
     const fieldRouter = require('./routers/fieldRoutes.js');
     const client = require('./routers/clientRoutes.js');
@@ -31,6 +33,7 @@ require('./db/conn');
     const DealerTLRouter= require("../server/routers/TLdealerRoutes.js");
     const Dealeremployee= require("../server/routers/TLemployeeRoutes.js");
     const DLlead= require("../server/routers/TLclientRoutes.js");
+    
     const Schdule=require("../server/Scheduler/Remainder.js")
    
     app.use(cookieParser());
@@ -75,6 +78,8 @@ require('./db/conn');
     app.use("/account", accountRouter);
     app.use("/dealerTL",DealerTLRouter);
     app.use("/DLemp",Dealeremployee);
+    app.use("/ins",InstallerRouter);
+
     const port = 8080;
    
     

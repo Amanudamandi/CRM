@@ -12,6 +12,8 @@ cron.schedule("*/10 * * * * *", async () => {
     console.log(currentISTDate, "current date");
 
     while (true) {
+
+        
         const clients = await clientt.find({
             messageStatus: true,
             reminderDate: { $lte: currentISTDate },

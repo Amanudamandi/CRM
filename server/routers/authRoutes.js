@@ -19,5 +19,6 @@ router.get("/fetchAllEmployee",authController.fetchAllEmployee ); // completed 3
 router.post("/employeeDelete",authController.empDelete); //completed 2.0
 router.get("/findEmpID", authController.findEmpID); // completed  2.0
 router.put("/teamLeaderProfileUpdate", authController.teamLeaderProfileUpdate);
+router.post("/addSubadmin",authController.SubadminAdd);
 
 module.exports = router;

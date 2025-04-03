@@ -644,6 +644,7 @@ const updateClient = async (req, res) => {
     } = req.body;
     console.log(visitingDate, "vsuisting date");
     console.log(address, "adrees");
+    console.log(stageID,"stageid");
     const [latitude, longitude] = location.split(", ").map(Number);
 
     if (!req?.body?.clientID) {
@@ -714,6 +715,8 @@ const updateClient = async (req, res) => {
       newVisit = await visit.save();
       console.log(newVisit);
     }
+    console.log(stageID,"stageID");
+   console.log(response[0]._id);
     const UpdatedData = {
       stateID: response[0]._id,
       kwpInterested: kwpInterested,
@@ -1131,14 +1134,7 @@ const removeClientsFromExcel = async (req, res) => {
 const stopMessage=async(req,res)=>{
   try{
 
-    const { clientID} = req.body;
-    console.log(clientID);
-    if(!clientID){
-      res.status(400).json({
-        message:"Id not coming",
-        status:false,
-      })
-    }
+    const { clientID } = req.body;
 
     const response= await Client.find({_id:clientID});
 
@@ -1231,7 +1227,7 @@ const SchduleMessage = async (req, res) => {
 
     
     const Whatapp = (await req.files["Whatapp"])
-      ? `${process.env.SERVER_URL}/uploads/Whatapp/${req.files["Whatapp"][0].filename}`
+      ? `${process.env.SERVER_URL}uploads/whatapp/${req.files["Whatapp"][0].filename}`
       : null;
       console.log(Whatapp,"whatapp");
     
@@ -1299,7 +1295,7 @@ const greatingWhatapp=async(req,res)=>{
     const client= await Client.find({_id:clientId});
     console.log(client);
     const Whatapp = (await req.files["Whatapp"])
-    ? `${process.env.SERVER_URL}/uploads/Whatapp/${req.files["Whatapp"][0].filename}`
+    ? `${process.env.SERVER_URL}/uploads/whatapp/${req.files["Whatapp"][0].filename}`
     : null;
     console.log(Whatapp,"whatapp");
    
@@ -1341,7 +1337,7 @@ const bulkwhatapp = async (req, res) => {
     let { clientId, message, companymobile } = req.body; // clientId is an array
     console.log(req.body);
 
-    clientId=["67dc08856b20a6262cbe93d4","67e637daf7d97591758bbd9d","67ca86fc4bbd7c5caa7fb233","67e63a985bedff3a0624a7ef"]
+   
 
     if (!Array.isArray(clientId) || clientId.length === 0) {
       return res.status(400).json({
@@ -1354,7 +1350,7 @@ const bulkwhatapp = async (req, res) => {
     console.log(clients);
 
     const Whatapp = req.files?.["Whatapp"]
-      ? `${process.env.SERVER_URL}/uploads/Whatapp/${req.files["Whatapp"][0].filename}`
+      ? `${process.env.SERVER_URL}uploads/whatapp/${req.files["Whatapp"][0].filename}`
       : null;
     console.log(Whatapp, "WhatsApp Image");
 

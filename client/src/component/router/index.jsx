@@ -50,6 +50,9 @@ import UpdateDealer from '../Common/UpdateDealerForm/UpdateDealer';
 
 // DealerEmp 
 import DlEmplayout from "../DealerEmpLayout/Index";
+
+import SuperAdmin from '../superAdminLayout/LayoutSuperAdmin';
+
 const Index = () => {
     // removeCookie('accessToken')
     // console.log(getCookie('accessToken'));
@@ -88,7 +91,7 @@ const Index = () => {
                     <Route path='/admin/showDL-coordinator/add' element={<TeamLeaderDLRegister />}></Route>
                     <Route path='/admin/showDL-leads' element={<LeadDLBoard />} ></Route>
                     <Route path='/admin/showDL-leads/add' element={<AddDLClient />} ></Route>
-                    <Route path='/admin/employeeDL/update/:id' element={<UpdateDealer/>}></Route>
+                    <Route path='/admin/employeeDL/update/:id' element={<UpdateDealer />}></Route>
                 </Route>
 
                 {/* Coordinator Router */}
@@ -120,10 +123,14 @@ const Index = () => {
                 {/* Dealer employee */}
 
                 <Route path='/' element={<DlEmplayout />} >
-                    <Route path='employeeDL/dashboard' element={<DLEmpDashboard/>} />
-                    <Route path='employeeDL/show-leads' element ={<DealerLeadShow/>} />
+                    <Route path='employeeDL/dashboard' element={<DLEmpDashboard />} />
+                    <Route path='employeeDL/show-leads' element={<DealerLeadShow />} />
                     <Route path='employeeDL/show-leads/add' element={<DLLeadAddEmp employeeID={localStorage.getItem('employeeId')} />} />
+                </Route>
 
+                {/* SuperAdmin */}
+                <Route path='/' element={<SuperAdmin/>}>
+                {/* <Route path='/superAdmin/dashboard' ></Route> */}
 
                 </Route>
 

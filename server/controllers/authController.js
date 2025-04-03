@@ -9,6 +9,8 @@ const startDateConvertor = require('../helpers/common/dateConversion/startDate')
 const endDateConvertor = require('../helpers/common/dateConversion/endDate');
 const DealerTL= require("../models/Dealer Models/DealerTL");
 const TLemployee= require("../models/Dealer Models/DealerEmployee")
+const InstallerEmp= require("../models/Installer");
+const SuperAdmin = require("../models/SubAdmin");
 
 const generateAccessToken = async (user) =>{
     const token = jwt.sign(user, process.env.JWT_SECRET, {expiresIn:"12h"});
@@ -450,7 +452,7 @@ const empLogin = async(req,res) =>{
             
         }else if(department == 7){
             try {
-                const TLemployeeData = await TLemployee.findOne({empID:email}).populate('department').populate('stateID').populate('teamLeader');
+                const TLemployeeData = await InstallerEmp.findOne({InsID:email}).populate('department').populate('stateID');
                 console.log(TLemployeeData);
                 if(!TLemployeeData){
                     return res.status(500).json({
@@ -476,11 +478,11 @@ const empLogin = async(req,res) =>{
                 const refreshToken = await generateRefreshToken({ TLemployee:TLemployeeData._id});
                 console.log(refreshToken);
                 // console.log(teamLeaderData);    
-                const TLEoggedData = await TLemployee.findOne({empID:email})
+                const TLEoggedData = await InstallerEmp.findOne({InsID:email})
                 .populate('department')
                 .populate('stateID')
-                .select("-mobile -empID");
-                await TLemployee.findByIdAndUpdate(
+                .select("-mobile -InsID");
+                await InstallerEmp.findByIdAndUpdate(
                     TLEoggedData._id,
                     {$set:{ refreshToken: refreshToken }},
                     {new:true}
@@ -509,6 +511,49 @@ const empLogin = async(req,res) =>{
                 });
             }
             
+        }if(department == 8){
+            const adminData = await SuperAdmin.findOne({email}).populate('department');
+            console.log(adminData)
+            if(!adminData){
+                return res.status(500).json({
+                    success:false,
+                    msg:'Email not exist!'
+                })
+            }
+           
+           
+            if (adminData.mobile != password) {
+                return res.status(500).json({ 
+                success:false,
+                msg: 'Email and password is Incorrect!'
+                });
+            }
+            const accessToken = await generateAccessToken({ admin:adminData });
+            const refreshToken = await generateRefreshToken({ admin:adminData._id});
+            console.log(accessToken);
+            console.log(refreshToken);
+            const adminLoggedData = await SuperAdmin.findOne({email})
+            .populate('department')
+            .select("-mobile -email");
+            console.log(adminLoggedData);
+          const data=  await admin.findByIdAndUpdate(
+                adminLoggedData._id,
+                {$set:{ refreshToken: refreshToken }},
+                {new:true}
+            )
+            console.log(data);
+     res.status(200)
+            .cookie("accessToken", accessToken, options)
+            .cookie("refreshToken", refreshToken, options)
+            .json({
+                success:true,
+                msg:'Login Successfully',
+                data:adminData,
+                prefixName:adminData.name[0],
+                accessToken:accessToken,
+                refreshToken:refreshToken,
+                tokenType:'Bearer'
+              });
         }
         else {
             const employeeData = await employee.findOne({empID:email}).populate('department').populate('teamLeader');
@@ -892,6 +937,27 @@ const teamLeaderProfile = async(req,res) =>{
 //     }
 // }
 
+const SubadminAdd = async(req,res) =>{
+    try {
+        const {email,mobile,department,name} = req.body;
+        const addAdmin = new SubAdmin({
+            email,mobile,department,name
+        });
+
+        if(await addAdmin.save()){
+            res.status(200).json({ 
+                success:true,
+                msg:'Account create successfully.'
+            });
+        }
+    } catch (error) {
+        return res.status(400).json({
+            success:false,
+            msg:error.message
+        });
+    }
+}
+
 module.exports={
     addTeamLeader,
     showTeamLeader,
@@ -907,5 +973,6 @@ module.exports={
     teamLeaderProfile,
     teamLeaderProfileUpdate,
     logout,
+    SubadminAdd
 
 }

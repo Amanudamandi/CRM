@@ -14,16 +14,61 @@ import { useNavigate } from 'react-router-dom';
 const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAllStages = false, setUpdateLeadBtnClicked }) => {
     const Style = {
         updateLeadContainer: { position: 'fixed', width: '75%', height: '92vh', margin: '0rem 1rem 0rem 8.2rem', padding: '3.5rem 1rem', backgroundColor: '#fff', top: '50%', left: '50%', zIndex: '5555', boxShadow: '0px 0px 2px black', borderRadius: '8px', transform: 'translate(-50%, -50%)' },
+
         closeFormBtn: { position: 'absolute', top: '1rem', right: '1rem', cursor: 'pointer', transition: 'transform 0.4s ease' },
-        updateLeadInfoContainer: { margin: 'auto', width: '85%', borderBottom: '3px solid #AA0B2B' },
-        showOnlyDetailsContainer: { display: 'flex', backgroundColor: 'rgba(217, 217, 217, 0.35)', gap: '8px', borderRadius: '5px' },
+        // closeFormBtn: {
+        //     position: 'absolute',
+        //     top: '1rem',
+        //     right: '1rem',
+        //     cursor: 'pointer',
+        //     transition: 'transform 0.4s ease'
+        // },
+
+        // updateLeadContainer: {
+        //     position: 'fixed',
+        //     width: '75%',
+        //     height: '92vh',
+        //     margin: '0rem 1rem 0rem 8.2rem',
+        //     padding: '3.5rem 1rem',
+        //     backgroundColor: '#fff',
+        //     top: '50%',
+        //     left: '50%',
+        //     zIndex: '5555',
+        //     boxShadow: '0px 0px 2px black',
+        //     borderRadius: '8px',
+        //     transform: 'translate(-50%, -50%)',
+        //     display: 'flex',
+        //     flexDirection: 'column'
+        // },
+        updateLeadInfoContainer: {
+            margin: 'auto',
+            width: '85%',
+            borderBottom: '3px solid #AA0B2B',
+            maxHeight: '75vh', // Set max height
+            overflowY: 'auto', // Enable scrolling
+            paddingRight: '10px' // Add padding to prevent scrollbar overlap
+        },
+
         leadLogoContainer: { display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#AA0B2B', width: '4.5rem', height: '4rem', borderTopLeftRadius: '5px' },
         leadLogo: { color: '#fff', fontSize: '2.5rem', fontWeight: 800, textAlign: 'center' },
         leadInfoContainer: { width: '100%', display: 'grid', gridTemplateColumns: '1fr 1fr 4rem', padding: '4px 0px' },
         leadInfo: { display: 'flex', flexDirection: 'column', justifyContent: 'space-around' },
         leadInfoText: { letterSpacing: '0.75px' },
         leadType: { display: 'flex', justifyContent: 'flex-start', alignItems: 'center' },
-        formContainer: { margin: 'auto', width: '85%', display: 'grid', gridTemplateColumns: '2fr 15rem', gap: '12px' },
+
+        // formContainer: { margin: 'auto', width: '85%', display: 'grid', gridTemplateColumns: '2fr 15rem', gap: '12px' },
+        formContainer: {
+            margin: 'auto',
+            width: '85%',
+            display: 'grid',
+            gridTemplateColumns: '2fr 15rem',
+            gap: '12px',
+            overflowY: 'auto', // Make form scrollable
+            maxHeight: '60vh', // Prevent excessive height
+            padding: '10px'
+        },
+
+
         updateForm: { display: 'grid', gridTemplateColumns: '1fr 0.2rem 1fr', gap: '16px', padding: '1.5rem 0rem' },
         updateBtn: { width: '100%', padding: '0.5rem 1rem', backgroundColor: '#AA0B2B', border: 'none', borderRadius: '5px', color: '#fff', cursor: 'pointer' },
         leftFormFieldContainer: {},
@@ -52,7 +97,7 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
     const [states, setStates] = useState([]);
 
     console.log("my leadinormation is ", leadInformation)
-    
+
     const [formData, setFormData] = useState({
         clientID: leadInformation?._id,
         revisitDate: leadInformation?.revisitDate || '',
@@ -203,10 +248,10 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
     }
 
     const stopRemaindering = async (event) => {
-        const clientID =  leadInformation?._id;
+        const clientID = leadInformation?._id;
         console.log("clientID: ", clientID);
         try {
-             await axios.post(`${process.env.REACT_APP_URL}/client/stopWhatapp`, { clientID:leadInformation?._id});
+            await axios.post(`${process.env.REACT_APP_URL}/client/stopWhatapp`, { clientID: leadInformation?._id });
             alert("Reminder stop successfully!");
         } catch (error) {
             console.log("Error sending data:", error);
@@ -221,9 +266,9 @@ const Index = ({ showForm, leadInformation, closeForm, pageCount, BooleanShowAll
             <IoClose size={35} color='#AA0B2B' style={{ ...Style.closeFormBtn, transform: isHoveredOnClose ? 'rotate(90deg)' : 'rotate(0deg)' }} onMouseOver={() => setIsHoveredOnClose(true)} onMouseOut={() => setIsHoveredOnClose(false)} onClick={() => closeForm({ clicked: false })} />
             <div style={Style.updateLeadInfoContainer}>
                 <div style={Style.showOnlyDetailsContainer}>
-                    <div style={Style.leadLogoContainer}>
+                    {/* <div style={Style.leadLogoContainer}>
                         <p style={Style.leadLogo}></p>
-                    </div>
+                    </div> */}
                     <div style={Style.leadInfoContainer}>
                         <div style={Style.leadInfo}>
                             <span style={Style.leadInfoText}>Name: {leadInformation?.name}</span>
