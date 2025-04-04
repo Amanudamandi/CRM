@@ -143,6 +143,10 @@ const clientSchema = mongoose.Schema({
     companymobile:{
         type:String,
         default:null,
+    },
+    InstallerEmp:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Installer"
     }
 
 

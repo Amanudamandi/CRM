@@ -42,7 +42,7 @@ const Index = () => {
                 Navigate('/employeeDL/dashboard');
             }
             else if (localStorage.getItem('role') === '8') {
-                Navigate('/superAdmin/dashboard');
+                Navigate('/superAdmin');
             }
         }
     }, []);

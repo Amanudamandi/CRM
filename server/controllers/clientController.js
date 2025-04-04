@@ -493,7 +493,7 @@ const fetchClients = async (req, res) => {
           email: 1,
           assignEmp: 1,
           mobile: 1,
-
+          messageStatus:1,
           source: 1,
           stageID: 1,
           district: 1,

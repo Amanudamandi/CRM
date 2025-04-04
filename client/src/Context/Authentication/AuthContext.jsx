@@ -54,7 +54,7 @@ const crmLoginAPI = async( loginCredentials ) => {
               Navigate('employeeDL/dashboard');
               setIsAuthenticated((previousData) => ({...previousData, employeeId: localStorage.getItem('employeeId')}));
             }else if(role===8){
-              Navigate('superAdmin/dashboard');
+              Navigate('superAdmin');
               setIsAuthenticated((prev)=>({...prev,employeeId:localStorage.getItem('employeeId')}));
             }
         }

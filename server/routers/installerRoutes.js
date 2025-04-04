@@ -4,5 +4,9 @@ const router = express.Router();
 
 // Route to add a new installer
 router.post("/addInstaller", InstallerController.addInstaller);
+router.get("/fetchAllIns",InstallerController.fetchall);
+router.post("/assignIns",InstallerController.AssisgnInstaller);
+
 
 module.exports = router;
+

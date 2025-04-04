@@ -38,7 +38,7 @@ const Index = () => {
 
     const headingList =
         [
-            'Stage', 'Coordinator', 'Lead Handler', 'Name', 'Mobile', 'Email', 'Type', 'State', 'District', 'KWP Interested', 'Source', 'Date',"Proposal",'Aadhar Card','Pan Card',"Electricity Bill","Bank Details","CancleCheck","Dimension","Video",
+            'Stage', 'Coordinator', 'Lead Handler', 'Name', 'Mobile', 'Email' ,'Remaindering ', 'State', 'District', 'KWP Interested', 'Source', 'Date', 'Type',"Proposal",'Aadhar Card','Pan Card',"Electricity Bill","Bank Details","CancleCheck","Dimension","Video",
             // "Payment"
         ];
 

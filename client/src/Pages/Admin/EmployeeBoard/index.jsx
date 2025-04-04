@@ -71,16 +71,16 @@ const Index = () => {
                     />
                 </div>
             </div>
-            <section style={Styles.employeeContainer}>
-                <table style={Styles.employeeTable}>
-                    <FixedRow 
-                        headingList={headingList} 
-                        dropDownList={showDropDownList} 
-                        showDeleteButton={false} 
-                        storeFilterData={storeFilterData} 
-                        setStoreFilterData={setStoreFilterData}
-                        setAppliedFilterClicked={setAppliedFilterClicked}
-                    />
+                <section style={Styles.employeeContainer}>
+                    <table style={Styles.employeeTable}>
+                        <FixedRow 
+                            headingList={headingList} 
+                            dropDownList={showDropDownList} 
+                            showDeleteButton={false} 
+                            storeFilterData={storeFilterData} 
+                            setStoreFilterData={setStoreFilterData}
+                            setAppliedFilterClicked={setAppliedFilterClicked}
+                        />
                     <VaribaleRow 
                         pageCount={pageCount} 
                         departmentID=''

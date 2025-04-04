@@ -53,6 +53,9 @@ import DlEmplayout from "../DealerEmpLayout/Index";
 
 import SuperAdmin from '../superAdminLayout/LayoutSuperAdmin';
 
+import Lead from '../../Pages/SuperAdmin/LeadBoardPending/lead'
+import EmployeeList from '../../Pages/SuperAdmin/EmployeeBoard/EmployeeList';
+
 const Index = () => {
     // removeCookie('accessToken')
     // console.log(getCookie('accessToken'));
@@ -129,8 +132,12 @@ const Index = () => {
                 </Route>
 
                 {/* SuperAdmin */}
-                <Route path='/' element={<SuperAdmin/>}>
-                {/* <Route path='/superAdmin/dashboard' ></Route> */}
+                <Route path='/superAdmin' element={<SuperAdmin/>}>
+                <Route path='/superAdmin/Installer'element={<EmployeeList/>} />
+                <Route path='/superAdmin/Installer/add' />
+                <Route path='/superAdmin/BeforeInstallation' element={<Lead/>} />
+                <Route path='/superAdmin/AfterInstallation'/>
+                
 
                 </Route>
 

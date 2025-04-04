@@ -15,7 +15,8 @@ const LayoutSuperAdmin = () => {
                         nameLogo='SA'
                     />
                 </header>
-                <main>
+                <main style={{backgroundColor:"gray"}}>
+                    
                     <Outlet />
                 </main>
             </article>
