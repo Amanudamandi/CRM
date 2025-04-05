@@ -6,7 +6,7 @@ import { AddDealerEmployeeApi } from '../../Utils/addDealerEmployee';
 import { useNavigate } from 'react-router-dom';
 
 const Index = ({ CoordinatorStartIndexDropDown = 4 }) => {
-  const navigator=useNavigate();
+  const navigator = useNavigate();
 
   const [registrationData, setRegistrationData] = useState({
     empID: '',
@@ -98,14 +98,14 @@ const Index = ({ CoordinatorStartIndexDropDown = 4 }) => {
     setRegistrationData({ ...registrationData, [name]: value });
   }
 
-  const handleStateCheckBox= (event,pos)=>{
-    const statusStateDL=[...currentStateStatusDL];
+  const handleStateCheckBox = (event, pos) => {
+    const statusStateDL = [...currentStateStatusDL];
     // console.log("checked state ",event.target.checked);
 
-    if(event.target.checked){
-      statusStateDL[pos]=event.target.value;
-    }else{
-      statusStateDL[pos]=0;
+    if (event.target.checked) {
+      statusStateDL[pos] = event.target.value;
+    } else {
+      statusStateDL[pos] = 0;
     }
     setCurrentStateStatus(statusStateDL);
     // console.log("curr state added ",statusStateDL);
@@ -114,58 +114,58 @@ const Index = ({ CoordinatorStartIndexDropDown = 4 }) => {
 
 
 
-  const handleSubmitDL=(event)=>{
+  const handleSubmitDL = (event) => {
     event.preventDefault();
-    const dealerSelectedState=[];
+    const dealerSelectedState = [];
 
-    for(let value of currentStateStatusDL){
-      if(value!==0 || value ===undefined){
+    for (let value of currentStateStatusDL) {
+      if (value !== 0 || value === undefined) {
         dealerSelectedState.push(value);
       }
     }
-    console.log("selectedState: ",dealerSelectedState);
-   const {empID,name,mobile}=registrationData;
+    console.log("selectedState: ", dealerSelectedState);
+    const { empID, name, mobile } = registrationData;
 
-   if(!empID){
-    alert("Enter Employee ID");
-    return;
-  }
-  if(!name){
-    alert("Enter Name ");
-    return;
-  }
-
-  if(!mobile){
-    if(mobile.length !== 10 || mobile.length >10){
-      alert('Enter the valid mobile number');
+    if (!empID) {
+      alert("Enter Employee ID");
       return;
     }
-    else alert('Enter the mobile number');
-    return;
-  }
-  if(dealerSelectedState.length==0){
-    alert('Select State');
-    return;
+    if (!name) {
+      alert("Enter Name ");
+      return;
+    }
+
+    if (!mobile) {
+      if (mobile.length !== 10 || mobile.length > 10) {
+        alert('Enter the valid mobile number');
+        return;
+      }
+      else alert('Enter the mobile number');
+      return;
+    }
+    if (dealerSelectedState.length == 0) {
+      alert('Select State');
+      return;
+    }
+
+    if (!departmentTLId) {
+      alert('Select the department');
+      return;
+    }
+    if (!teamLeaderIdDL) {
+      alert('Select the Team Leader');
+      return;
+    }
+
+    const dataRegister = { ...registrationData, stateID: dealerSelectedState, department: departmentTLId, teamLeader: teamLeaderIdDL, }
+    console.log("data register : ", dataRegister);
+    AddDealerEmployeeApi(dataRegister);
+    navigator("/admin/employeeDL-dashboard");
+
+
   }
 
-  if (!departmentTLId) {
-    alert('Select the department');
-    return;
-  }
-  if (!teamLeaderIdDL) {
-    alert('Select the Team Leader');
-    return;
-  }
 
-  const dataRegister={...registrationData,stateID:dealerSelectedState,department: departmentTLId, teamLeader: teamLeaderIdDL,}
-  console.log("data register : ",dataRegister);
-  AddDealerEmployeeApi(dataRegister);
-  navigator("/admin/employeeDL-dashboard");
-
-
-  }
-
- 
 
 
 
@@ -252,21 +252,21 @@ const Index = ({ CoordinatorStartIndexDropDown = 4 }) => {
               <legend style={{ fontWeight: '700', margin: '1rem', padding: '0px 5px', color: '#880104' }}>State</legend>
               <section style={{ overflowY: 'auto', height: '5rem', width: '95%', margin: 'auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start', alignItems: 'flex-start', gap: '10px' }}>
 
-                
+
 
                 {
-                  stateNamesDL?.length !==0 && stateNamesDL?.map((state,index)=>(
+                  stateNamesDL?.length !== 0 && stateNamesDL?.map((state, index) => (
                     // console.log("state :",state.state);
 
                     <div key={state._id} style={{ display: 'flex', width: 'min-content', gap: '4.5px' }}>
-                      <input type="checkbox" id={state._id} name='state' value={state._id} style={{ width: 'min-content' }} onChange={(event)=>handleStateCheckBox(event,index)} />
+                      <input type="checkbox" id={state._id} name='state' value={state._id} style={{ width: 'min-content' }} onChange={(event) => handleStateCheckBox(event, index)} />
                       <label htmlFor={state._id} style={{ padding: '0px', fontSize: '12px', width: 'max-content', color: 'black' }}>{state.state}</label>
                     </div>
                   ))
                 }
               </section>
 
-              
+
             </fieldset>
           </div>
         </div>

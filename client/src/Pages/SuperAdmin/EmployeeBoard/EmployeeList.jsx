@@ -20,8 +20,8 @@ const EmployeeList = () => {
 
     const headingList =
         [
-            'Employee Id', 'Name', 'Email', 'Department',
-            'Mobile', 'State',
+            'Employee Id', 'Name', 'Email', 'Mobile', 'Department',
+
         ];
 
     const [limit, setLimit] = useState(35);
@@ -99,14 +99,12 @@ const EmployeeList = () => {
                     {
                         apiData?.map((data) => (
                             <tr key={data?._id}>
-                                <td style={Styles.employeeValue}>{data?.InsID?data?.InsID:"N/A"}</td>
-                                <td style={Styles.employeeValue}>{data?.name?data?.name:"N/A"}</td>
-                                <td style={Styles.employeeValue}>{data?.email?data?.email:"N/A"}</td>
-                                <td style={Styles.employeeValue}>{data?.department?.department ? data?.department?.department : "N/A"}</td>
+                                <td style={Styles.employeeValue}>{data?.InsID ? data?.InsID : "N/A"}</td>
+                                <td style={Styles.employeeValue}>{data?.name ? data?.name : "N/A"}</td>
+                                <td style={Styles.employeeValue}>{data?.email ? data?.email : "N/A"}</td>
                                 <td style={Styles.employeeValue}>{data?.mobile ? data?.mobile : "N/A"}</td>
-                                <td style={Styles.employeeValue}>{data?.stateID==="null" ? data?.stateID : "N/A"}</td>
-
-
+                                <td style={Styles.employeeValue}>{data?.department?.department ? data?.department?.department : "N/A"}</td>
+                                <td style={{ ...Styles.employeeValue, display: "none" }}  >{data?.stateID === "null" ? data?.stateID : "N/A"}</td>
                             </tr>
                         ))
                     }

@@ -14,7 +14,7 @@ const Index = ( { objectList, startIndex = 0, endIndex, selectedValue, setSelect
             </div>
             {isOpen && <ul style={Styles.dropDownContainer}>
                 {objectList.map((option, index) => (
-                    (index >= startIndex) && <li key={option._id} className='dropdown-item' onClick={() => setSelectedValue(option[key1], option[key2], option[key3] || '', option[key4] || '')}>{option[key1]}</li>
+                    (index >= startIndex ) && <li key={option._id} className='dropdown-item' onClick={() => setSelectedValue(option[key1], option[key2], option[key3] || '', option[key4] || '')}>{option[key1]}</li>
                 ))}
                 
             </ul>}

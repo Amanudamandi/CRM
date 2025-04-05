@@ -24,7 +24,7 @@ const Index = () => {
 
     useEffect(() => {
         const store = window.location;
-        console.log("store ",store);
+        console.log("store ", store);
         if (store.pathname === '/login' && getCookie('accessToken') !== undefined) {
             if (localStorage.getItem('role') === '1') {
                 Navigate('/admin/dashboard');
@@ -102,12 +102,12 @@ const Index = () => {
         }
     }, []);
 
-    const handleLoginSubmit = (event) => {
-        event.preventDefault();
-        const loginCredentials = { email: username, password, department: departmentRole };
-        console.log("login details : ",loginCredentials);
-        crmLoginAPI(loginCredentials);
-    }
+    // const handleLoginSubmit = (event) => {
+    //     event.preventDefault();
+    //     const loginCredentials = { email: username, password, department: departmentRole };
+    //     console.log("login details : ",loginCredentials);
+    //     crmLoginAPI(loginCredentials);
+    // }
 
     // const handleLoginSubmit = async (event) => {
     //     event.preventDefault();
@@ -141,7 +141,18 @@ const Index = () => {
     //         }
     //     }
     // } 
+    const handleLoginSubmit = async (event) => {
+        event.preventDefault();
+        const loginCredentials = { email: username, password, department: departmentRole };
 
+        const user = await crmLoginAPI(loginCredentials); // make sure it returns user info
+        console.log("User info: ", user);
+        
+
+        // Assuming `user.designation` exists
+        localStorage.setItem('designation', user.designation);
+        // localStorage.setItem('designation', user.data.designation);
+    };
     return (
         <div className="login-container">
             <div className="left">
