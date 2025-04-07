@@ -43,6 +43,7 @@ import DLEmpLead from '../../Pages/Admin/LeadDLBoard/Index';
 import DLEmpDashboard from '../../Pages/DLEmployee/DLDashboard/EmpDashboard';
 import DLLeadAddEmp from '../../Pages/DLEmployee/DLEmpLead/AddLeadDL'
 import DealerLeadShow from "../../Pages/DLEmployee/leadBoardDL/LeadBoardDl"
+import DeleteDealerLead from '../../Pages/Admin/LeadDelete/DeleteDlLead';
 
 import BothDashBoard from '../../Pages/Admin/PPDLDashBoard/BothDashBoard';
 
@@ -57,6 +58,7 @@ import SuperAdmin from '../superAdminLayout/LayoutSuperAdmin';
 import Lead from '../../Pages/SuperAdmin/LeadBoardPending/lead'
 import EmployeeList from '../../Pages/SuperAdmin/EmployeeBoard/EmployeeList';
 import SAEmpRegister from '../../Pages/SuperAdmin/EmpRegister/EmpRegister'
+import ShowDetails from '../Common/ShowSuperAdminDetails/ShowDetails';
 
 const Index = () => {
     // removeCookie('accessToken')
@@ -97,6 +99,7 @@ const Index = () => {
                     <Route path='/admin/showDL-coordinator/add' element={<TeamLeaderDLRegister />}></Route>
                     <Route path='/admin/showDL-leads' element={<LeadDLBoard />} ></Route>
                     <Route path='/admin/showDL-leads/add' element={<AddDLClient />} ></Route>
+                    <Route path='/admin/showDL-leads/delete' element={<DeleteDealerLead/>}></Route>
                     <Route path='/admin/employeeDL/update/:id' element={<UpdateDealer />}></Route>
                 </Route>
 
@@ -139,6 +142,7 @@ const Index = () => {
                 <Route path='/superAdmin/Installer'element={<EmployeeList/>} />
                 <Route path='/superAdmin/Installer/add' element={<SAEmpRegister CoordinatorStartIndexDropDown="2" />} />
                 <Route path='/superAdmin/BeforeInstallation' element={<Lead/>} />
+                <Route path='/superAdmin/showDetails' element={<ShowDetails/>}></Route>
                 <Route path='/superAdmin/AfterInstallation'/>
                 
 

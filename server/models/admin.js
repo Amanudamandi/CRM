@@ -19,6 +19,9 @@ const adminSchema = mongoose.Schema({
     },
     refreshToken:{
         type:String
+    },
+    designation:{
+        type:String,
     }
 });
 

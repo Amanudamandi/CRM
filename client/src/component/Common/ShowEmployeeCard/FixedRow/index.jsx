@@ -104,7 +104,7 @@ const Index = ( { headingList, dropDownList, showDeleteButton, showSelectBox = f
 
     return(
         <thead style={Styles.employeeTableHeadContainer}>
-            {showSelectBox && <th style={Styles.employeeTableHead} onClick={handleCheckBox}><input type="checkbox" name="" id="" /></th>}
+            {/* {showSelectBox && <th style={Styles.employeeTableHead} onClick={handleCheckBox}><input type="checkbox" name="" id="" /></th>} */}
             {headingList.map((value, index) => (
                 <th key={index} style={{...Styles.employeeTableHead, textAlign: value === 'Districts' ? "start" : "center"}}>
                     {value} { dropDownList[index] ? <CiFilter size={15} style={{ height: 'inherit', verticalAlign: 'bottom', cursor: 'pointer'}} onClick={() => handleOnClickFilter(index)} /> : null} 

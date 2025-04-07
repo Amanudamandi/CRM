@@ -641,6 +641,7 @@ const updateClient = async (req, res) => {
       address,
       location,
       state,
+      
     } = req.body;
     console.log(visitingDate, "vsuisting date");
     console.log(address, "adrees");
@@ -728,6 +729,15 @@ const updateClient = async (req, res) => {
       latitude: latitude ? latitude : null,
       longitude: longitude ? longitude : null,
       status: "Visit Pending",
+      InstallStatus:"Pending",
+      NetMetricStatus:"Pending",
+    PaymentStatus:"Pending",
+
+
+
+
+
+
     };
 
     const updateClient = await Client.findByIdAndUpdate(clientID, UpdatedData, {
@@ -1540,6 +1550,82 @@ const bulkwhatapp = async (req, res) => {
   }
 }
 
+const fetchClientsPaymentManager=async(req,res)=>{
+  try{
+    
+    const data = await AssignEmployee.aggregate([
+      {
+          $lookup: {
+              from: "clients", // Collection name
+              localField: "clientID",
+              foreignField: "_id",
+              as: "ClientDetails"
+          }
+      },
+      { 
+        $unwind: { path: "$ClientDetails", preserveNullAndEmptyArrays: true } 
+      },
+    {
+      $match: {
+        "ClientDetails.PaymentStatus": "Partial" // Filtering clients with payment status "pending"
+      }
+    },
+    {
+      $lookup: {
+        from: "employees", // Collection name
+        localField: "ClientDetails.empID", // Now accessing directly
+        foreignField: "_id",
+        as: "CallingEmployee"
+      }
+    },
+    {$unwind:{path:"$CallingEmployee", preserveNullAndEmptyArrays:true}},
+    {
+      $lookup: {
+        from: "teamleaders", // Collection name
+        localField: "ClientDetails.TLID", // Now accessing directly
+        foreignField: "_id",
+        as: "CallingEmployeeTL"
+      }
+    },
+    {$unwind:{path:"$CallingEmployeeTL", preserveNullAndEmptyArrays:true}},
+      {
+        $lookup: {
+          from: "extradetails", // Collection name
+          localField: "ClientDetails.AdditionalDetails", // Now accessing directly
+          foreignField: "_id",
+          as: "AdditionalDetails"
+        }
+      },
+      {$unwind:{path:"$AdditionalDetails", preserveNullAndEmptyArrays:true}},
+      {
+          $lookup: {
+              from: "employees", // Collection name of Employee
+              localField: "fieldEmpID",
+              foreignField: "_id",
+              as: "FieldemployeeDetails"
+          }
+      },
+      { 
+        $unwind: { path: "$employeeDetails", preserveNullAndEmptyArrays: true } 
+    },
+  ]);
+  
+  res.status(200).json({
+    data:data,
+    message:"Succesfully fetched",
+    status:true,
+  })
+
+
+  }catch(error){
+    console.log(error);
+    res.status(400).json({
+      message: "Failed to Fetch ",
+      status: false,
+    });
+  }
+}
+
 
 
 module.exports = {
@@ -1558,4 +1644,5 @@ module.exports = {
   greatingWhatapp,
   bulkwhatapp,
   quotation,
+  fetchClientsPaymentManager
 };

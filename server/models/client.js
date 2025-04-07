@@ -56,8 +56,6 @@ const clientSchema = mongoose.Schema({
     AdditionalDetails:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"ExtraDetail",
-   
-
     },
     latitude: {
         type: Number,
@@ -79,10 +77,6 @@ const clientSchema = mongoose.Schema({
           message: (props) => ` is Not a valid longitude!`,
         },
       },
- 
-     
- 
-     
     kwpInterested:{
         type:String,
         default:'N/A'
@@ -97,25 +91,10 @@ const clientSchema = mongoose.Schema({
     },
     status:{
         type:String,
-        enum:["Visit Complete","Visit Pending","Visit Reject","Visit Delay","Payment Receive"],
+        enum:["Visit Complete","Visit Pending","Visit Reject","Visit Delay"],
         default:"Visit Pending"
     },
-    isInstalled:{ 
-        type:String,
-        enum:["Install Pending","Install Completed"],
-        default:"Install Pending"                                                                                                                                                                                                             
-    },
-    panel_serial_no:{
-        type:String,
-    },
-    invertor_serial_no:{
-         type:String,
-    },
-    photos:[{
-        url: { type: String, required: true }, // URL of the photo
-        filename: { type: String, required: true }, // Original file name
-        uploadedAt: { type: Date, default: Date.now } // Upload timestamp
-    }],
+
     Message:{
         type:String,
         default:null,
@@ -147,7 +126,35 @@ const clientSchema = mongoose.Schema({
     InstallerEmp:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"Installer"
-    }
+    },
+    PaymentStatus: {
+        type: String,
+        enum:["Pending","Partial","Complete"],// Indicates if the process is completed
+        default:"Pending",  
+    },
+    InstallStatus: {
+        type: String,
+        enum:["Pending","Complete"],// Indicates if the process is completed
+        default:"Pending",  
+    },
+  
+    NetMetricStatus: {
+        type: String,
+        enum:["Pending","Complete"],// Indicates if the process is completed
+        default:"Pending",  
+    },
+    Totalamount:{
+        type:Number,
+        default:0
+    },
+    Receivedamount:{
+        type:Number,
+        default:0
+    },
+    payments:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Payment"
+    }]
 
 
 

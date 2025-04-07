@@ -179,7 +179,7 @@ const Index = ({ department, nameLogo }) => {
                                 </div>
                                 <Link to='/admin/show-leads/add' className="employee-option" style={Styles.employeeOption}>Add</Link>
                                 {/* <Link to='/admin/show-leads/update' className="employee-option" style={Styles.employeeOption}>Update</Link> */}
-                                <Link to='/admin/show-leads/delete' className="employee-option" style={Styles.employeeOption}>Remove</Link>
+                                <Link to='/admin/show-leads/delete' className="employee-option" style={Styles.employeeOption}>Delete Lead Bulk</Link>
                             </div>
                         }
                         {
@@ -266,7 +266,7 @@ const Index = ({ department, nameLogo }) => {
                                 </div>
                                 <Link to='/admin/showDL-leads/add' className="employee-option" style={Styles.employeeOption}>Add</Link>
                                 {/* <Link to='/admin/showDL-leads/update' className="employee-option" style={Styles.employeeOption}>Update</Link> */}
-                                <Link to='/admin/showDL-leads/delete' className="employee-option" style={Styles.employeeOption}>Remove</Link>
+                                <Link to='/admin/showDL-leads/delete' className="employee-option" style={Styles.employeeOption}>Delete Dealer Lead Bulk</Link>
                             </div>
                         }
                         {

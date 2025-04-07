@@ -83,9 +83,6 @@ const Details= new mongoose.Schema({
         },Type_of_Meter:{
             type:String,
             default:null,
-
-
-
         },
         Photos: {
             type: [String], // Array of photos
@@ -99,12 +96,9 @@ const Details= new mongoose.Schema({
             type: [String], // Array of strings for panel serial numbers
             default: []
         },
-        InstallStatus: {
-            type: String,
-            enum:["Pending","Complete"],// Indicates if the process is completed
-            default:"Pending",
-             
-        }
+   
+
+        
 
 
 

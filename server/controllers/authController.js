@@ -939,9 +939,10 @@ const teamLeaderProfile = async(req,res) =>{
 
 const SubadminAdd = async(req,res) =>{
     try {
-        const {email,mobile,department,name} = req.body;
-        const addAdmin = new SubAdmin({
-            email,mobile,department,name
+        const {email,mobile,department,name,designation} = req.body;
+        console.log(req.body);
+        const addAdmin = new SuperAdmin({
+            email,mobile,department,name,designation
         });
 
         if(await addAdmin.save()){

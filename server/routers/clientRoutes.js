@@ -21,7 +21,7 @@ router.get("/fetchAssignEmployee", clientController.fetchAssignEmployee); //comp
 router.put("/bulkAssign", clientController.bulkAssign) //completed 2.0
 router.post("/FetchAssignemployee",clientController.Assignfieldemployee);
 router.put("/updateStatus",clientController.updatestatus);
-router.delete("/delete-clients", upload.single('file'), clientController.removeClientsFromExcel);
+router.post("/delete-clients", upload.single('file'), clientController.removeClientsFromExcel);
 router.delete("/deleteemp",clientController.deleteassignemployee);
 router.post("/whatappSchdule",uploadd.fields([
    {name:'Whatapp',maxCount:1},
@@ -38,6 +38,8 @@ router.post(
    clientController.bulkwhatapp
  );
  router.post("/quatationWhatapp",clientController.quotation);
+
+ router.get("/PaymentDetails",clientController.fetchClientsPaymentManager)
  
 // router.post()
 module.exports = router;

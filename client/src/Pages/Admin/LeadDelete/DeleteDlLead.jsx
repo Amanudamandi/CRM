@@ -32,30 +32,30 @@ const DeleteLead = () => {
 
     console.log("file is ", ...formData);
 
-    try {
-      const response = await axios.post(`${process.env.REACT_APP_URL}/client/delete-clients`,  formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        }
-      });
-      console.log("Response:", response.data);
-      alert("Leads delete successfully!");
+    // try {
+    //   const response = await axios.post(`${process.env.REACT_APP_URL}/client/delete-clients`,  formData, {
+    //     headers: {
+    //       'Content-Type': 'multipart/form-data',
+    //     }
+    //   });
+    //   console.log("Response:", response.data);
+    //   alert("Leads delete successfully!");
 
-    } catch (error) {
-      console.log("Error is : ", error);
-      alert("Lead is not delete successfully, please check the console for error..");
-    }
+    // } catch (error) {
+    //   console.log("Error is : ", error);
+    //   alert("Lead is not delete successfully, please check the console for error..");
+    // }
   }
   return (
     <>
       <form method='post' onSubmit={handleOnSubmt}>
-        <h2 style={Styles.formHeading}>Delete Lead in Bulk</h2>
+        <h2 style={Styles.formHeading}>Delete Dealer Lead in Bulk</h2>
         <div>
-          <label htmlFor="fileUpload" style={{ ...Styles.formLabel, marginTop: "30px" }}>Enter Excel File to delete Leads : </label>
+          <label htmlFor="fileUpload" style={{ ...Styles.formLabel, marginTop: "30px" }}>Enter Excel File to delete Dealer Leads : </label>
           <input style={{ marginTop: "15px" }} id='fileUpload' name='file' type="file" onChange={handleFile} accept=".xlsx,.xls" />
         </div>
         <div>
-          <button style={Styles.formSubmitBtn} type='submit'>Delete Lead </button>
+          <button style={Styles.formSubmitBtn} type='submit'>Delete Dealer Lead </button>
         </div>
       </form>
     </>

@@ -3,12 +3,15 @@ const client = require("../models/client");
 const employee = require("../models/employee")
 const District= require("../models/district")
 require("dotenv").config();
+const mongoose= require("mongoose")
 
 const startDateConvertor  = require('../helpers/common/dateConversion/startDate');
 const endDateConvertor = require("../helpers/common/dateConversion/endDate");
 const StageActivity = require('../models/stageActivity');
 const ExtraDetail= require("../models/Extradetails");
 const Extradetail = require("../models/Extradetails");
+
+const Payment = require("../models/Payment");
 const assignEmployee = async(req,res) =>{
     try {
         const {clientID, callingEmpID, fieldEmpID} = req.body;
@@ -233,10 +236,13 @@ console.log(filteredData);
 
 
 const updateclient = async (req, res) => {
+    const session = await mongoose.startSession(); // Start a MongoDB session
+    console.log(session);
+    session.startTransaction(); // Start transaction
     try {
         const { AccountNo, IFSC, BankAddress, additonalDetailsID, Remainder ,No_of_Floor,Earthing_Wire_Length,
-            Type_Of_Roof,    Ac_wire_Length, Dc_Wire_Length,  Proposed_Capacity_Kw,name,stateID,mobile,ClientID,address,Sanctioned_Load,Type_of_Meter,email
-        } = req.body;
+            Type_Of_Roof,    Ac_wire_Length, Dc_Wire_Length,  Proposed_Capacity_Kw,name,stateID,mobile,ClientID,address,Sanctioned_Load,Type_of_Meter,email,
+            Totalamount, Receivedamount } = req.body;
 
 console.log("request data",req.body)
 
@@ -285,7 +291,7 @@ console.log("request data",req.body)
         const updatedData = await Extradetail.findOneAndUpdate(
             { _id: additonalDetailsID },
             { $set: updateFields },
-            { new: true } // Return the updated document
+            { new: true, session }  // Return the updated document
         );
         console.log(updatedData)
 
@@ -293,6 +299,19 @@ console.log("request data",req.body)
             return res.status(404).json({ message: "Document not found", success: false });
         }
         let filter = {};
+        let payment=null;
+        if(Receivedamount){
+        
+         payment= new Payment({amount:Receivedamount},{session});
+        await payment.save();
+    
+            // if(Totalamount===Receivedamount){
+            //     filter.PaymentStatus="Complete"
+            //   }else if(Totalamount>Receivedamount){
+            //     filter.PaymentStatus="Partial"
+            //   }
+    
+          }
       if(name){
         filter.name=name;
       }
@@ -308,19 +327,47 @@ console.log("request data",req.body)
       if(address){
         filter.address=address;
       }
+      if(Totalamount){
+        filter.Totalamount=Totalamount;
+      }
+      if(Receivedamount){
+        const clientData = await client.findOne({ _id: ClientID }, { session });
+        const newReceivedAmount = (clientData.Receivedamount || 0) + parseFloat(Receivedamount);
+
+        filter.Receivedamount = newReceivedAmount;
+        if (Totalamount === newReceivedAmount) {
+            filter.PaymentStatus = "Complete";
+        } else if (Totalamount > newReceivedAmount) {
+            filter.PaymentStatus = "Partial";
+        }
+
+        if (payment) {
+            filter.$push = { payments: payment._id }; // Store payment ID in the client collection
+        }
+      }
+      
+    
+   
+     
+      
       console.log(filter,"filter data");
       const result= await client.find({_id:ClientID});
       console.log(result,"find")
-           const updateclient=await client.findOneAndUpdate({_id:ClientID},{$set:filter},{ new: true })
+           const updateclient=await client.findOneAndUpdate({_id:ClientID},{$set:filter},   { new: true, session })
            console.log(updateclient);
+           await session.commitTransaction();
+           session.endSession();
         res.status(200).json({
             message: "Save successfully",
             data: updatedData,
             clinetData:updateclient,
+            Payment:payment,
             success: true,
         });
         console.log(updateclient);
     } catch (err) {
+        await session.abortTransaction();
+        session.endSession();
         console.log(err);
         res.status(500).json({
             message: "Unsuccessful",
