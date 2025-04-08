@@ -138,7 +138,7 @@ const Index = () => {
                 </Route>
 
                 {/* SuperAdmin */}
-                <Route path='/superAdmin' element={<SuperAdmin/>}>
+                <Route path='/' element={<SuperAdmin/>}>
                 <Route path='/superAdmin/Installer'element={<EmployeeList/>} />
                 <Route path='/superAdmin/Installer/add' element={<SAEmpRegister CoordinatorStartIndexDropDown="2" />} />
                 <Route path='/superAdmin/BeforeInstallation' element={<Lead/>} />

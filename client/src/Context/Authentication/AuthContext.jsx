@@ -62,7 +62,7 @@ export const AuthProvider = ({ children }) => {
           Navigate('employeeDL/dashboard');
           setIsAuthenticated((previousData) => ({ ...previousData, employeeId: localStorage.getItem('employeeId') }));
         } else if (role === 8) {
-          Navigate('superAdmin');
+          Navigate('superAdmin/Installer');
           setIsAuthenticated((prev) => ({ ...prev, employeeId: localStorage.getItem('employeeId') }));
         }
         // ✅ Return user data

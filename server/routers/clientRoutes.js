@@ -39,7 +39,10 @@ router.post(
  );
  router.post("/quatationWhatapp",clientController.quotation);
 
- router.get("/PaymentDetails",clientController.fetchClientsPaymentManager)
+ router.get("/PaymentDetails",clientController.fetchClientsPaymentManager);
+ router.get("/InstallerManager",clientController.fetchClientsInstallerManager);
+ router.post("/updatePaymentAndStatus", clientController.updateAmountAndStatus);
+ router.post("/updateAdditionalDetails",clientController.updateAdditionalDetails)
  
 // router.post()
 module.exports = router;

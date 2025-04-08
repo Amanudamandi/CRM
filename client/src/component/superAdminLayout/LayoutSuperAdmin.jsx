@@ -18,7 +18,7 @@ const LayoutSuperAdmin = () => {
                         designation={designation}
                     />
                 </header>
-                <main style={{ backgroundColor: "gray" }}>
+                <main >
 
                     <Outlet />
                 </main>
