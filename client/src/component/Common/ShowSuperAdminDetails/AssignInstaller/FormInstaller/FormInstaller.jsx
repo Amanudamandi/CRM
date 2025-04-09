@@ -1,9 +1,9 @@
 import axios from 'axios';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { IoClose } from 'react-icons/io5';
 
-const UpdatePayment = ({ data, showForm, closeForm }) => {
-    console.log("payment data : ",data);
+const FormInstaller = ({ info, showForm, closeForm }) => {
+    // console.log("info : ",info)
     const Style = {
         updateLeadContainer: { position: 'fixed', width: '75%', height: '92vh', margin: '0rem 1rem 0rem 8.2rem', padding: '3.5rem 1rem', backgroundColor: '#fff', top: '50%', left: '50%', zIndex: '9999', boxShadow: '0px 0px 2px black', borderRadius: '8px', overflow: 'auto', transform: 'translate(-50%, -50%)' },
         closeFormBtn: { position: 'absolute', top: '1rem', right: '1rem', cursor: 'pointer', transition: 'transform 0.4s ease' },
@@ -29,36 +29,51 @@ const UpdatePayment = ({ data, showForm, closeForm }) => {
     };
     const [isHoveredOnClose, setIsHoveredOnClose] = useState(false);
 
-
-    const [fetchData, setFetchData] = useState({
-        clientID: data?.paymentID,
-        amount:'',
-        pendingAmount: data?.pendingAmount,
-        totalAmount:data?.totalAmount
-        
-    })
-
-    console.log("data : ", fetchData);
-
-    const handleOnChange=(event)=>{
-      const {name,value}=event.target 
-      setFetchData((prev)=>({
-        ...prev,[name]:value
-      }))
+    let [emp, setEmp] = useState([]);
+    const fetchInstaller = async () => {
+        try {
+            const responseData = await axios.get(`${process.env.REACT_APP_URL}/ins/fetchAllIns`);
+            let response = await responseData?.data;
+            // console.log("installer : ", response)
+            setEmp(response?.data);
+        } catch (error) {
+            console.log("Not fetching installer successfully...");
+        }
     }
 
-    const handleSubmit= async(event)=>{
+    useEffect(() => {
+        fetchInstaller();
+    }, [])
+
+    //  console.log("employee list : ",emp);
+
+    const [empAssign, setEmpAssign] = useState({
+        clientId: info,
+        installerId: ""
+    });
+
+    console.log("empAssign", empAssign)
+
+    const handleOnChange = (event) => {
+        const { name, value } = event.target
+        setEmpAssign((prev) => ({
+            ...prev, [name]: value
+        }))
+    }
+
+
+
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        try{
-            const sendRequest = await axios.post(`${process.env.REACT_APP_URL}/client/updatePaymentAndStatus`, fetchData);
+        try {
+            const sendRequest = await axios.post(`${process.env.REACT_APP_URL}/ins/assignIns`, empAssign);
             const response = await sendRequest.data;
-            alert("Payment status update successfully");
-            // if (response.success) {
-                
-            // }
-           closeForm(false)
-        }catch(error){
-            alert("Payment status is not update successfully,please check the console....");
+            alert("Installer assign successfully");
+
+            closeForm(false)
+        } catch (error) {
+            alert("Installer not assign successfully,please check the console....");
             console.error(error);
         }
     }
@@ -67,23 +82,23 @@ const UpdatePayment = ({ data, showForm, closeForm }) => {
         <section style={showForm ? { ...Style.updateLeadContainer, animation: 'slideUp 0.5s ease forwards' } : Style.updateLeadContainer}>
             <IoClose size={35} color='#AA0B2B' style={{ ...Style.closeFormBtn, transform: isHoveredOnClose ? 'rotate(90deg)' : 'rotate(0deg)' }} onMouseOver={() => setIsHoveredOnClose(true)} onMouseOut={() => setIsHoveredOnClose(false)} onClick={() => closeForm(false)} />
 
-            <h2 style={Style.leadInfoContainer}>Update Payment Status </h2>
-            <form method='POST' style={Style.updateForm} onSubmit={handleSubmit}>
+            <h2 style={Style.leadInfoContainer}>Assign Installer Employee  </h2>
+            <form method='POST' style={Style.updateForm} onSubmit={handleSubmit} >
                 <div style={Style.main}>
+
+
                     <div style={Style.inputFieldContainer}>
-                        <label htmlFor="totalAmount" style={Style.inputLabel}>Total Amount : </label>
-                        <input style={Style.inputField} type="number" name="totalAmount" id="totalAmount" value={fetchData?.totalAmount} disabled  />
-                    </div>
-                    <div style={Style.inputFieldContainer}>
-                        <label htmlFor="pendingAmount" style={Style.inputLabel}>Pending Amount : </label>
-                        <input style={Style.inputField} type="number" name="pendingAmount" id="pendingAmount" value={fetchData?.pendingAmount} disabled  />
-                    </div>
-                    <div style={Style.inputFieldContainer}>
-                        <label htmlFor="RecivedAmount" style={Style.inputLabel}>Recived Amount : </label>
-                        <input style={Style.inputField} type="number" name="amount" id="RecivedAmount" value={fetchData?.amount} onChange={handleOnChange}   />
+                        <label htmlFor="installer" style={Style.inputLabel}> Installer Employee List  : </label>
+                        <select style={Style.inputField} name="installerId" id="installer" onChange={handleOnChange} >
+                            <option value="">Select Employee Assign</option>
+                            {emp.map((employee) => (
+                                // console.log("emp",employee);
+                                <option value={employee?._id}> {employee?.name} </option>
+                            ))}
+                        </select>
                     </div>
                     <div>
-                        <button type="submit" style={Style.updateBtn}>Update Payment Status </button>
+                        <button type="submit" style={Style.updateBtn}>Assign Installer </button>
                     </div>
                 </div>
             </form>
@@ -91,4 +106,5 @@ const UpdatePayment = ({ data, showForm, closeForm }) => {
     )
 }
 
-export default UpdatePayment
+export default FormInstaller
+

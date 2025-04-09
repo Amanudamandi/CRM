@@ -59,6 +59,8 @@ import Lead from '../../Pages/SuperAdmin/LeadBoardPending/lead'
 import EmployeeList from '../../Pages/SuperAdmin/EmployeeBoard/EmployeeList';
 import SAEmpRegister from '../../Pages/SuperAdmin/EmpRegister/EmpRegister'
 import ShowDetails from '../Common/ShowSuperAdminDetails/ShowDetails';
+import ListCompPymt from '../Common/ShowSuperAdminDetails/ListOfCompletePayment/listCompPymt';
+import AsginInstaller from '../Common/ShowSuperAdminDetails/AssignInstaller/AsginInstaller';
 
 const Index = () => {
     // removeCookie('accessToken')
@@ -90,16 +92,16 @@ const Index = () => {
                     <Route path='admin/download-report' element={<DownloadReport />} />
                     {/* creating update Route */}
                     <Route path='admin/employee-dashboard/update/:id' element={<Up />} />
-                    <Route path='admin/show-leads/delete' element={<DeleteLead/>} />
+                    <Route path='admin/show-leads/delete' element={<DeleteLead />} />
 
                     {/* Employee Dealer Route */}
                     <Route path='/admin/employeeDL-dashboard' element={<AdminEmployeeDLBoard />} ></Route>
-                    <Route path='/admin/employeeDL-dashboard/add' element={<EmployeeDLRegister CoordinatorStartIndexDropDown="2" /> }></Route>
+                    <Route path='/admin/employeeDL-dashboard/add' element={<EmployeeDLRegister CoordinatorStartIndexDropDown="2" />}></Route>
                     <Route path='/admin/showDL-coordinator' element={<ShowTeamDLLLeader />}></Route>
                     <Route path='/admin/showDL-coordinator/add' element={<TeamLeaderDLRegister />}></Route>
                     <Route path='/admin/showDL-leads' element={<LeadDLBoard />} ></Route>
                     <Route path='/admin/showDL-leads/add' element={<AddDLClient />} ></Route>
-                    <Route path='/admin/showDL-leads/delete' element={<DeleteDealerLead/>}></Route>
+                    <Route path='/admin/showDL-leads/delete' element={<DeleteDealerLead />}></Route>
                     <Route path='/admin/employeeDL/update/:id' element={<UpdateDealer />}></Route>
                 </Route>
 
@@ -138,13 +140,15 @@ const Index = () => {
                 </Route>
 
                 {/* SuperAdmin */}
-                <Route path='/' element={<SuperAdmin/>}>
-                <Route path='/superAdmin/Installer'element={<EmployeeList/>} />
-                <Route path='/superAdmin/Installer/add' element={<SAEmpRegister CoordinatorStartIndexDropDown="2" />} />
-                <Route path='/superAdmin/BeforeInstallation' element={<Lead/>} />
-                <Route path='/superAdmin/showDetails' element={<ShowDetails/>}></Route>
-                <Route path='/superAdmin/AfterInstallation'/>
-                
+                <Route path='/' element={<SuperAdmin />}>
+                    <Route path='/superAdmin/Installer' element={<EmployeeList />} />
+                    <Route path='/superAdmin/Installer/add' element={<SAEmpRegister CoordinatorStartIndexDropDown="2" />} />
+                    <Route path='/superAdmin/BeforeInstallation' element={<Lead />} />
+                    <Route path='/superAdmin/showDetails' element={<ShowDetails />}></Route>
+                    <Route path='/superAdmin/MaterialDispatch/ListCompletePayment' element={<ListCompPymt/>} />
+                    <Route path='/superAdmin/MaterialDispatch/assignInstaller' element={<AsginInstaller/>}  />
+                    <Route path='/superAdmin/NetmeteringManager' />
+
 
                 </Route>
 

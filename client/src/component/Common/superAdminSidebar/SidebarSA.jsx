@@ -31,13 +31,14 @@ const SidebarSA = ({ department, nameLogo, designation }) => {
         <nav className='sideNav-container'>
           <section className='menu-container'>
             <div className='description'>
-              <div className='name-logo-container'>
-                <span className="name-logo" style={{ fontWeight: '900', color: '#AA0B2B', borderRadius: "50%" }}>{nameLogo}</span>
-              </div>
-              <div className="department-name">
-                <span style={{ fontSize: '2rem' }}>{department}</span>
-                <span style={{ fontSize: '1rem' }}>Department</span>
-              </div>
+                <div className='name-logo-container'>
+                  <span className="name-logo" style={{ fontWeight: '900', color: '#AA0B2B', borderRadius: "50%" }}>{nameLogo}</span>
+                </div>
+
+                <div className="department-name">
+                  <span style={{ fontSize: '2rem' }}>{department}</span>
+                  <span style={{ fontSize: '1rem' }}>Department</span>
+                </div>
             </div>
 
 
@@ -58,12 +59,7 @@ const SidebarSA = ({ department, nameLogo, designation }) => {
 
             <Link to="/superAdmin/BeforeInstallation" className='menu-option'>
               <FaHourglassHalf color='#fff' />
-              <span className='option'>Status Before Installation</span>
-            </Link>
-
-            <Link to="/superAdmin/AfterInstallation" className='menu-option'>
-              <FaTruck color='#fff' />
-              <span className='option'>Status After Installation </span>
+              <span className='option'>Status Pending Payment </span>
             </Link>
 
           </section>
@@ -84,9 +80,14 @@ const SidebarSA = ({ department, nameLogo, designation }) => {
                 <span style={{ fontSize: '1rem' }}>Department</span>
               </div>
             </div>
-            <Link to="/superAdmin/MaterialDispatch" className='menu-option'>
+            <Link to="/superAdmin/MaterialDispatch/ListCompletePayment" className='menu-option'>
+              <FaTruck color='#fff' />
+              <span className='option'>List Complete Payment  </span>
+
+            </Link>
+            <Link to="/superAdmin/MaterialDispatch/assignInstaller" className='menu-option'>
               <FaHourglassHalf color='#fff' />
-              <span className='option'>MaterialDispatch </span>
+              <span className='option'>Assign Installer </span>
             </Link>
 
             <Link to="/superAdmin/AfterMaterialDispatch" className='menu-option'>

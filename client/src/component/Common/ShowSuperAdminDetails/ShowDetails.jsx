@@ -65,17 +65,17 @@ const ShowDetails = () => {
       fontWeight: "600",
       margin: "10px"
     },
-    updateBtn:{
-      position:"absolute",
-      top:"-30px",
-      right:"15px",
-      fontSize:"1rem",
-      marginBottom:"15px",
-      padding:"2px",
-      borderRadius:"5px",
-      border:"none",
-      cursor:"pointer",
-      color:"red"
+    updateBtn: {
+      position: "absolute",
+      top: "-30px",
+      right: "15px",
+      fontSize: "1rem",
+      marginBottom: "15px",
+      padding: "2px",
+      borderRadius: "5px",
+      border: "none",
+      cursor: "pointer",
+      color: "red"
     }
 
   };
@@ -96,46 +96,71 @@ const ShowDetails = () => {
 
   const navigate = useNavigate();
 
-  const goBack = () => {
-    navigate("/superAdmin/BeforeInstallation");
-  }
 
-  const [info,setInfo]=useState({
-    surveyID:addtionalDetails?._id,
-    floor:addtionalDetails?.No_of_Floor,
-    earthingWire:addtionalDetails?.Earthing_Wire_Length,
-    typeRoof:addtionalDetails?.Type_Of_Roof,
-    acWire:addtionalDetails?.Ac_wire_Length,
-    dcWire:addtionalDetails?.Dc_Wire_Length,
-    sanctionedLoad:addtionalDetails?.Sanctioned_Load,
-    capacity:addtionalDetails?.Proposed_Capacity_Kw,
-    meter:addtionalDetails?.Type_of_Meter
+  const [info, setInfo] = useState({
+    surveyID: addtionalDetails?._id,
+    floor: addtionalDetails?.No_of_Floor,
+    earthingWire: addtionalDetails?.Earthing_Wire_Length,
+    typeRoof: addtionalDetails?.Type_Of_Roof,
+    acWire: addtionalDetails?.Ac_wire_Length,
+    dcWire: addtionalDetails?.Dc_Wire_Length,
+    sanctionedLoad: addtionalDetails?.Sanctioned_Load,
+    capacity: addtionalDetails?.Proposed_Capacity_Kw,
+    meter: addtionalDetails?.Type_of_Meter
   });
 
   // console.log("information : ",info);
 
-  const [paymentInfo,setPaymentInfo]=useState({
-    paymentID:ClientDetails?._id,
-    totalAmount:ClientDetails?.Totalamount,
-    receivedamount:ClientDetails?.Receivedamount,
-    pendingAmount:ClientDetails?.Totalamount - ClientDetails?.Receivedamount
+  const [paymentInfo, setPaymentInfo] = useState({
+    paymentID: ClientDetails?._id,
+    totalAmount: ClientDetails?.Totalamount,
+    receivedamount: ClientDetails?.Receivedamount,
+    pendingAmount: ClientDetails?.Totalamount - ClientDetails?.Receivedamount
   })
 
   // console.log("payment info : ",paymentInfo)
 
-   const[sendData,setSendData]=useState(false);
-    const sendSurveyInfo=()=>{
-      setSendData(true);
-    }
-   const[sendPaymentData,setSendPaymentData]=useState(false);
-    const sendPaymentInfo=()=>{
-      setSendPaymentData(true);
-    }
+  const [sendData, setSendData] = useState(false);
+  const sendSurveyInfo = () => {
+    setSendData(true);
+  }
+  const [sendPaymentData, setSendPaymentData] = useState(false);
+  const sendPaymentInfo = () => {
+    setSendPaymentData(true);
+  }
 
- 
+
+
+
+
+  // const goBack = () => {
+  //   if (paymentInfo.pendingAmount === 0) {
+  //     navigate("/superAdmin/MaterialDispatch/ListCompletePayment")
+  //   } else {
+  //     navigate("/superAdmin/BeforeInstallation");
+  //   }
+  // }
+
+  const goBack = () => {
+    const previousPath = location.state?.from;
+    if (previousPath) {
+      navigate(previousPath);
+    } else {
+      // fallback if state.from isn't present
+      if (paymentInfo.pendingAmount === 0) {
+        navigate("/superAdmin/MaterialDispatch/ListCompletePayment");
+      } else {
+        navigate("/superAdmin/BeforeInstallation");
+      }
+    }
+  };
+
+
+
 
 
   return (
+
     <div style={{ marginTop: "20px" }}>
       <div style={styles.container}>
         <h1 style={{ marginBottom: "20px", textAlign: "center" }}>📝 Lead Summary</h1>
@@ -153,7 +178,7 @@ const ShowDetails = () => {
         </div>
 
         <h2 style={{ marginTop: "20px", marginBottom: "15px" }}>📝 Survey Information</h2>
-        <div style={{position:"relative"}}>
+        <div style={{ position: "relative" }}>
           <button style={styles.updateBtn} onClick={sendSurveyInfo}> Update</button>
         </div>
 
@@ -188,22 +213,39 @@ const ShowDetails = () => {
         </div>
 
         <h2 style={{ marginTop: "20px", marginBottom: "15px" }}>💰 Amount Summary</h2>
-        <div style={{position:"relative"}}>
-          <button style={styles.updateBtn} onClick={sendPaymentInfo}> Update</button>
-        </div>
+
+        {console.log("padingAmount : ", paymentInfo.pendingAmount)}
+        {
+          (paymentInfo.pendingAmount === 0) ? (
+            <div style={{ position: "relative" }}>
+              <button style={{ ...styles.updateBtn, display: "none" }} onClick={sendPaymentInfo} disabled> Update</button>
+            </div>
+
+          ) : (
+            <div style={{ position: "relative" }}>
+              <button style={styles.updateBtn} onClick={sendPaymentInfo} > Update</button>
+            </div>
+          )
+        }
+
         {
           sendPaymentData && (
-            <UpdatePayment 
-            data={paymentInfo}
-            showForm={sendPaymentData}
-            closeForm={setSendPaymentData}
+            <UpdatePayment
+              data={paymentInfo}
+              showForm={sendPaymentData}
+              closeForm={setSendPaymentData}
             />
           )
         }
         <div style={styles.box}>
           <p style={{ margin: "7px" }}><strong>Total Amount:</strong> ₹{ClientDetails?.Totalamount}</p>
           <p style={{ margin: "7px" }}><strong>Received Amount:</strong> ₹{ClientDetails?.Receivedamount}</p>
-          <p style={{ color: "red", margin: "7px" }}><strong>Pending Amount:</strong> ₹{ClientDetails?.Totalamount - ClientDetails?.Receivedamount}</p>
+          <p style={{
+            color: (ClientDetails?.Totalamount - ClientDetails?.Receivedamount) === 0 ? 'green' : 'red',
+            margin: '7px'
+          }}>
+            <strong>Pending Amount:</strong> ₹{ClientDetails?.Totalamount - ClientDetails?.Receivedamount}
+          </p>
         </div>
 
         <h2 style={{ marginTop: "20px", marginBottom: "15px" }}>📦 Addtional Details</h2>

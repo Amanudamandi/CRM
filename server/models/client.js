@@ -125,7 +125,9 @@ const clientSchema = mongoose.Schema({
     },
     InstallerEmp:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"Installer"
+        ref:"Installer",
+        
+        default:null,
     },
     PaymentStatus: {
         type: String,

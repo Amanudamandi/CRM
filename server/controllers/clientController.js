@@ -1790,65 +1790,6 @@ const updateAmountAndStatus = async (req, res) => {
   }
 };
 
-// const updateAdditionalDetails = async (req, res) => {
-//   try {
-//     const {
-//       additonalDetailsID,
-//       No_of_Floor,
-//       Earthing_Wire_Length,
-//       Type_Of_Roof,
-//       Ac_wire_Length,
-//       Dc_Wire_Length,
-//       Proposed_Capacity_Kw,
-//       Sanctioned_Load,
-//       Type_of_Meter,
-//     } = req.body;
-
-//     if (!additonalDetailsID) {
-//       return res.status(400).json({
-//         message: "Cannot find Id",
-//         success: false,
-//       });
-//     }
-
-//     const filterData = {};
-
-//     if (No_of_Floor) filterData.No_of_Floor = No_of_Floor;
-//     if (Earthing_Wire_Length) filterData.Earthing_Wire_Length = Earthing_Wire_Length;
-//     if (Type_Of_Roof) filterData.Type_Of_Roof = Type_Of_Roof;
-//     if (Ac_wire_Length) filterData.Ac_wire_Length = Ac_wire_Length;
-//     if (Dc_Wire_Length) filterData.Dc_Wire_Length = Dc_Wire_Length;
-//     if (Proposed_Capacity_Kw) filterData.Proposed_Capacity_Kw = Proposed_Capacity_Kw;
-//     if (Sanctioned_Load) filterData.Sanctioned_Load = Sanctioned_Load;
-//     if (Type_of_Meter) filterData.Type_of_Meter = Type_of_Meter;
-
-//     const response = await Extradetails.findByIdAndUpdate(
-//       additonalDetailsID,
-//       { $set: filterData },
-//       { new: true } // Return updated document
-//     );
-
-//     if (!response) {
-//       return res.status(404).json({
-//         message: "Details not found",
-//         success: false,
-//       });
-//     }
-
-//     res.status(200).json({
-//       message: "Details updated successfully",
-//       success: true,
-//       data: response,
-//     });
-//   } catch (error) {
-//     console.error("Error updating details:", error);
-//     res.status(500).json({
-//       message: "Internal Server Error",
-//       success: false,
-//       error: error.message,
-//     });
-//   }
-// };
 const updateAdditionalDetails = async (req, res) => {
   try {
     const {
@@ -1909,7 +1850,205 @@ const updateAdditionalDetails = async (req, res) => {
   }
 };
 
+
 const fetchClientsInstallerManager=async(req,res)=>{
+  try{
+    
+    const data = await AssignEmployee.aggregate([
+      {
+          $lookup: {
+              from: "clients", // Collection name
+              localField: "clientID",
+              foreignField: "_id",
+              as: "ClientDetails"
+          }
+      },
+      { 
+        $unwind: { path: "$ClientDetails", preserveNullAndEmptyArrays: true } 
+      },
+      {
+        $match: {
+          $and: [
+            { "ClientDetails.PaymentStatus": "Complete" }, // Payment must be complete
+            { "ClientDetails.InstallerEmp": null } // Installer ID must be null
+          ]
+        }
+      },
+    {
+      $lookup: {
+        from: "employees", // Collection name
+        localField: "ClientDetails.empID", // Now accessing directly
+        foreignField: "_id",
+        as: "CallingEmployee"
+      }
+    },
+    {$unwind:{path:"$CallingEmployee", preserveNullAndEmptyArrays:true}},
+    {
+      $lookup: {
+        from: "states", // Collection name
+        localField: "ClientDetails.stateID", // Now accessing directly
+        foreignField: "_id",
+        as: "State"
+      }
+    },
+    {$unwind:{path:"$State", preserveNullAndEmptyArrays:true}},
+    {
+      $lookup: {
+        from: "payments", // Collection name
+        localField: "ClientDetails.payments", // Now accessing directly
+        foreignField: "_id",
+        as: "Payments"
+      }
+    },
+   
+    {
+      $lookup: {
+        from: "teamleaders", // Collection name
+        localField: "ClientDetails.TLID", // Now accessing directly
+        foreignField: "_id",
+        as: "CallingEmployeeTL"
+      }
+    },
+    {$unwind:{path:"$CallingEmployeeTL", preserveNullAndEmptyArrays:true}},
+      {
+        $lookup: {
+          from: "extradetails", // Collection name
+          localField: "ClientDetails.AdditionalDetails", // Now accessing directly
+          foreignField: "_id",
+          as: "AdditionalDetails"
+        }
+      },
+      {$unwind:{path:"$AdditionalDetails", preserveNullAndEmptyArrays:true}},
+      {
+          $lookup: {
+              from: "employees", // Collection name of Employee
+              localField: "fieldEmpID",
+              foreignField: "_id",
+              as: "FieldemployeeDetails"
+          }
+      },
+      { 
+        $unwind: { path: "$employeeDetails", preserveNullAndEmptyArrays: true } 
+    },
+  ]);
+  
+  res.status(200).json({
+    data:data,
+    message:"Succesfully fetched",
+    status:true,
+  })
+
+
+  }catch(error){
+    console.log(error);
+    res.status(400).json({
+      message: "Failed to Fetch ",
+      status: false,
+    });
+  }
+}
+
+const fetchInstallerleads=async(req,res)=>{
+  try{
+    const id= req.id;
+    
+    const data = await AssignEmployee.aggregate([
+      {
+          $lookup: {
+              from: "clients", // Collection name
+              localField: "clientID",
+              foreignField: "_id",
+              as: "ClientDetails"
+          }
+      },
+      { 
+        $unwind: { path: "$ClientDetails", preserveNullAndEmptyArrays: true } 
+      },
+      {
+        $match: {
+          $and: [
+            { "ClientDetails.PaymentStatus": "Complete" }, // Payment must be complete
+            { "ClientDetails.InstallerEmp": id } // Installer ID must be null
+          ]
+        }
+      },
+    {
+      $lookup: {
+        from: "employees", // Collection name
+        localField: "ClientDetails.empID", // Now accessing directly
+        foreignField: "_id",
+        as: "CallingEmployee"
+      }
+    },
+    {$unwind:{path:"$CallingEmployee", preserveNullAndEmptyArrays:true}},
+    {
+      $lookup: {
+        from: "states", // Collection name
+        localField: "ClientDetails.stateID", // Now accessing directly
+        foreignField: "_id",
+        as: "State"
+      }
+    },
+    {$unwind:{path:"$State", preserveNullAndEmptyArrays:true}},
+    {
+      $lookup: {
+        from: "payments", // Collection name
+        localField: "ClientDetails.payments", // Now accessing directly
+        foreignField: "_id",
+        as: "Payments"
+      }
+    },
+   
+    {
+      $lookup: {
+        from: "teamleaders", // Collection name
+        localField: "ClientDetails.TLID", // Now accessing directly
+        foreignField: "_id",
+        as: "CallingEmployeeTL"
+      }
+    },
+    {$unwind:{path:"$CallingEmployeeTL", preserveNullAndEmptyArrays:true}},
+      {
+        $lookup: {
+          from: "extradetails", // Collection name
+          localField: "ClientDetails.AdditionalDetails", // Now accessing directly
+          foreignField: "_id",
+          as: "AdditionalDetails"
+        }
+      },
+      {$unwind:{path:"$AdditionalDetails", preserveNullAndEmptyArrays:true}},
+      {
+          $lookup: {
+              from: "employees", // Collection name of Employee
+              localField: "fieldEmpID",
+              foreignField: "_id",
+              as: "FieldemployeeDetails"
+          }
+      },
+      { 
+        $unwind: { path: "$employeeDetails", preserveNullAndEmptyArrays: true } 
+    },
+  ]);
+  
+  res.status(200).json({
+    data:data,
+    message:"Succesfully fetched",
+    status:true,
+  })
+
+
+  }catch(error){
+    console.log(error);
+    res.status(400).json({
+      message: "Failed to Fetch ",
+      status: false,
+    });
+  }
+}
+
+
+
+const fetchClientsNetMetricManager=async(req,res)=>{
   try{
     
     const data = await AssignEmployee.aggregate([
@@ -1926,7 +2065,7 @@ const fetchClientsInstallerManager=async(req,res)=>{
       },
     {
       $match: {
-        "ClientDetails.PaymentStatus": "Complete" // Filtering clients with payment status "pending"
+        "ClientDetails.InstallStatus": "Complete" // Filtering clients with payment status "pending"
       }
     },
     {
@@ -2025,5 +2164,7 @@ module.exports = {
   fetchClientsPaymentManager,
   fetchClientsInstallerManager,
   updateAmountAndStatus,
-  updateAdditionalDetails
+  updateAdditionalDetails,
+  fetchClientsNetMetricManager,
+  fetchInstallerleads
 };

@@ -62,8 +62,17 @@ export const AuthProvider = ({ children }) => {
           Navigate('employeeDL/dashboard');
           setIsAuthenticated((previousData) => ({ ...previousData, employeeId: localStorage.getItem('employeeId') }));
         } else if (role === 8) {
-          Navigate('superAdmin/Installer');
-          setIsAuthenticated((prev) => ({ ...prev, employeeId: localStorage.getItem('employeeId') }));
+          if (designation === 'paymentManager') {
+            Navigate('superAdmin/Installer');
+            setIsAuthenticated((prev) => ({ ...prev, employeeId: localStorage.getItem('employeeId') }));
+        } else if (designation === 'MaterialDispatchManager') {
+            Navigate('/superAdmin/MaterialDispatch');
+            setIsAuthenticated((prev) => ({ ...prev, employeeId: localStorage.getItem('employeeId') }));
+        } else {
+            Navigate('/superAdmin/MaterialDispatch/ListCompletePayment');
+            setIsAuthenticated((prev) => ({ ...prev, employeeId: localStorage.getItem('employeeId') }));
+        }
+         
         }
         // ✅ Return user data
         return {

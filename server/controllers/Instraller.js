@@ -1,6 +1,7 @@
 const InstallerEmp= require("../models/Installer")
 const Client= require("../models/client")
 
+
 const addInstaller=async(req,res)=>{
     try{
    const {name,email,InsID,mobile,department,stateID}=req.body;
@@ -49,8 +50,14 @@ const fetchall=async(req,res)=>{
 const AssisgnInstaller=async(req,res)=>{
     try{
         const {installerId,clientId}=req.body;
+        console.log(req.body);
 
-        const response= await Client.findByIDandupdate({_id:clientId},{$set:{InstallerEmp:installerId}});
+        const response = await Client.findByIdAndUpdate(
+            clientId, // No need to wrap in an object
+            { $set: { InstallerEmp: installerId } },
+            { new: true } // Returns the updated document
+          );
+          
 
         res.status(200).json({
             message:"Assign Succesfully",
@@ -67,6 +74,28 @@ const AssisgnInstaller=async(req,res)=>{
 }
 
 
+const fetchallinstallerclients=async(req,res)=>{
+    try{
+       const {InstallerID}=req.body;
+       console.log(InstallerID);
+
+        const reponse= await Client.find({InstallerEmp:InstallerID});
+
+        res.status(200).json({
+            status:true,
+            message:"fetched Succesfully",
+            data:reponse
+        })
+
+    }catch(error){
+        console.log(error);
+        res.status(400).json({
+            message:"Error in Fetching",
+            status:false,
+        })
+    }
+}
+
 
 
 
@@ -75,5 +104,6 @@ module.exports={
     addInstaller,
     fetchall,
     AssisgnInstaller,
+    fetchallinstallerclients
 
 }

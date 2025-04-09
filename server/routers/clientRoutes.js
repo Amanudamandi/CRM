@@ -42,7 +42,9 @@ router.post(
  router.get("/PaymentDetails",clientController.fetchClientsPaymentManager);
  router.get("/InstallerManager",clientController.fetchClientsInstallerManager);
  router.post("/updatePaymentAndStatus", clientController.updateAmountAndStatus);
- router.post("/updateAdditionalDetails",clientController.updateAdditionalDetails)
+ router.post("/updateAdditionalDetails",clientController.updateAdditionalDetails);
+ router.get("/netmetricClients",clientController.fetchClientsNetMetricManager);
+ router.get("/InstallerLeads",clientController.fetchInstallerleads);
  
 // router.post()
 module.exports = router;

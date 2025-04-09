@@ -6,6 +6,7 @@ const router = express.Router();
 router.post("/addInstaller", InstallerController.addInstaller);
 router.get("/fetchAllIns",InstallerController.fetchall);
 router.post("/assignIns",InstallerController.AssisgnInstaller);
+router.post("/InstallerLeads",InstallerController.fetchallinstallerclients)
 
 
 module.exports = router;

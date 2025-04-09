@@ -21,6 +21,9 @@ import './index.css';
 const Index = () => {
     const Navigate = useNavigate(); // To redirect after login
     const { crmLoginAPI, isAuthenticated } = useAuth();
+    const designation = localStorage.getItem('designation');
+
+    console.log("designation : ",designation);
 
     useEffect(() => {
         const store = window.location;
@@ -42,7 +45,15 @@ const Index = () => {
                 Navigate('/employeeDL/dashboard');
             }
             else if (localStorage.getItem('role') === '8') {
-                Navigate('/superAdmin');
+
+                if (designation === 'paymentManager') {
+                    Navigate('superAdmin/Installer');
+                } else if (designation === 'MaterialDispatchManager') {
+                    Navigate('/superAdmin/MaterialDispatch/ListCompletePayment');
+                } else {
+                    Navigate('/superAdmin/NetmeteringManager');
+                }
+                
             }
         }
     }, []);
