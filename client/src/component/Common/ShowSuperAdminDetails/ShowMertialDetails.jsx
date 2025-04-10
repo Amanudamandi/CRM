@@ -77,7 +77,7 @@ const ShowMertialDetails = () => {
 
     };
 
-     const navigate=useNavigate();
+    const navigate = useNavigate();
     const location = useLocation();
     const clientData = location.state?.item;
     // console.log("Client Data : ",clientData);
@@ -94,13 +94,13 @@ const ShowMertialDetails = () => {
 
     // console.log("pannelInfo : ",pannelInfo);
 
-     const goBack=(event)=>{
-        const prevPath=location.state.from;
+    const goBack = (event) => {
+        const prevPath = location.state.from;
         // console.log("prev Path : ",prevPath);
-        if(prevPath){
+        if (prevPath) {
             navigate(prevPath);
         }
-     }
+    }
 
     //  useEffect(()=>{
     //     goBack();
@@ -113,9 +113,11 @@ const ShowMertialDetails = () => {
                 <h2 style={{ marginTop: "20px", marginBottom: "15px" }}>Panel Serial No</h2>
                 <div style={styles.grid}>
                     {
-                        pannelInfo?.panelSerialNo.map((pannelNo) => (
+                        pannelInfo?.panelSerialNo.map((pannelNo,index) => (
                             // console.log("pannel : ", pannelNo)
-                            <div style={styles.card}> Pannel Serial Number: {pannelNo}</div>
+                            <div key={index} style={styles.card}>
+                                Panel Serial Number: {pannelNo ?? "Not Assigned"}
+                            </div>
 
                         ))
                     }
@@ -124,9 +126,9 @@ const ShowMertialDetails = () => {
                 <h2 style={{ marginTop: "20px", marginBottom: "15px" }}>Inverter Serial No</h2>
                 <div style={styles.grid}>
                     {
-                        pannelInfo?.inverterSerialNo.map((inverterNo) => (
+                        pannelInfo?.inverterSerialNo.map((inverterNo,index) => (
                             // console.log("pannel : ", inverterNo)
-                            <div style={styles.card}> Inverter serial Number: {inverterNo}</div>
+                            <div  key={index} style={styles.card}> Inverter serial Number: {inverterNo ?? "Not Assign"}</div>
 
                         ))
                     }
