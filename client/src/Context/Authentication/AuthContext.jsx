@@ -65,11 +65,11 @@ export const AuthProvider = ({ children }) => {
           if (designation === 'paymentManager') {
             Navigate('superAdmin/Installer');
             setIsAuthenticated((prev) => ({ ...prev, employeeId: localStorage.getItem('employeeId') }));
-        } else if (designation === 'MaterialDispatchManager') {
-            Navigate('/superAdmin/MaterialDispatch');
-            setIsAuthenticated((prev) => ({ ...prev, employeeId: localStorage.getItem('employeeId') }));
-        } else {
+        } else if (designation === 'Material Dispatch Manager') {
             Navigate('/superAdmin/MaterialDispatch/ListCompletePayment');
+            setIsAuthenticated((prev) => ({ ...prev, employeeId: localStorage.getItem('employeeId') }));
+        } else if(designation === 'Netmetering Manager') {
+            Navigate('/superAdmin/NetmeteringManager');
             setIsAuthenticated((prev) => ({ ...prev, employeeId: localStorage.getItem('employeeId') }));
         }
          

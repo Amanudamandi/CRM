@@ -1951,6 +1951,9 @@ const fetchClientsInstallerManager=async(req,res)=>{
 const fetchInstallerleads=async(req,res)=>{
   try{
     const id= req.id;
+    console.log(req.id);
+    console.log(typeof(id));
+    const newid = new mongoose.Types.ObjectId(id);
     
     const data = await AssignEmployee.aggregate([
       {
@@ -1968,7 +1971,7 @@ const fetchInstallerleads=async(req,res)=>{
         $match: {
           $and: [
             { "ClientDetails.PaymentStatus": "Complete" }, // Payment must be complete
-            { "ClientDetails.InstallerEmp": id } // Installer ID must be null
+            { "ClientDetails.InstallerEmp": newid} // Installer ID must be null
           ]
         }
       },
@@ -2142,6 +2145,101 @@ const fetchClientsNetMetricManager=async(req,res)=>{
   }
 }
 
+const fetchClientsNetMetricManager2=async(req,res)=>{
+  try{
+    
+    const data = await AssignEmployee.aggregate([
+      {
+          $lookup: {
+              from: "clients", // Collection name
+              localField: "clientID",
+              foreignField: "_id",
+              as: "ClientDetails"
+          }
+      },
+      { 
+        $unwind: { path: "$ClientDetails", preserveNullAndEmptyArrays: true } 
+      },
+    {
+      $match: {
+        "ClientDetails.NetMetricStatus": "Complete" // Filtering clients with payment status "pending"
+      }
+    },
+    {
+      $lookup: {
+        from: "employees", // Collection name
+        localField: "ClientDetails.empID", // Now accessing directly
+        foreignField: "_id",
+        as: "CallingEmployee"
+      }
+    },
+    {$unwind:{path:"$CallingEmployee", preserveNullAndEmptyArrays:true}},
+    {
+      $lookup: {
+        from: "states", // Collection name
+        localField: "ClientDetails.stateID", // Now accessing directly
+        foreignField: "_id",
+        as: "State"
+      }
+    },
+    {$unwind:{path:"$State", preserveNullAndEmptyArrays:true}},
+    {
+      $lookup: {
+        from: "payments", // Collection name
+        localField: "ClientDetails.payments", // Now accessing directly
+        foreignField: "_id",
+        as: "Payments"
+      }
+    },
+   
+    {
+      $lookup: {
+        from: "teamleaders", // Collection name
+        localField: "ClientDetails.TLID", // Now accessing directly
+        foreignField: "_id",
+        as: "CallingEmployeeTL"
+      }
+    },
+    {$unwind:{path:"$CallingEmployeeTL", preserveNullAndEmptyArrays:true}},
+      {
+        $lookup: {
+          from: "extradetails", // Collection name
+          localField: "ClientDetails.AdditionalDetails", // Now accessing directly
+          foreignField: "_id",
+          as: "AdditionalDetails"
+        }
+      },
+      {$unwind:{path:"$AdditionalDetails", preserveNullAndEmptyArrays:true}},
+      {
+          $lookup: {
+              from: "employees", // Collection name of Employee
+              localField: "fieldEmpID",
+              foreignField: "_id",
+              as: "FieldemployeeDetails"
+          }
+      },
+      { 
+        $unwind: { path: "$employeeDetails", preserveNullAndEmptyArrays: true } 
+    },
+  ]);
+  
+  res.status(200).json({
+    data:data,
+    message:"Succesfully fetched",
+    status:true,
+  })
+
+
+  }catch(error){
+    console.log(error);
+    res.status(400).json({
+      message: "Failed to Fetch ",
+      status: false,
+    });
+  }
+}
+
+
 
 
 
@@ -2166,5 +2264,6 @@ module.exports = {
   updateAmountAndStatus,
   updateAdditionalDetails,
   fetchClientsNetMetricManager,
-  fetchInstallerleads
+  fetchInstallerleads,
+  fetchClientsNetMetricManager2
 };

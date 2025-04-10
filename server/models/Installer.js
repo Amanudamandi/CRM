@@ -32,6 +32,6 @@ const InstallerSchema=mongoose.Schema({
                 default:Date.now
             },
     
-})
+},{ timestamps: true } )
 const Installer=mongoose.model("Installer",InstallerSchema);
 module.exports=Installer;

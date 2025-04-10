@@ -16,7 +16,8 @@ const verifyToken = async (req,res,next) =>{
         // const secretToken = token?.replace("Bearer ", "")
         const secretKey = process.env.JWT_SECRET;
         const decodedData = jwt.verify(token,secretKey);
-        req.id = decodedData.employee?._id || decodedData.admin?._id || decodedData.teamLeader?._id; 
+        console.log(decodedData,"hekeeikebfifiieirfihrh");
+        req.id = decodedData.employee?._id || decodedData.admin?._id || decodedData.teamLeader?._id || decodedData.  TLemployee._id;
         // console.log("decoded data from middleware",req.user)
         } catch (error) {
             console.log(error)

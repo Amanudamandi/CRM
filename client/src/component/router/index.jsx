@@ -61,6 +61,8 @@ import SAEmpRegister from '../../Pages/SuperAdmin/EmpRegister/EmpRegister'
 import ShowDetails from '../Common/ShowSuperAdminDetails/ShowDetails';
 import ListCompPymt from '../Common/ShowSuperAdminDetails/ListOfCompletePayment/listCompPymt';
 import AsginInstaller from '../Common/ShowSuperAdminDetails/AssignInstaller/AsginInstaller';
+import MaterialDispatch from '../Common/ShowSuperAdminDetails/MatralDispatchInfomation/MaterialDispatch';
+import ShowMertialDetails from '../Common/ShowSuperAdminDetails/ShowMertialDetails';
 
 const Index = () => {
     // removeCookie('accessToken')
@@ -147,9 +149,9 @@ const Index = () => {
                     <Route path='/superAdmin/showDetails' element={<ShowDetails />}></Route>
                     <Route path='/superAdmin/MaterialDispatch/ListCompletePayment' element={<ListCompPymt/>} />
                     <Route path='/superAdmin/MaterialDispatch/assignInstaller' element={<AsginInstaller/>}  />
-                    <Route path='/superAdmin/NetmeteringManager' />
-
-
+                    <Route path='/superAdmin/MaterialDispatchInfo' element={<MaterialDispatch/>}  /> 
+                    <Route path='/superAdmin/materialInfo' element={<ShowMertialDetails/>} /> 
+                    <Route path='/superAdmin/NetmeteringManager' /> 
                 </Route>
 
 

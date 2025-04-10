@@ -3,9 +3,9 @@ import LeadBoardHeader from '../../showLeadsHeader/index';
 import FixedRow from '../../ShowEmployeeCard/FixedRow/index';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import FormInstaller from './FormInstaller/FormInstaller';
+import { tr } from 'date-fns/locale';
 
-const AsginInstaller = () => {
+const MaterialDispatch = () => {
     const Styles = {
         adminContainer: { position: 'relative', display: 'grid', height: '100vh', gridTemplateColumns: '1fr', gridTemplateRows: '3.5rem 1fr', backgroundColor: '#E8EFF9', overflow: 'hidden' },
         navBar: { gridRow: '1 / span 2' },
@@ -28,13 +28,11 @@ const AsginInstaller = () => {
         employeeValue: { padding: '0.35rem 0rem', paddingRight: '1rem', fontSize: '1rem', textAlign: 'center', fontWeight: '500', whiteSpace: 'nowrap' },
         reAssignBtnContainer: { position: 'absolute', bottom: 50, right: 25, backgroundColor: 'rgba(170, 11, 43, 0.85)', padding: '8px', borderRadius: '5px', cursor: 'pointer' },
     }
-
     const navigate = useNavigate();
     const headingList =
         [
-            'Name', 'Mobile', 'Email', "Asgin Installer", "Installer Info"
+            'Name', 'Mobile', 'Email', "Lead Information"
         ];
-
     const [leadClickedInfo, setLeadClickedInfo] = useState(false);
     const showDropDownList = new Array(headingList.length).fill(true);
     const [storeFilterData, setStoreFilterData] = useState({});
@@ -43,39 +41,35 @@ const AsginInstaller = () => {
     // const [pageCount, setPageCount] = useState(1);
     // const [limit, setLimit] = useState(35);
     const [selectAllLeadsChecked, setSelectAllLeadsChecked] = useState(false);
+
+
     const [data, setData] = useState([]);
     const fetchAllData = async () => {
-        const response = await axios.get(`${process.env.REACT_APP_URL}/client/InstallerManager`);
-        const responseData = await response?.data;
+        try {
+            const responseData = await axios.get(`${process.env.REACT_APP_URL}/client/netmetricClients`);
+            const response = await responseData?.data;
+            //  console.log("data ",response);
+            setData(response?.data);
 
-        console.log("response Data : ", responseData);
-        const finalData = responseData?.data;
-        setData(finalData);
+        } catch (error) {
+            alert("Data is not fetch successfully ,please check console for Error...");
+            console.log("Error : ", error);
+        }
     }
 
     useEffect(() => {
         fetchAllData();
     }, [])
 
-    // console.log("data : ",data);
+    // console.log("Information : ",data);
 
-    const handleAllData = (item) => {
-        navigate("/superAdmin/showDetails", { state: { item, from: "/superAdmin/MaterialDispatch/assignInstaller" } });
+    const handleNavigation=(item)=>{
+        navigate("/superAdmin/showDetails",{state:{item,from:"/superAdmin/MaterialDispatchInfo"}})
     }
 
-    const [assignEmp,setAssignEmp]=useState(false);
-    const [clientId, setClientId] = useState(null);
-
-    const handleClick=(event)=>{
-        let id=event.target.value
-        // console.log("id",id);
-        setClientId(id) ;
-        setAssignEmp(true);
+    const handleMaterialInfo=(item)=>{
+        navigate("/superAdmin/materialInfo",{state:{item,from:"/superAdmin/MaterialDispatchInfo"}})
     }
-
-    // console.log("clickedId: ",clientId);
-
-    
 
     return (
         <section style={Styles.adminContainer}>
@@ -103,7 +97,7 @@ const AsginInstaller = () => {
             <div style={Styles.dashboardContainer}>
                 <div style={Styles.headerContainer}>
                     <LeadBoardHeader
-                        title='Installer LeadBoard'
+                        title='Information LeadBoard'
                     />
                 </div>
             </div>
@@ -132,27 +126,17 @@ const AsginInstaller = () => {
                                 <td style={Styles.employeeValue} >{items?.ClientDetails?.name ? items?.ClientDetails?.name : "N/A"}</td>
                                 <td style={Styles.employeeValue} >{items?.ClientDetails?.mobile ? items?.ClientDetails?.mobile : "N/A"}</td>
                                 <td style={Styles.employeeValue} >{items?.ClientDetails?.email ? items?.ClientDetails?.email : "N/A"}</td>
-                                <td style={Styles.employeeValue} >Pending...</td>
-                                <button style={{ paddingLeft: "15px", paddingRight: "15px", fontSize: "15px" }} onClick={() => { handleAllData(items) }} >Lead Information</button> &nbsp;&nbsp;
-                                <button value={items?.ClientDetails?._id} style={{ paddingLeft: "15px", paddingRight: "15px", fontSize: "15px" }}  onClick={handleClick}  >Assign Installer</button>
+                                <button style={{ paddingLeft: "15px", paddingRight: "15px", fontSize: "15px" }} onClick={()=>handleNavigation(items)} >Lead Information</button> &nbsp;&nbsp;
+                                <button  style={{ paddingLeft: "15px", paddingRight: "15px", fontSize: "15px" }} onClick={()=>{handleMaterialInfo(items)}}>Material Information</button>
                             </tr>
-                        )
-                        )
+                        ))
                     }
 
-                    {
-                        assignEmp &&(
-                            <FormInstaller  
-                            info={clientId}                         
-                            showForm={assignEmp}
-                            closeForm={setAssignEmp}
-                            />
-                        )
-                    }
+
                 </table>
             </section>
         </section>
     )
 }
 
-export default AsginInstaller
+export default MaterialDispatch

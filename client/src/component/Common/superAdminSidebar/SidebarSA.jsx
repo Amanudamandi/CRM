@@ -90,9 +90,9 @@ const SidebarSA = ({ department, nameLogo, designation }) => {
               <span className='option'>Assign Installer </span>
             </Link>
 
-            <Link to="/superAdmin/AfterMaterialDispatch" className='menu-option'>
+            <Link to="/superAdmin/MaterialDispatchInfo" className='menu-option'>
               <FaTruck color='#fff' />
-              <span className='option'>Status MaterialDispatch </span>
+              <span className='option'> Material Information </span>
             </Link>
           </section>
         </nav>

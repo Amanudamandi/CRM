@@ -96,6 +96,7 @@ const Details= new mongoose.Schema({
             type: [String], // Array of strings for panel serial numbers
             default: []
         },
+        
    
 
         

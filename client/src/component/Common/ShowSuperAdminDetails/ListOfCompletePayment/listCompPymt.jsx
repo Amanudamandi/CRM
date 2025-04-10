@@ -133,7 +133,7 @@ const ListCompPymt = () => {
                                 <td style={Styles.employeeValue} >{items?.ClientDetails?.mobile ? items?.ClientDetails?.mobile : "N/A"}</td>
                                 <td style={Styles.employeeValue} >{items?.ClientDetails?.email ? items?.ClientDetails?.email : "N/A"}</td>
                                 <td style={Styles.employeeValue} >{items?.ClientDetails?.TLID ? items?.ClientDetails?.TLID : "N/A"}</td>
-                                <button style={{paddingLeft:"15px",paddingRight:"15px", fontSize:"15px"}} onClick={() => { handleAllData(items) }} >More</button>
+                                <button style={{paddingLeft:"15px",paddingRight:"15px", fontSize:"15px"}} onClick={() => { handleAllData(items) }} >More Information</button>
                             </tr>
                         )
                         )

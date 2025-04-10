@@ -156,13 +156,15 @@ const clientSchema = mongoose.Schema({
     payments:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:"Payment"
-    }]
+    }],
+
+    
 
 
 
     
 
-});
+},{ timestamps: true } );
 clientSchema.index({ reminderDate: 1, messageStatus: 1 });
 const client = mongoose.model("Client",clientSchema);
 

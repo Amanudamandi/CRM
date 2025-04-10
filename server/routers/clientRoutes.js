@@ -3,7 +3,7 @@ const router = express.Router(); // for creating router
 const multer = require('multer');
 
 const clientController =require("../controllers/clientController");
-const authMiddleware = require("../middlewares/authMiddleware");
+const verifyToken = require('../middlewares/authMiddleware')
 const { clientRegisterValidation  } = require("../helpers/client/clientValidation");
 
 const storage = multer.memoryStorage();
@@ -44,7 +44,8 @@ router.post(
  router.post("/updatePaymentAndStatus", clientController.updateAmountAndStatus);
  router.post("/updateAdditionalDetails",clientController.updateAdditionalDetails);
  router.get("/netmetricClients",clientController.fetchClientsNetMetricManager);
- router.get("/InstallerLeads",clientController.fetchInstallerleads);
+ router.get("/InstallerLeads",verifyToken,clientController.fetchInstallerleads);
+ router.get("/getNetmetric",clientController.fetchClientsNetMetricManager2);
  
 // router.post()
 module.exports = router;

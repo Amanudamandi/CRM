@@ -1,6 +1,7 @@
 const InstallerEmp= require("../models/Installer")
 const Client= require("../models/client")
-
+const ExtraDetail= require("../models/Extradetails")
+require('dotenv').config();
 
 const addInstaller=async(req,res)=>{
     try{
@@ -30,7 +31,7 @@ res.status(400).json({
 
 const fetchall=async(req,res)=>{
     try{
-      const reponse= await InstallerEmp.find({}).populate("stateID").populate("department");
+      const reponse= await InstallerEmp.find({}).populate("department");
     //   console.log(reponse);
 
       res.status(200).json({
@@ -73,6 +74,54 @@ const AssisgnInstaller=async(req,res)=>{
     }
 }
 
+const installerClientDetails = async (req, res) => {
+    try {
+        const { panelSerialNumbers, inverterSerialNumbers, clientId } = req.body;
+        console.log(req.body);
+
+        console.log(req.files["photos"], "photos");
+        let client = await Client.findById({ _id: clientId });
+        if (!client) {
+            return res.status(404).json({ message: "Client not found" });
+        }
+
+        const AdditionalDetails = await ExtraDetail.find({ _id: { $in: client?.AdditionalDetails } });
+
+        // Save uploaded photos with full URL
+        const photoPaths = req.files["photos"]
+            ? req.files["photos"].map(file => `${process.env.SERVER_URL}uploads/Photos/${file.filename}`)
+            : [];
+            console.log(photoPaths)
+
+        // Update client data
+        for (let detail of AdditionalDetails) {
+            if (!detail.Photos) {
+                detail.Photos = []; // Initialize if undefined
+            }
+            detail.Photos = [...detail.Photos, ...photoPaths];
+
+            if (panelSerialNumbers) {
+                detail.panelSerialNo = JSON.parse(panelSerialNumbers);
+            }
+            if (inverterSerialNumbers) {
+                detail.inverterSerialNo = JSON.parse(inverterSerialNumbers);
+            }
+
+            await detail.save(); // Save each document
+        }
+        client.InstallStatus="Complete";
+        client.save();
+
+        res.status(200).json({ message: "Client data updated successfully", data: AdditionalDetails });
+
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({
+            message: "Error in Updating Client",
+        });
+    }
+};
+
 
 const fetchallinstallerclients=async(req,res)=>{
     try{
@@ -104,6 +153,7 @@ module.exports={
     addInstaller,
     fetchall,
     AssisgnInstaller,
-    fetchallinstallerclients
+    fetchallinstallerclients,
+    installerClientDetails
 
 }
