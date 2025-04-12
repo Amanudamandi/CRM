@@ -376,10 +376,158 @@ console.log(filteredData);
 //         });
 //     }
 // };
+// const updateclient = async (req, res) => {
+//     const session = await mongoose.startSession();
+//     session.startTransaction();
+  
+//     try {
+//       const {
+//         AccountNo,
+//         IFSC,
+//         BankAddress,
+//         additonalDetailsID,
+//         Remainder,
+//         No_of_Floor,
+//         Earthing_Wire_Length,
+//         Type_Of_Roof,
+//         Ac_wire_Length,
+//         Dc_Wire_Length,
+//         Proposed_Capacity_Kw,
+//         name,
+//         stateID,
+//         mobile,
+//         ClientID,
+//         address,
+//         Sanctioned_Load,
+//         Type_of_Meter,
+//         email,
+//         Totalamount,
+//         Receivedamount,
+//       } = req.body;
+  
+//       if (!additonalDetailsID) {
+//         return res.status(400).json({ message: "Missing additonalDetailsID", success: false });
+//       }
+  
+//       // Prepare fields for additional detail update
+//       let updateFields = {};
+  
+//       if (Remainder) updateFields.Remainder = Remainder;
+//       if (AccountNo) updateFields.AccountNo = AccountNo;
+//       if (IFSC) updateFields.IFSC = IFSC;
+//       if (BankAddress) updateFields.BankAddress = BankAddress;
+//       if (No_of_Floor) updateFields.No_of_Floor = No_of_Floor;
+//       if (Earthing_Wire_Length) updateFields.Earthing_Wire_Length = Earthing_Wire_Length;
+//       if (Type_Of_Roof) updateFields.Type_Of_Roof = Type_Of_Roof;
+//       if (Ac_wire_Length) updateFields.Ac_wire_Length = Ac_wire_Length;
+//       if (Dc_Wire_Length) updateFields.Dc_Wire_Length = Dc_Wire_Length;
+//       if (Proposed_Capacity_Kw) updateFields.Proposed_Capacity_Kw = Proposed_Capacity_Kw;
+//       if (Sanctioned_Load) updateFields.Sanctioned_Load = Sanctioned_Load;
+//       if (Type_of_Meter) updateFields.Type_of_Meter = Type_of_Meter;
+  
+//       console.log(updateFields);
+  
+//       // Handle files if uploaded
+//       if (req.files) {
+//         if (req.files["aadhaarPhotos"]) {
+//           updateFields.AadharCard = `${process.env.SERVER_URL}uploads/aadhar/${req.files["aadhaarPhotos"][0].filename}`;
+//         }
+//         if (req.files["pancard"]) {
+//           updateFields.PanCard = `${process.env.SERVER_URL}uploads/pancard/${req.files["pancard"][0].filename}`;
+//         }
+//         if (req.files["electricitybill"]) {
+//           updateFields.ElectrcityBill = `${process.env.SERVER_URL}uploads/ElectricityBill/${req.files["electricitybill"][0].filename}`;
+//         }
+//         if (req.files["Video"]) {
+//           updateFields.Videos = `${process.env.SERVER_URL}uploads/video/${req.files["Video"][0].filename}`;
+//         }
+//         if (req.files["dimensions"]) {
+//           updateFields.Dimension = `${process.env.SERVER_URL}uploads/dimensions/${req.files["dimensions"][0].filename}`;
+//         }
+//         if (req.files["cancelcheack"]) {
+//           updateFields.CancelCheack = `${process.env.SERVER_URL}uploads/cancelcheack/${req.files["cancelcheack"][0].filename}`;
+//         }
+//         if (req.files["proposalpdf"]) {
+//           updateFields.ProposalPdf = `${process.env.SERVER_URL}uploads/proposalpdf/${req.files["proposalpdf"][0].filename}`;
+//         }
+//         if (req.files["ELCB"]) {
+//           updateFields.ELCB = `${process.env.SERVER_URL}uploads/ELCB/${req.files["ELCB"][0].filename}`;
+//         }
+//         if (req.files["Roof-Picture"]) {
+//           updateFields.Roof_Picture = `${process.env.SERVER_URL}uploads/Roof-Picture/${req.files["Roof-Picture"][0].filename}`;
+//         }
+//       }
+  
+//       // Update additional details
+//       const updatedData = await Extradetail.findOneAndUpdate(
+//         { _id: additonalDetailsID },
+//         { $set: updateFields },
+//         { new: true, session }
+//       );
+  
+//       if (!updatedData) {
+//         return res.status(404).json({ message: "Document not found", success: false });
+//       }
+  
+//       // Now update client
+//       let filter = {};
+//       let payment = null;
+  
+//       if (Receivedamount && !isNaN(Receivedamount)) {
+//         payment = new Payment({ amount: Receivedamount });
+//         await payment.save({ session });
+  
+//         const clientData = await client.findOne({ _id: ClientID }).session(session);
+//         const newReceivedAmount = (clientData.Receivedamount || 0) + parseFloat(Receivedamount);
+//         filter.Receivedamount = newReceivedAmount;
+//       }
+  
+//       // Update other client fields if provided
+//       if (name) filter.name = name;
+//       if (email) filter.email = email;
+//       if (mobile) filter.mobile = mobile;
+//       if (stateID) filter.stateID = stateID;
+//       if (address) filter.address = address;
+//       if (Totalamount && !isNaN(Totalamount)) filter.Totalamount = Totalamount;
+  
+//       // Final update object
+//       const updateQuery = { $set: filter };
+//       if (payment?._id) {
+//         updateQuery.$push = { payments: payment._id };
+//       }
+  
+//       // Update client
+//       const updatedClient = await client.findOneAndUpdate(
+//         { _id: ClientID },
+//         updateQuery,
+//         { new: true, session }
+//       );
+  
+//       await session.commitTransaction();
+//       await session.endSession();
+  
+//       return res.status(200).json({
+//         message: "Saved successfully",
+//         data: updatedData,
+//         clientData: updatedClient,
+//         payment: payment,
+//         success: true,
+//       });
+//     } catch (err) {
+//       await session.abortTransaction();
+//       session.endSession();
+//       console.error(err);
+//       return res.status(500).json({
+//         message: "Update failed",
+//         success: false,
+//         error: err.message,
+//       });
+//     }
+//   };
 const updateclient = async (req, res) => {
     const session = await mongoose.startSession();
     session.startTransaction();
-  
+ 
     try {
       const {
         AccountNo,
@@ -404,14 +552,14 @@ const updateclient = async (req, res) => {
         Totalamount,
         Receivedamount,
       } = req.body;
-  
+ 
       if (!additonalDetailsID) {
         return res.status(400).json({ message: "Missing additonalDetailsID", success: false });
       }
-  
+ 
       // Prepare fields for additional detail update
       let updateFields = {};
-  
+ 
       if (Remainder) updateFields.Remainder = Remainder;
       if (AccountNo) updateFields.AccountNo = AccountNo;
       if (IFSC) updateFields.IFSC = IFSC;
@@ -424,9 +572,9 @@ const updateclient = async (req, res) => {
       if (Proposed_Capacity_Kw) updateFields.Proposed_Capacity_Kw = Proposed_Capacity_Kw;
       if (Sanctioned_Load) updateFields.Sanctioned_Load = Sanctioned_Load;
       if (Type_of_Meter) updateFields.Type_of_Meter = Type_of_Meter;
-  
+ 
       console.log(updateFields);
-  
+ 
       // Handle files if uploaded
       if (req.files) {
         if (req.files["aadhaarPhotos"]) {
@@ -457,31 +605,42 @@ const updateclient = async (req, res) => {
           updateFields.Roof_Picture = `${process.env.SERVER_URL}uploads/Roof-Picture/${req.files["Roof-Picture"][0].filename}`;
         }
       }
-  
+ 
       // Update additional details
       const updatedData = await Extradetail.findOneAndUpdate(
         { _id: additonalDetailsID },
         { $set: updateFields },
         { new: true, session }
       );
-  
+ 
       if (!updatedData) {
         return res.status(404).json({ message: "Document not found", success: false });
       }
-  
+ 
       // Now update client
       let filter = {};
       let payment = null;
-  
+ 
       if (Receivedamount && !isNaN(Receivedamount)) {
         payment = new Payment({ amount: Receivedamount });
         await payment.save({ session });
-  
+ 
         const clientData = await client.findOne({ _id: ClientID }).session(session);
         const newReceivedAmount = (clientData.Receivedamount || 0) + parseFloat(Receivedamount);
         filter.Receivedamount = newReceivedAmount;
+        const total = !isNaN(Totalamount) ? parseFloat(Totalamount) : clientData.Totalamount;
+       
+             
+  if (!isNaN(total)) {
+    if (newReceivedAmount >= total) {
+      filter.PaymentStatus = "Complete";
+    } else {
+      filter.PaymentStatus = "Partial";
+    }
+  }
       }
-  
+     
+ 
       // Update other client fields if provided
       if (name) filter.name = name;
       if (email) filter.email = email;
@@ -489,23 +648,23 @@ const updateclient = async (req, res) => {
       if (stateID) filter.stateID = stateID;
       if (address) filter.address = address;
       if (Totalamount && !isNaN(Totalamount)) filter.Totalamount = Totalamount;
-  
+ 
       // Final update object
       const updateQuery = { $set: filter };
       if (payment?._id) {
         updateQuery.$push = { payments: payment._id };
       }
-  
+ 
       // Update client
       const updatedClient = await client.findOneAndUpdate(
         { _id: ClientID },
         updateQuery,
         { new: true, session }
       );
-  
+ 
       await session.commitTransaction();
       await session.endSession();
-  
+ 
       return res.status(200).json({
         message: "Saved successfully",
         data: updatedData,
@@ -523,7 +682,7 @@ const updateclient = async (req, res) => {
         error: err.message,
       });
     }
-  };
+}
   
 const updateEmployee=async(req,res)=>{
     try{
