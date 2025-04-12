@@ -1971,7 +1971,8 @@ const fetchInstallerleads=async(req,res)=>{
         $match: {
           $and: [
             { "ClientDetails.PaymentStatus": "Complete" }, // Payment must be complete
-            { "ClientDetails.InstallerEmp": newid} // Installer ID must be null
+            { "ClientDetails.InstallerEmp": newid }, // Installer ID must match newid
+            { "ClientDetails.InstallStatus": "Pending" } 
           ]
         }
       },
@@ -2068,7 +2069,112 @@ const fetchClientsNetMetricManager=async(req,res)=>{
       },
     {
       $match: {
-        "ClientDetails.InstallStatus": "Complete" // Filtering clients with payment status "pending"
+        $and:[{
+         "ClientDetails.InstallStatus": "Complete" ,
+         "ClientDetails.NetMetricStatus":"Pending"
+        }]
+     }
+    },
+    {
+      $lookup: {
+        from: "employees", // Collection name
+        localField: "ClientDetails.empID", // Now accessing directly
+        foreignField: "_id",
+        as: "CallingEmployee"
+      }
+    },
+    {$unwind:{path:"$CallingEmployee", preserveNullAndEmptyArrays:true}},
+    {
+      $lookup: {
+        from: "states", // Collection name
+        localField: "ClientDetails.stateID", // Now accessing directly
+        foreignField: "_id",
+        as: "State"
+      }
+    },
+    {$unwind:{path:"$State", preserveNullAndEmptyArrays:true}},
+    {
+      $lookup: {
+        from: "payments", // Collection name
+        localField: "ClientDetails.payments", // Now accessing directly
+        foreignField: "_id",
+        as: "Payments"
+      }
+    },
+   
+    {
+      $lookup: {
+        from: "teamleaders", // Collection name
+        localField: "ClientDetails.TLID", // Now accessing directly
+        foreignField: "_id",
+        as: "CallingEmployeeTL"
+      }
+    },
+    {$unwind:{path:"$CallingEmployeeTL", preserveNullAndEmptyArrays:true}},
+      {
+        $lookup: {
+          from: "extradetails", // Collection name
+          localField: "ClientDetails.AdditionalDetails", // Now accessing directly
+          foreignField: "_id",
+          as: "AdditionalDetails"
+        }
+      },
+      {$unwind:{path:"$AdditionalDetails", preserveNullAndEmptyArrays:true}},
+      {
+          $lookup: {
+              from: "employees", // Collection name of Employee
+              localField: "fieldEmpID",
+              foreignField: "_id",
+              as: "FieldemployeeDetails"
+          }
+      },
+      { 
+        $unwind: { path: "$employeeDetails", preserveNullAndEmptyArrays: true } 
+    },
+  ]);
+  
+  res.status(200).json({
+    data:data,
+    message:"Succesfully fetched",
+    status:true,
+  })
+
+
+  }catch(error){
+    console.log(error);
+    res.status(400).json({
+      message: "Failed to Fetch ",
+      status: false,
+    });
+  }
+}
+const fetchCompleteInstall=async(req,res)=>{
+  try{
+    const id= req.id;
+    console.log(req.id);
+    console.log(typeof(id));
+    const newid = new mongoose.Types.ObjectId(id);
+    const data = await AssignEmployee.aggregate([
+      {
+          $lookup: {
+              from: "clients", // Collection name
+              localField: "clientID",
+              foreignField: "_id",
+              as: "ClientDetails"
+          }
+      },
+      { 
+        $unwind: { path: "$ClientDetails", preserveNullAndEmptyArrays: true } 
+      },
+    {
+      $match: {
+     
+        
+        $and: [
+          {"ClientDetails.InstallStatus": "Complete"},// Payment must be complete
+          { "ClientDetails.InstallerEmp": newid }, // Installer ID must match newid
+        
+        ]// Filtering clients with payment status "pending"
       }
     },
     {
@@ -2144,6 +2250,49 @@ const fetchClientsNetMetricManager=async(req,res)=>{
     });
   }
 }
+const updatenetmetricStatus = async (req, res) => {
+  try {
+    const { clientID } = req.body;
+
+    // Check if clientID is provided
+    if (!clientID) {
+      return res.status(400).json({
+        message: "Client ID is required",
+        status: false,
+      });
+    }
+
+    // Attempt to update the document
+    const response = await Client.findByIdAndUpdate(
+      { _id: clientID },
+      { $set: { NetMetricStatus: "Complete" } },
+      { new: true } // Returns the updated document
+    );
+
+    // If no document is found, return an error
+    if (!response) {
+      return res.status(404).json({
+        message: "Client not found",
+        status: false,
+      });
+    }
+
+    // Success response
+    res.status(200).json({
+      message: "NetMetricStatus updated successfully",
+      status: true,
+      data: response,
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Failed to update NetMetricStatus",
+      status: false,
+      error: error.message,
+    });
+  }
+};
 
 const fetchClientsNetMetricManager2=async(req,res)=>{
   try{
@@ -2265,5 +2414,7 @@ module.exports = {
   updateAdditionalDetails,
   fetchClientsNetMetricManager,
   fetchInstallerleads,
-  fetchClientsNetMetricManager2
+  fetchClientsNetMetricManager2,
+  updatenetmetricStatus,
+  fetchCompleteInstall,
 };

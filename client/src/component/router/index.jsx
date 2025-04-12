@@ -63,6 +63,7 @@ import ListCompPymt from '../Common/ShowSuperAdminDetails/ListOfCompletePayment/
 import AsginInstaller from '../Common/ShowSuperAdminDetails/AssignInstaller/AsginInstaller';
 import MaterialDispatch from '../Common/ShowSuperAdminDetails/MatralDispatchInfomation/MaterialDispatch';
 import ShowMertialDetails from '../Common/ShowSuperAdminDetails/ShowMertialDetails';
+import VerifiedLead from '../Common/ShowSuperAdminDetails/verfiedLead/VerifiedLead';
 
 const Index = () => {
     // removeCookie('accessToken')
@@ -151,6 +152,7 @@ const Index = () => {
                     <Route path='/superAdmin/MaterialDispatch/assignInstaller' element={<AsginInstaller/>}  />
                     <Route path='/superAdmin/MaterialDispatchInfo' element={<MaterialDispatch/>}  /> 
                     <Route path='/superAdmin/materialInfo' element={<ShowMertialDetails/>} /> 
+                    <Route path='/superAdmin/verifiedLead' element={<VerifiedLead/>} /> 
                     <Route path='/superAdmin/NetmeteringManager' /> 
                 </Route>
 

@@ -77,6 +77,39 @@ const ListCompPymt = () => {
 
     // console.log("final data is : ",data);
 
+    const [filteredData, setFilteredData] = useState([]);
+      useEffect(() => {
+        if (isApplyFilterClicked) {
+          // const { name, mobile, email } = storeFilterData;
+          const name = storeFilterData?.Name || '';
+          const mobile = storeFilterData?.Mobile || '';
+          const email = storeFilterData?.Email || '';
+    
+          const filtered = data.filter(item => {
+            return (
+              (!name || item?.ClientDetails?.name?.toLowerCase().includes(name.toLowerCase())) &&
+              (!mobile || item?.ClientDetails?.mobile?.includes(mobile)) &&
+              (!email || item?.ClientDetails?.email?.toLowerCase().includes(email.toLowerCase()))
+            );
+          });
+    
+          console.log("filterData",filtered);
+    
+          setFilteredData(filtered);
+          setAppliedFilterClicked(false);
+        }
+      }, [isApplyFilterClicked, data, storeFilterData]);
+      // console.log("filterData", filteredData);
+    
+      useEffect(() => {
+        if (isResetFilterBtnClicked) {
+          setFilteredData(data);
+          setIsResetFilterBtnClicked(false);
+        }
+      }, [isResetFilterBtnClicked, data]);
+    
+    
+
     return (
         <section style={Styles.adminContainer}>
             <style>
@@ -127,7 +160,7 @@ const ListCompPymt = () => {
                     />
 
                     {
-                        data.map((items) => (
+                        (filteredData.length > 0 ? filteredData : data).map((items) => (
                             < tr key={items._id} style={{ borderBottom: '2px solid #ddd', cursor: 'pointer' }}>
                                 <td style={Styles.employeeValue} >{items?.ClientDetails?.name ? items?.ClientDetails?.name : "N/A"}</td>
                                 <td style={Styles.employeeValue} >{items?.ClientDetails?.mobile ? items?.ClientDetails?.mobile : "N/A"}</td>

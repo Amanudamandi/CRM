@@ -147,11 +147,9 @@ const clientSchema = mongoose.Schema({
     },
     Totalamount:{
         type:Number,
-        default:0
     },
     Receivedamount:{
         type:Number,
-        default:0
     },
     payments:[{
         type:mongoose.Schema.Types.ObjectId,

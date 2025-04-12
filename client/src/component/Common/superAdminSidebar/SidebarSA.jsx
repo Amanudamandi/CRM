@@ -5,6 +5,7 @@ import { FaHourglassHalf } from "react-icons/fa";
 import { FaTruck } from "react-icons/fa";
 import { FaRegCircleUser } from "react-icons/fa6";
 import { IoIosArrowDown } from 'react-icons/io';
+import { FaCheck } from 'react-icons/fa';
 
 const SidebarSA = ({ department, nameLogo, designation }) => {
   const Styles = {
@@ -93,6 +94,10 @@ const SidebarSA = ({ department, nameLogo, designation }) => {
             <Link to="/superAdmin/MaterialDispatchInfo" className='menu-option'>
               <FaTruck color='#fff' />
               <span className='option'> Material Information </span>
+            </Link>
+            <Link to="/superAdmin/verifiedLead" className='menu-option'>
+              <FaCheck color='#fff' />
+              <span className='option'>Verified Lead </span>
             </Link>
           </section>
         </nav>

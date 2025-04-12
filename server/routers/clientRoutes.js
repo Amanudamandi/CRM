@@ -45,7 +45,9 @@ router.post(
  router.post("/updateAdditionalDetails",clientController.updateAdditionalDetails);
  router.get("/netmetricClients",clientController.fetchClientsNetMetricManager);
  router.get("/InstallerLeads",verifyToken,clientController.fetchInstallerleads);
+ router.post("/updateMetricStatus",clientController.updatenetmetricStatus);
  router.get("/getNetmetric",clientController.fetchClientsNetMetricManager2);
+ router.get("/completeInstallLeads",verifyToken,clientController.fetchCompleteInstall);
  
 // router.post()
 module.exports = router;

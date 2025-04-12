@@ -63,19 +63,50 @@ const AsginInstaller = () => {
         navigate("/superAdmin/showDetails", { state: { item, from: "/superAdmin/MaterialDispatch/assignInstaller" } });
     }
 
-    const [assignEmp,setAssignEmp]=useState(false);
+    const [assignEmp, setAssignEmp] = useState(false);
     const [clientId, setClientId] = useState(null);
 
-    const handleClick=(event)=>{
-        let id=event.target.value
+    const handleClick = (event) => {
+        let id = event.target.value
         // console.log("id",id);
-        setClientId(id) ;
+        setClientId(id);
         setAssignEmp(true);
     }
 
     // console.log("clickedId: ",clientId);
 
-    
+    const [filteredData, setFilteredData] = useState([]);
+    useEffect(() => {
+        if (isApplyFilterClicked) {
+            // const { name, mobile, email } = storeFilterData;
+            const name = storeFilterData?.Name || '';
+            const mobile = storeFilterData?.Mobile || '';
+            const email = storeFilterData?.Email || '';
+
+            const filtered = data.filter(item => {
+                return (
+                    (!name || item?.ClientDetails?.name?.toLowerCase().includes(name.toLowerCase())) &&
+                    (!mobile || item?.ClientDetails?.mobile?.includes(mobile)) &&
+                    (!email || item?.ClientDetails?.email?.toLowerCase().includes(email.toLowerCase()))
+                );
+            });
+
+            console.log("filterData", filtered);
+
+            setFilteredData(filtered);
+            setAppliedFilterClicked(false);
+        }
+    }, [isApplyFilterClicked, data, storeFilterData]);
+    // console.log("filterData", filteredData);
+
+    useEffect(() => {
+        if (isResetFilterBtnClicked) {
+            setFilteredData(data);
+            setIsResetFilterBtnClicked(false);
+        }
+    }, [isResetFilterBtnClicked, data]);
+
+
 
     return (
         <section style={Styles.adminContainer}>
@@ -127,25 +158,25 @@ const AsginInstaller = () => {
                     />
 
                     {
-                        data.map((items) => (
+                        (filteredData.length > 0 ? filteredData : data).map((items) => (
                             < tr key={items._id} style={{ borderBottom: '2px solid #ddd', cursor: 'pointer' }}>
                                 <td style={Styles.employeeValue} >{items?.ClientDetails?.name ? items?.ClientDetails?.name : "N/A"}</td>
                                 <td style={Styles.employeeValue} >{items?.ClientDetails?.mobile ? items?.ClientDetails?.mobile : "N/A"}</td>
                                 <td style={Styles.employeeValue} >{items?.ClientDetails?.email ? items?.ClientDetails?.email : "N/A"}</td>
                                 <td style={Styles.employeeValue} >Pending...</td>
                                 <button style={{ paddingLeft: "15px", paddingRight: "15px", fontSize: "15px" }} onClick={() => { handleAllData(items) }} >Lead Information</button> &nbsp;&nbsp;
-                                <button value={items?.ClientDetails?._id} style={{ paddingLeft: "15px", paddingRight: "15px", fontSize: "15px" }}  onClick={handleClick}  >Assign Installer</button>
+                                <button value={items?.ClientDetails?._id} style={{ paddingLeft: "15px", paddingRight: "15px", fontSize: "15px" }} onClick={handleClick}  >Assign Installer</button>
                             </tr>
                         )
                         )
                     }
 
                     {
-                        assignEmp &&(
-                            <FormInstaller  
-                            info={clientId}                         
-                            showForm={assignEmp}
-                            closeForm={setAssignEmp}
+                        assignEmp && (
+                            <FormInstaller
+                                info={clientId}
+                                showForm={assignEmp}
+                                closeForm={setAssignEmp}
                             />
                         )
                     }

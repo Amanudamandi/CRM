@@ -3,7 +3,6 @@ import LeadBoardHeader from '../../showLeadsHeader/index';
 import FixedRow from '../../ShowEmployeeCard/FixedRow/index';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { tr } from 'date-fns/locale';
 
 const MaterialDispatch = () => {
     const Styles = {
@@ -61,15 +60,66 @@ const MaterialDispatch = () => {
         fetchAllData();
     }, [])
 
-    // console.log("Information : ",data);
+    console.log("Information : ", data);
 
-    const handleNavigation=(item)=>{
-        navigate("/superAdmin/showDetails",{state:{item,from:"/superAdmin/MaterialDispatchInfo"}})
+    const handleNavigation = (item) => {
+        navigate("/superAdmin/showDetails", { state: { item, from: "/superAdmin/MaterialDispatchInfo" } })
     }
 
-    const handleMaterialInfo=(item)=>{
-        navigate("/superAdmin/materialInfo",{state:{item,from:"/superAdmin/MaterialDispatchInfo"}})
+    const handleMaterialInfo = (item) => {
+        navigate("/superAdmin/materialInfo", { state: { item, from: "/superAdmin/MaterialDispatchInfo" } })
     }
+
+
+    //  const clientId=data?.ClientDetails?._id;
+    //  console.log("clientId : ",clientId);
+    const verifiedLead = async (event) => {
+        const clientID = event.target.value;
+        console.log("clientID : ", clientID);
+
+        try {
+            const response = await axios.post(`${process.env.REACT_APP_URL}/client/updateMetricStatus`, { clientID: clientID });
+
+            alert('Lead Verified Successfully...');
+            navigate("/superAdmin/verifiedLead");
+
+        } catch (error) {
+            alert("Not verified ,Please check console...");
+            console.log("Error", error);
+        }
+    }
+
+    const [filteredData, setFilteredData] = useState([]);
+    useEffect(() => {
+        if (isApplyFilterClicked) {
+            // const { name, mobile, email } = storeFilterData;
+            const name = storeFilterData?.Name || '';
+            const mobile = storeFilterData?.Mobile || '';
+            const email = storeFilterData?.Email || '';
+
+            const filtered = data.filter(item => {
+                return (
+                    (!name || item?.ClientDetails?.name?.toLowerCase().includes(name.toLowerCase())) &&
+                    (!mobile || item?.ClientDetails?.mobile?.includes(mobile)) &&
+                    (!email || item?.ClientDetails?.email?.toLowerCase().includes(email.toLowerCase()))
+                );
+            });
+
+            console.log("filterData", filtered);
+
+            setFilteredData(filtered);
+            setAppliedFilterClicked(false);
+        }
+    }, [isApplyFilterClicked, data, storeFilterData]);
+    // console.log("filterData", filteredData);
+
+    useEffect(() => {
+        if (isResetFilterBtnClicked) {
+            setFilteredData(data);
+            setIsResetFilterBtnClicked(false);
+        }
+    }, [isResetFilterBtnClicked, data]);
+
 
     return (
         <section style={Styles.adminContainer}>
@@ -121,13 +171,14 @@ const MaterialDispatch = () => {
                     />
 
                     {
-                        data.map((items) => (
+                       (filteredData.length > 0 ? filteredData : data).map((items) => (
                             < tr key={items._id} style={{ borderBottom: '2px solid #ddd', cursor: 'pointer' }}>
                                 <td style={Styles.employeeValue} >{items?.ClientDetails?.name ? items?.ClientDetails?.name : "N/A"}</td>
                                 <td style={Styles.employeeValue} >{items?.ClientDetails?.mobile ? items?.ClientDetails?.mobile : "N/A"}</td>
                                 <td style={Styles.employeeValue} >{items?.ClientDetails?.email ? items?.ClientDetails?.email : "N/A"}</td>
-                                <button style={{ paddingLeft: "15px", paddingRight: "15px", fontSize: "15px" }} onClick={()=>handleNavigation(items)} >Lead Information</button> &nbsp;&nbsp;
-                                <button  style={{ paddingLeft: "15px", paddingRight: "15px", fontSize: "15px" }} onClick={()=>{handleMaterialInfo(items)}}>Material Information</button>
+                                <button style={{ paddingLeft: "15px", paddingRight: "15px", fontSize: "15px" }} onClick={() => handleNavigation(items)} >Lead Information</button> &nbsp;&nbsp;
+                                <button style={{ paddingLeft: "15px", paddingRight: "15px", fontSize: "15px" }} onClick={() => { handleMaterialInfo(items) }}>Material Information</button>
+                                <button style={{ paddingLeft: "15px", paddingRight: "15px", fontSize: "15px", marginLeft: "15px" }} onClick={verifiedLead} value={items?.ClientDetails?._id}>Verified Lead</button>
                             </tr>
                         ))
                     }

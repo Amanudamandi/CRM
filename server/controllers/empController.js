@@ -379,7 +379,7 @@ console.log(filteredData);
 const updateclient = async (req, res) => {
     const session = await mongoose.startSession();
     session.startTransaction();
- 
+  
     try {
       const {
         AccountNo,
@@ -404,14 +404,14 @@ const updateclient = async (req, res) => {
         Totalamount,
         Receivedamount,
       } = req.body;
- 
+  
       if (!additonalDetailsID) {
         return res.status(400).json({ message: "Missing additonalDetailsID", success: false });
       }
- 
+  
       // Prepare fields for additional detail update
       let updateFields = {};
-
+  
       if (Remainder) updateFields.Remainder = Remainder;
       if (AccountNo) updateFields.AccountNo = AccountNo;
       if (IFSC) updateFields.IFSC = IFSC;
@@ -424,10 +424,9 @@ const updateclient = async (req, res) => {
       if (Proposed_Capacity_Kw) updateFields.Proposed_Capacity_Kw = Proposed_Capacity_Kw;
       if (Sanctioned_Load) updateFields.Sanctioned_Load = Sanctioned_Load;
       if (Type_of_Meter) updateFields.Type_of_Meter = Type_of_Meter;
-      
+  
       console.log(updateFields);
-      
- 
+  
       // Handle files if uploaded
       if (req.files) {
         if (req.files["aadhaarPhotos"]) {
@@ -458,39 +457,31 @@ const updateclient = async (req, res) => {
           updateFields.Roof_Picture = `${process.env.SERVER_URL}uploads/Roof-Picture/${req.files["Roof-Picture"][0].filename}`;
         }
       }
- 
+  
       // Update additional details
       const updatedData = await Extradetail.findOneAndUpdate(
         { _id: additonalDetailsID },
         { $set: updateFields },
         { new: true, session }
       );
- 
+  
       if (!updatedData) {
         return res.status(404).json({ message: "Document not found", success: false });
       }
- 
+  
       // Now update client
       let filter = {};
       let payment = null;
- 
+  
       if (Receivedamount && !isNaN(Receivedamount)) {
         payment = new Payment({ amount: Receivedamount });
         await payment.save({ session });
- 
+  
         const clientData = await client.findOne({ _id: ClientID }).session(session);
         const newReceivedAmount = (clientData.Receivedamount || 0) + parseFloat(Receivedamount);
         filter.Receivedamount = newReceivedAmount;
- 
-        if (client.Totalamount && !isNaN(client.Totalamount)) {
-          if (newReceivedAmount >= client.Totalamount) {
-            filter.PaymentStatus = "Complete";
-          } else {
-            filter.PaymentStatus = "Partial";
-          }
-        }
       }
- 
+  
       // Update other client fields if provided
       if (name) filter.name = name;
       if (email) filter.email = email;
@@ -498,23 +489,23 @@ const updateclient = async (req, res) => {
       if (stateID) filter.stateID = stateID;
       if (address) filter.address = address;
       if (Totalamount && !isNaN(Totalamount)) filter.Totalamount = Totalamount;
- 
+  
       // Final update object
       const updateQuery = { $set: filter };
       if (payment?._id) {
         updateQuery.$push = { payments: payment._id };
       }
- 
+  
       // Update client
       const updatedClient = await client.findOneAndUpdate(
         { _id: ClientID },
         updateQuery,
         { new: true, session }
       );
- 
+  
       await session.commitTransaction();
-      session.endSession();
- 
+      await session.endSession();
+  
       return res.status(200).json({
         message: "Saved successfully",
         data: updatedData,
@@ -533,6 +524,7 @@ const updateclient = async (req, res) => {
       });
     }
   };
+  
 const updateEmployee=async(req,res)=>{
     try{
         const {empId,name,teamleader,mobile,stateID,district,status} = req.body;

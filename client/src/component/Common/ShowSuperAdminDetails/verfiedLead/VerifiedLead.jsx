@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import LeadBoardHeader from '../../../component/Common/showLeadsHeader/index';
-import FixedRow from '../../../component/Common/ShowEmployeeCard/FixedRow/index';
+import LeadBoardHeader from '../../showLeadsHeader/index';
+import FixedRow from '../../ShowEmployeeCard/FixedRow/index';
 import axios from 'axios';
-import { da } from 'date-fns/locale';
 import { useNavigate } from 'react-router-dom';
 
 
-
-const Lead = () => {
+const VerifiedLead = () => {
   const Styles = {
     adminContainer: { position: 'relative', display: 'grid', height: '100vh', gridTemplateColumns: '1fr', gridTemplateRows: '3.5rem 1fr', backgroundColor: '#E8EFF9', overflow: 'hidden' },
     navBar: { gridRow: '1 / span 2' },
@@ -30,10 +28,10 @@ const Lead = () => {
     employeeValue: { padding: '0.35rem 0rem', paddingRight: '1rem', fontSize: '1rem', textAlign: 'center', fontWeight: '500', whiteSpace: 'nowrap' },
     reAssignBtnContainer: { position: 'absolute', bottom: 50, right: 25, backgroundColor: 'rgba(170, 11, 43, 0.85)', padding: '8px', borderRadius: '5px', cursor: 'pointer' },
   }
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const headingList =
     [
-      , 'Name', 'Mobile', 'Email', 'Lead Handler', "More"
+      'Name', 'Mobile', 'Email', "Lead Status", "Lead Information"
     ];
 
   const [leadClickedInfo, setLeadClickedInfo] = useState(false);
@@ -41,39 +39,28 @@ const Lead = () => {
   const [storeFilterData, setStoreFilterData] = useState({});
   const [isApplyFilterClicked, setAppliedFilterClicked] = useState(false);
   const [isResetFilterBtnClicked, setIsResetFilterBtnClicked] = useState(false);
-  const [pageCount, setPageCount] = useState(1);
-  const [limit, setLimit] = useState(35);
+  // const [pageCount, setPageCount] = useState(1);
+  // const [limit, setLimit] = useState(35);
   const [selectAllLeadsChecked, setSelectAllLeadsChecked] = useState(false);
-
-  const increasePageCount = () => {
-    setPageCount((pre) => pre + 1);
-  }
-
-  const decreasePageCount = () => {
-    if (pageCount > 1)
-      setPageCount((pre) => pre - 1);
-  }
-
 
   const [data, setData] = useState([]);
   const fetchAllData = async () => {
-    const response = await axios.get(`${process.env.REACT_APP_URL}/client/PaymentDetails`);
-    const responseData = await response?.data;
+    try {
+      const responseData = await axios.get(`${process.env.REACT_APP_URL}/client/getNetmetric`);
+      const response = await responseData?.data;
+      //  console.log("data ",response);
+      setData(response?.data);
 
-    // console.log("response Data : ",responseData);
-    const finalData = responseData?.data;
-    setData(finalData);
+    } catch (error) {
+      alert("Data is not fetch successfully ,please check console for Error...");
+      console.log("Error : ", error);
+    }
   }
 
   useEffect(() => {
     fetchAllData();
   }, [])
 
-  const handleAllData = (item) => {
-    navigate("/superAdmin/showDetails", { state: { item } });
-  }
-
-  // console.log("final data is : ",data);
   const [filteredData, setFilteredData] = useState([]);
   useEffect(() => {
     if (isApplyFilterClicked) {
@@ -105,34 +92,42 @@ const Lead = () => {
     }
   }, [isResetFilterBtnClicked, data]);
 
+  const handleNavigation = (item) => {
+    navigate("/superAdmin/showDetails", { state: { item, from: "/superAdmin/verifiedLead" } })
+  }
+
+  const handleMaterialInfo = (item) => {
+    navigate("/superAdmin/materialInfo", { state: { item, from: "/superAdmin/verifiedLead" } })
+  }
+
 
   return (
     <section style={Styles.adminContainer}>
       <style>
         {`
-                ::-webkit-scrollbar {
-                    width: 6px;
-                    height: 6px
-                }
-                
-                ::-webkit-scrollbar-track {
-                    background: #f1f1f1;
-                }
-                
-                ::-webkit-scrollbar-thumb {
-                    background-color: #888;
-                    border-radius: 8px;
-                }
-                
-                ::-webkit-scrollbar-thumb:hover {
-                    background-color: #AA0B2B;
-                }
-                `}
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background-color: #888;
+            border-radius: 8px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #AA0B2B;
+        }
+        `}
       </style>
       <div style={Styles.dashboardContainer}>
         <div style={Styles.headerContainer}>
           <LeadBoardHeader
-            title='Installer LeadBoard'
+            title='Information LeadBoard'
           />
         </div>
       </div>
@@ -161,17 +156,17 @@ const Lead = () => {
                 <td style={Styles.employeeValue} >{items?.ClientDetails?.name ? items?.ClientDetails?.name : "N/A"}</td>
                 <td style={Styles.employeeValue} >{items?.ClientDetails?.mobile ? items?.ClientDetails?.mobile : "N/A"}</td>
                 <td style={Styles.employeeValue} >{items?.ClientDetails?.email ? items?.ClientDetails?.email : "N/A"}</td>
-                <td style={Styles.employeeValue} >{items?.ClientDetails?.TLID ? items?.ClientDetails?.TLID : "N/A"}</td>
-                <button style={{ paddingLeft: "15px", paddingRight: "15px", fontSize: "15px" }} onClick={() => { handleAllData(items) }} >More</button>
+                <td style={Styles.employeeValue} >Complete</td>
+                <button style={{ marginLeft: "120px", paddingLeft: "15px", paddingRight: "15px", fontSize: "15px" }} onClick={() => { handleNavigation(items) }}  >Lead Information</button> &nbsp;&nbsp;
+                <button style={{ paddingLeft: "15px", paddingRight: "15px", fontSize: "15px" }} onClick={() => { handleMaterialInfo(items) }} >Material Information</button>
               </tr>
-            )
-            )
+            ))
           }
         </table>
       </section>
+    </section>
 
-    </section >
   )
 }
 
-export default Lead
+export default VerifiedLead
