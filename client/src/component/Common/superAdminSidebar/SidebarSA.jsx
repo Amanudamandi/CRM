@@ -6,6 +6,10 @@ import { FaTruck } from "react-icons/fa";
 import { FaRegCircleUser } from "react-icons/fa6";
 import { IoIosArrowDown } from 'react-icons/io';
 import { FaCheck } from 'react-icons/fa';
+import { FaRupeeSign } from 'react-icons/fa';
+import { MdElectricMeter } from 'react-icons/md';
+import { FaHandHoldingUsd } from 'react-icons/fa';
+import { FaBoxes } from 'react-icons/fa';
 
 const SidebarSA = ({ department, nameLogo, designation }) => {
   const Styles = {
@@ -82,9 +86,12 @@ const SidebarSA = ({ department, nameLogo, designation }) => {
               </div>
             </div>
             <Link to="/superAdmin/MaterialDispatch/ListCompletePayment" className='menu-option'>
-              <FaTruck color='#fff' />
+              <FaRupeeSign color='#fff' />
               <span className='option'>List Complete Payment  </span>
-
+            </Link>
+            <Link to="/superAdmin/MaterialDispatchStatus" className='menu-option'>
+              <FaTruck color='#fff' />
+              <span className='option'>Meterial Dispatch Status </span>
             </Link>
             <Link to="/superAdmin/MaterialDispatch/assignInstaller" className='menu-option'>
               <FaHourglassHalf color='#fff' />
@@ -92,13 +99,22 @@ const SidebarSA = ({ department, nameLogo, designation }) => {
             </Link>
 
             <Link to="/superAdmin/MaterialDispatchInfo" className='menu-option'>
-              <FaTruck color='#fff' />
+              <FaBoxes color='#fff' />
               <span className='option'> Material Information </span>
             </Link>
             <Link to="/superAdmin/verifiedLead" className='menu-option'>
               <FaCheck color='#fff' />
-              <span className='option'>Verified Lead </span>
+              <span className='option'>Installation Completed</span>
             </Link>
+            <Link to="/superAdmin/Netmetering" className='menu-option'>
+              <MdElectricMeter color='#fff' />
+              <span className='option'>Net-Metering</span>
+            </Link>
+            <Link to="/superAdmin/Subsidy" className='menu-option'>
+              <FaHandHoldingUsd color='#fff' />
+              <span className='option'>Subsidy</span>
+            </Link>
+           
           </section>
         </nav>
       )}

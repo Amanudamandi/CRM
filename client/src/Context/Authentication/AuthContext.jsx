@@ -7,13 +7,17 @@ const AuthContext = React.createContext();
 
 export const useAuth = () => useContext(AuthContext);
 
+
+
 export const AuthProvider = ({ children }) => {
+
+  //it manage the login/logout functionality
   const [isAuthenticated, setIsAuthenticated] = useState({
-    status: false,
-    accessToken: '',
-    role: -1,
-    employeeId: null,
-    designation: '',
+    status: false, // whether logged in or not
+    accessToken: '',// token for API authorization
+    role: -1, // user role (used for dashboard routing)
+    employeeId: null, //user identity data
+    designation: '',//user identity data
   });
 
   const Navigate = useNavigate(); // To redirect after login
@@ -26,7 +30,7 @@ export const AuthProvider = ({ children }) => {
       // console.log("login .,.......",response);
 
       const designation = await response.data.designation;
-      console.log("designation response : ", designation);
+      // console.log("designation response : ", designation);
 
       const { success } = response;
       if (success) {
@@ -65,14 +69,14 @@ export const AuthProvider = ({ children }) => {
           if (designation === 'paymentManager') {
             Navigate('superAdmin/Installer');
             setIsAuthenticated((prev) => ({ ...prev, employeeId: localStorage.getItem('employeeId') }));
-        } else if (designation === 'Material Dispatch Manager') {
+          } else if (designation === 'Material Dispatch Manager') {
             Navigate('/superAdmin/MaterialDispatch/ListCompletePayment');
             setIsAuthenticated((prev) => ({ ...prev, employeeId: localStorage.getItem('employeeId') }));
-        } else if(designation === 'Netmetering Manager') {
+          } else if (designation === 'Netmetering Manager') {
             Navigate('/superAdmin/NetmeteringManager');
             setIsAuthenticated((prev) => ({ ...prev, employeeId: localStorage.getItem('employeeId') }));
-        }
-         
+          }
+
         }
         // ✅ Return user data
         return {

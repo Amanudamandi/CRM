@@ -271,7 +271,7 @@ const ShowDetails = () => {
           </div>
 
           <div>
-            <label style={styles.lable} htmlFor="">Earthing Cable</label><br />
+            <label style={styles.lable} htmlFor="">Lighting Arrester</label><br />
             <a href={addtionalDetails?.ELCB} download target="_blank">
               <img style={{ ...styles.image, cursor: "pointer" }} src={addtionalDetails?.ELCB} alt='ELCB' />
             </a>

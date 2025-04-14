@@ -134,7 +134,7 @@ const ShowMertialDetails = () => {
                     }
                 </div>
 
-                <h2 style={{ marginTop: "20px", marginBottom: "15px" }}>Pannel Image </h2>
+                <h2 style={{ marginTop: "20px", marginBottom: "15px" }}>Pannel Image And Inverter Image  </h2>
                 <div>
                     <div style={{ ...styles.imageGrid, ...styles.box }}>
                         {

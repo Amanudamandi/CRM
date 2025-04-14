@@ -23,7 +23,7 @@ const Index = () => {
     const { crmLoginAPI, isAuthenticated } = useAuth();
     const designation = localStorage.getItem('designation');
 
-    console.log("designation : ",designation);
+    // console.log("designation : ",designation);
 
     useEffect(() => {
         const store = window.location;

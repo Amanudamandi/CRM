@@ -51,7 +51,7 @@ const Index = ({ data }) => {
 
     const headingList =
         [
-            'Stage', 'Coordinator', 'Lead Handler', 'Name', 'Mobile', 'Email', 'Type', 'State', 'District', 'Source', 'Date', 'Intersted IN', 'Proposal ','Remark'
+            'Stage', 'Coordinator', 'Lead Handler', 'Name', 'Mobile', 'Email', 'Type', 'State', 'District', 'Source', 'Date', 'Intersted IN', 'Proposal ', 'Remark'
         ];
 
 
@@ -160,8 +160,8 @@ const Index = ({ data }) => {
                         setIsResetFilterBtnClicked={setIsResetFilterBtnClicked}
                         setSelectAllLeadsChecked={setSelectAllLeadsChecked}
                     />
-                    
-            
+
+
                     {/* <ShowLeads pageCount={pageCount} /> */}
                     <ShowClickableDealerLeads
                         pageCount={pageCount}
@@ -217,14 +217,14 @@ const Index = ({ data }) => {
 
 
             {
-                leadClickedInfo.clicked && 
+                leadClickedInfo.clicked &&
                 <DLUpdateLead
-                showForm={leadClickedInfo.clicked}
-                leadData={leadClickedInfo}
-                closeForm={setLeadClickedInfo}
-                pageCount={pageCount}
-                BooleanShowAllStages={true}
-                setUpdateLeadBtnClicked={setUpdateLeadBtnClicked}
+                    showForm={leadClickedInfo.clicked}
+                    leadData={leadClickedInfo}
+                    closeForm={setLeadClickedInfo}
+                    pageCount={pageCount}
+                    BooleanShowAllStages={true}
+                    setUpdateLeadBtnClicked={setUpdateLeadBtnClicked}
                 />
             }
 
