@@ -50,9 +50,10 @@ const Index = () => {
                     Navigate('superAdmin/Installer');
                 } else if (designation === 'MaterialDispatchManager') {
                     Navigate('/superAdmin/MaterialDispatch/ListCompletePayment');
-                } else {
-                    Navigate('/superAdmin/NetmeteringManager');
-                }
+                } 
+                // else {
+                //     Navigate('/superAdmin/NetmeteringManager');
+                // }
                 
             }
         }

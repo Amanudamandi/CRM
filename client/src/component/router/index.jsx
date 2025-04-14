@@ -153,7 +153,9 @@ const Index = () => {
                     <Route path='/superAdmin/MaterialDispatchInfo' element={<MaterialDispatch/>}  /> 
                     <Route path='/superAdmin/materialInfo' element={<ShowMertialDetails/>} /> 
                     <Route path='/superAdmin/verifiedLead' element={<VerifiedLead/>} /> 
-                    <Route path='/superAdmin/NetmeteringManager' /> 
+                    <Route path='/superAdmin/MaterialDispatchStatus' /> 
+                    <Route path='/superAdmin/Netmetering' /> 
+                    <Route path='/superAdmin/Subsidy' /> 
                 </Route>
 
 

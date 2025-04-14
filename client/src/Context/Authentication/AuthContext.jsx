@@ -72,10 +72,11 @@ export const AuthProvider = ({ children }) => {
           } else if (designation === 'Material Dispatch Manager') {
             Navigate('/superAdmin/MaterialDispatch/ListCompletePayment');
             setIsAuthenticated((prev) => ({ ...prev, employeeId: localStorage.getItem('employeeId') }));
-          } else if (designation === 'Netmetering Manager') {
-            Navigate('/superAdmin/NetmeteringManager');
-            setIsAuthenticated((prev) => ({ ...prev, employeeId: localStorage.getItem('employeeId') }));
-          }
+          } 
+          // else if (designation === 'Netmetering Manager') {
+          //   Navigate('/superAdmin/NetmeteringManager');
+          //   setIsAuthenticated((prev) => ({ ...prev, employeeId: localStorage.getItem('employeeId') }));
+          // }
 
         }
         // ✅ Return user data

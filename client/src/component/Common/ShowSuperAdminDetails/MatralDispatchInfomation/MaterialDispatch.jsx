@@ -162,7 +162,7 @@ const MaterialDispatch = () => {
                         headingList={headingList}
                         dropDownList={showDropDownList}
                         showDeleteButton={false}
-                        showSelectBox={true}
+                        showSelectBox={false}
                         storeFilterData={storeFilterData}
                         setStoreFilterData={setStoreFilterData}
                         setAppliedFilterClicked={setAppliedFilterClicked}
@@ -171,7 +171,7 @@ const MaterialDispatch = () => {
                     />
 
                     {
-                       (filteredData.length > 0 ? filteredData : data).map((items) => (
+                        (filteredData.length > 0 ? filteredData : data).map((items) => (
                             < tr key={items._id} style={{ borderBottom: '2px solid #ddd', cursor: 'pointer' }}>
                                 <td style={Styles.employeeValue} >{items?.ClientDetails?.name ? items?.ClientDetails?.name : "N/A"}</td>
                                 <td style={Styles.employeeValue} >{items?.ClientDetails?.mobile ? items?.ClientDetails?.mobile : "N/A"}</td>

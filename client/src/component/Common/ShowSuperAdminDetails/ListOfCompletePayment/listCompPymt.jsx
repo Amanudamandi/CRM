@@ -151,7 +151,7 @@ const ListCompPymt = () => {
                         headingList={headingList}
                         dropDownList={showDropDownList}
                         showDeleteButton={false}
-                        showSelectBox={true}
+                        showSelectBox={false}
                         storeFilterData={storeFilterData}
                         setStoreFilterData={setStoreFilterData}
                         setAppliedFilterClicked={setAppliedFilterClicked}

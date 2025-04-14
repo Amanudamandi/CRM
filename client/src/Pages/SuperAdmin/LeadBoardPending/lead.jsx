@@ -33,7 +33,7 @@ const Lead = () => {
   const navigate = useNavigate()
   const headingList =
     [
-      , 'Name', 'Mobile', 'Email', 'Lead Handler', "More"
+       'Name', 'Mobile', 'Email', 'Lead Handler', "More"
     ];
 
   const [leadClickedInfo, setLeadClickedInfo] = useState(false);
@@ -147,7 +147,7 @@ const Lead = () => {
             headingList={headingList}
             dropDownList={showDropDownList}
             showDeleteButton={false}
-            showSelectBox={true}
+            showSelectBox={false}
             storeFilterData={storeFilterData}
             setStoreFilterData={setStoreFilterData}
             setAppliedFilterClicked={setAppliedFilterClicked}
