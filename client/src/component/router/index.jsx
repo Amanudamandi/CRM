@@ -126,13 +126,6 @@ const Index = () => {
                     <Route path='employee/show-leads/add' element={<AddClient employeeID={localStorage.getItem('employeeId')} />} />
                 </Route>
 
-                {/* dealerTL dashboard not working properly */}
-                <Route path='/' element={<DealerLayout />}>
-                    <Route path='/dealerTL/dashboard' element={<DealerDashBoard />}></Route>
-                    <Route path='/dealerTL/dealer-dashboard' element={<CoordinateDealerBoard />} ></Route>
-                    <Route path='/dealerTL/dealer-dashboard/add' element={<coordinateDealerAdd />} ></Route>
-                </Route>
-
 
                 {/* Dealer employee */}
 

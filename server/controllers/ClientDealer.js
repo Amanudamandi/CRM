@@ -234,7 +234,7 @@ const Fetchclients=async(req,res)=>{
                             type: 1,
                             CurrentDate: 1,
                             interstedIn:1, 
-                            
+                            remark:1,
                           
                          "TLID.name":1,
                             "empID.name":1,
@@ -658,6 +658,7 @@ const updateDLClient = async (req, res) => {
             address: address || null,
             interstedIn: interestValue || "N/A",
             Document:Document || null,
+            remark:remark || '',
         };
         console.log(updatedData,"data")
         console.log("Client ID:", clientID);
